@@ -1,0 +1,33 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+
+
+{% block content %}
+    <div class="container">
+        {% if error is defined %}
+            <div>{{ error.messageKey|trans(error.messageData) }}</div>
+        {% endif %}
+
+        <form action="{{ path('login_check') }}" method="post" class="form-horizontal">
+
+            <div class="form-group">
+                <label for="username">Login:</label>
+                <input type="text" id="username" name="_username" value="{% if last_username is defined %}{{ last_username }}{% endif %}" class="form-control" />
+            </div>
+
+
+            <div class="form-group">
+                <label for="password">Hasło:</label>
+                <input type="password" id="password" name="_password" class="form-control"/>
+            </div>
+            
+            {#
+                If you want to control the URL the user
+                is redirected to on success (more details below)
+                <input type="hidden" name="_target_path" value="/account" />
+            #}
+
+            <button type="submit">Zaloguj</button>
+        </form>
+    </div>
+{% endblock %}

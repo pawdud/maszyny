@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('library/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />    
+{% endblock %}
+
+{% block content %}
+    <div class="container">            
+        <a href="{{ path('projekty') }}">Projekty</a>       
+        <a href="{{ path('uzytkownicy') }}">Użytkownicy</a>
+        <a href="{{ path('materialy') }}">Materiały</a>
+        <a href="{{ path('projekt_dodaj') }}">Dodaj projekt</a>
+        
+        {# Nazwa strony #}
+        {% if __header__.name%}
+        <h1>{{ __header__.name }}</h1>
+        {% endif %}
+        
+        
+        {# Komunikaty "Flash" #}
+        {% for msg in __flash__ %}
+        <div>
+            
+        </div>
+        {% endfor %}
+    
+    {% block content_inner %}
+        
+    {% endblock %}    
+    </div>    
+{% endblock %}
+    

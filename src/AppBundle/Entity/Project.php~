@@ -1,0 +1,56 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Project
+ *
+ * @ORM\Table(name="project", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Entity
+ */
+class Project
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="name", type="integer", nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="time_updated", type="datetime", nullable=false)
+     */
+    private $timeUpdated;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="time_add", type="datetime", nullable=false)
+     */
+    private $timeAdd;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+
+}

@@ -1,0 +1,51 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+     <a class="btn btn-success" href="{{ path('uzytkownik_dodaj') }}">Dodaj użytkownika</a>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        {% if users.getTotalItemCount %}
+            Projekty
+        {% else %}    
+            Brak uzytkowników
+        {% endif %}
+        </div>               
+        
+        {% if users.getTotalItemCount %}
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <th class="text-center">Id</th>
+                        <th class="text-center">Login</th>
+                        <th class="text-center">Uprawnienia</th>
+                        <th class="text-center">Imię</th>
+                        <th class="text-center">Nazwisko</th>
+                        <th class="text-center">Utworzono</th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                    </thead>
+                    
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td class="text-center">{{ user.id }}</td>
+                            <td class="text-center">{{ user.email }}</td>
+                            <td class="text-center">{{ user.role }}</td>
+                            <td class="text-center">{{ user.name }}</td>
+                            <td class="text-center">{{ user.surname }}</td>
+                            <td class="text-center">{{ user.timeAdd | date('Y:m:d H:i') }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('uzytkownik_edytuj', {'id': user.id}) }}" class="btn btn-info">Edytuj</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('uzytkownik_usun', {'id': user.id}) }}" class="btn btn-danger">Usuń</a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}                        
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

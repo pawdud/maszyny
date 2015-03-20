@@ -1,0 +1,16 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+
+{% block content_inner %}    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
+
+    <div class="form-group">
+        <label class="control-label required" for="userEdit_name">Email</label>            
+        {{ form.vars.value.email }}
+    </div>        
+
+    {{ form_row(form.name) }}    
+    {{ form_row(form.surname) }}   
+    <button type="submit" class="btn btn-info">Zapisz</button>
+    {{ form_end(form) }}  
+{% endblock %}

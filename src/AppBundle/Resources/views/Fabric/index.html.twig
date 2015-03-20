@@ -1,0 +1,45 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+     <a class="btn btn-success" href="{{ path('material_dodaj') }}">Dodaj material</a>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        {% if fabrics.getTotalItemCount %}
+            Projekty
+        {% else %}    
+            Brak materialów
+        {% endif %}
+        </div>               
+        
+        {% if fabrics.getTotalItemCount %}
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <th class="text-center">Id</th>
+                        <th class="text-center">Nazwa</th>
+                        <th class="text-center">Utworzony</th>
+                        <th class="text-center"></th>                       
+                        <th class="text-center"></th>
+                    </thead>
+                    
+                    <tbody>
+                        {% for fabric in fabrics %}
+                        <tr>
+                            <td class="text-center">{{ fabric.id }}</td>
+                            <td class="text-center">{{ fabric.name }}</td>
+                            <td class="text-center">{{ fabric.timeAdd | date('Y:m:d H:i') }}</td>                           
+                            <td class="text-center">
+                                <a href="{{ path('material_edytuj', {'id': fabric.id}) }}" class="btn btn-info">Edytuj</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('material_usun', {'id': fabric.id}) }}" class="btn btn-danger">Usuń</a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}                        
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

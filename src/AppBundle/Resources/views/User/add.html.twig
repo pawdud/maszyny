@@ -1,0 +1,11 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}    
+  {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
+    {{ form_row(form.email) }}    
+    {{ form_row(form.password) }}    
+    {{ form_row(form.name) }}    
+    {{ form_row(form.surname) }}       
+    <button type="submit" class="btn btn-info">Zapisz</button>
+{{ form_end(form) }}  
+{% endblock %}
