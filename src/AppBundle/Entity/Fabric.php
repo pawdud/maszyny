@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Materiały
@@ -19,13 +20,6 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
 {
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=500, nullable=false)
-     */
-    private $name;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
@@ -35,12 +29,32 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
     private $id;
 
     /**
-     * @var \AppBundle\Entity\Part
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Part")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
-     * })
+     * @ORM\Column(name="name", type="string", length=500, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=100, nullable=false)
+     */
+    private $code;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="quantity", type="decimal", precision=10, scale=2,  nullable=false)
+     */
+    private $quantity;
+
+    /**
+     * @var \AppBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")     
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * 
      */
     private $user;
 
@@ -80,10 +94,10 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
     /**
      * Set user
      *
-     * @param \AppBundle\Entity\Part $user
+     * @param \AppBundle\Entity\User $user
      * @return Fabric
      */
-    public function setUser(\AppBundle\Entity\Part $user = null)
+    public function setUser(\AppBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -100,9 +114,79 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
         return $this->user;
     }
 
+    /**
+     * Set code
+     *
+     * @param string $name
+     * @return Fabric
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string 
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param string $name
+     * @return Fabric
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return string 
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
     public function getGroupSequence()
     {
         return array('add', 'update');
+    }
+    
+    
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {       
+
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(            
+            'message' => 'Pole wymagane',
+        )));
+        
+        $metadata->addPropertyConstraint('code', new Assert\NotBlank(array(            
+            'message' => 'Pole wymagane',
+        )));
+        
+        $metadata->addPropertyConstraint('quantity', new Assert\NotBlank(array(            
+            'message' => 'Pole wymagane',
+        )));
+        
+        // Kod musi być unikalny
+        $metadata->addConstraint(new UniqueEntity(array(
+            'fields'  => 'code',
+            'message'  => 'Kod musi być unikalny',
+        )));
     }
 
 }

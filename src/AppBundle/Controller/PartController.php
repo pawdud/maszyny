@@ -8,6 +8,7 @@ use AppBundle\Form\Type\PartType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 
@@ -63,23 +64,54 @@ class PartController extends BaseController
         if ($form->isSubmitted() && $form->isValid())
         {
             $this->ormPersistAndFlush($part);
-          
+
             return $this->redirect($this->generateUrl('czesc_edytuj', array('id' => $part->getId())), 'Zakualizowano część');
         }
 
         $this->setHeader('Edycja cześci: ' . $part->getName());
         $this->setViewData('form', $form->createView());
+        $this->setViewData('part', $part);
         return $this->render('AppBundle:Part:edit.html.twig');
     }
-    
+
     /**
      * @Route("/czesc/usun/{id}", name="czesc_usun")
      * @ParamConverter("part", class="AppBundle:Part")
      */
     public function deleteAction(Request $request, $part)
     {
-        $project = $part->getProject();        
+        $project = $part->getProject();
         $this->ormRemoveAndFlush($part);
         return $this->redirect($this->generateUrl('czesci', array('id' => $project->getId())), 'Usunięto część');
-    }    
+    }
+
+    /**
+     * (AJAX) Usuwanie materiału z części
+     * @Route("/czesc/usun_material/{id}", name="czesc_usun_material")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function axFabricDeleteAction(Request $request, $part)
+    {
+        $idFabric = $request->request->get('idFabric');
+        $fabric = $this->repoFabric()->one(array('id' => $idFabric));
+        $part->removeFabric($fabric);
+        $this->ormPersistAndFlush($part);
+        return new Response();
+    }
+
+    /**
+     * (AJAX) Dodawanie materiału do części
+     * @Route("/czesc/dodaj_material/{id}", name="czesc_dodaj_material")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function axFabricAddAction(Request $request, $part)
+    {
+        $idFabric = $request->request->get('idFabric');
+
+        $fabric = $this->repoFabric()->one(array('id' => $idFabric));
+        $part->addFabric($fabric);
+        $this->ormPersistAndFlush($part);
+        return new Response();
+    }
+
 }

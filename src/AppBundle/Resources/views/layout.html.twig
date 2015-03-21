@@ -1,7 +1,30 @@
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
-    <link href="{{ asset('library/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />    
+    {# bootstrap #}
+    <link href="{{ asset('library/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />   
+
+    {# jqeury ui #}
+    <link href="{{ asset('library/jqueryui/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />   
+    <link href="{{ asset('library/jqueryui/jquery-ui.theme.min.css') }}" rel="stylesheet" type="text/css" />   
+
+    {# style własne #}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" />    
+{% endblock %}
+
+
+{% block javascripts %}
+    {# jquery #}
+    <script src="{{ asset('library/jquery/jquery.min.js') }}"></script>
+    
+    {# bootstrap #}
+    <script src="{{ asset('library/bootstrap/js/bootstrap.min.js') }}"></script>
+    
+    {# jqeury ui #}
+    <script src="{{ asset('library/jqueryui/jquery-ui.min.js') }}"></script>
+    
+    {# skrypty własne #}
+
 {% endblock %}
 
 {% block content %}
@@ -10,23 +33,20 @@
         <a href="{{ path('uzytkownicy') }}">Użytkownicy</a>
         <a href="{{ path('materialy') }}">Materiały</a>
         <a href="{{ path('projekt_dodaj') }}">Dodaj projekt</a>
-        
+
         {# Nazwa strony #}
         {% if __header__.name%}
-        <h1>{{ __header__.name }}</h1>
+            <h1>{{ __header__.name }}</h1>
         {% endif %}
-        
-        
+
+
         {# Komunikaty "Flash" #}
         {% for msg in __flash__ %}
-        <div>
-            
-        </div>
+           <div class="alert alert-info" role="alert">{{ msg }}</div>
         {% endfor %}
-    
-    {% block content_inner %}
-        
-    {% endblock %}    
+
+        {% block content_inner %}
+
+        {% endblock %}    
     </div>    
 {% endblock %}
-    

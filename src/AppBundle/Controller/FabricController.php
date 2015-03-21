@@ -7,6 +7,8 @@ use AppBundle\Form\Type\FabricType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 
@@ -60,7 +62,7 @@ class FabricController extends BaseController
         if ($form->isSubmitted() && $form->isValid())
         {
             $this->ormPersistAndFlush($fabric);
-          
+
             return $this->redirect($this->generateUrl('material_edytuj', array('id' => $fabric->getId())), 'Zakualizowano material');
         }
 
@@ -68,7 +70,7 @@ class FabricController extends BaseController
         $this->setViewData('form', $form->createView());
         return $this->render('AppBundle:Fabric:edit.html.twig');
     }
-    
+
     /**
      * @Route("/material/usun/{id}", name="material_usun")
      * @ParamConverter("fabric", class="AppBundle:Fabric")
@@ -77,5 +79,33 @@ class FabricController extends BaseController
     {
         $this->ormRemoveAndFlush($fabric);
         return $this->redirect($this->generateUrl('materialy'), 'Usunięto material');
-    }    
+    }
+
+    /**
+     * @Route("/material/szukaj", name="material_szukaj")
+     * 
+     */
+    public function axSearchAction(Request $request)
+    {
+        $return = array();
+        $term = $request->query->get('term');
+
+        $fabrics = $this->repoFabric()->many(
+                array('q' => $term), 0, 10
+        );
+
+        if (is_array($fabrics) && !empty($fabrics))
+        {
+            foreach ($fabrics as $fabric)
+            {
+                $return[] = array(
+                    'id' => $fabric->getId(),
+                    'value' => $fabric->getName() . ' [' . $fabric->getCode() . ']',
+                    'label' => $fabric->getName() . ' [' . $fabric->getCode() . ']',
+                );
+            }
+        }
+        return new JsonResponse($return);
+    }
+
 }

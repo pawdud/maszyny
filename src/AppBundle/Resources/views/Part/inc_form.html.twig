@@ -1,4 +1,96 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-    {{ form_row(form.name) }}    
+    {{ form_row(form.name) }}        
+
+    {% if part is defined and part.id %}
+        {# Przypisywanie materiałów #}
+        <div class="form-group">
+            <label class="control-label">Materiały</label>
+            <input type="text" id="trg-search-fabric" class="form-control">  
+            <ul id="cnt-materials" class="list-group">  
+                {% if part.fabrics | length > 0 %}
+                    {% for fabric in part.fabrics %}
+                        <li data-fabric-id="{{ fabric.id }}" data-element="cnt-item-fabric" class="list-group-item">
+                            {{ fabric.name }} [{{ fabric.code }}]        
+                            <a data-trg="fabric-delete" data-fabric-id="{{ fabric.id }}" class="btn btn-danger">Usuń</a>        
+                        </li>                
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            {% raw %}
+                <script>
+                    $(function ($) {
+
+                        var MaterailManager = {
+                            data: {},
+                            cnt: null,
+                            urlAdd: "{% endraw %}{{ path('czesc_dodaj_material', {'id': part.id}) }}{% raw %}",
+                            urlDelete: "{% endraw %}{{ path('czesc_usun_material', {'id': part.id}) }}{% raw %}",
+                            template: '<li data-fabric-id="<%id%>" data-element="cnt-item-fabric" class="list-group-item"> <%label%> <a data-trg="fabric-delete" data-fabric-id="<%id%>" class="btn btn-danger">Usuń</a>',
+                            add: function (id, label) {
+                                var self = this;
+
+                                if (this.exist(id)) {
+                                    alert('Taki materiał już został dodany');
+                                    return false;
+                                }
+                                ;
+
+                                $.post(this.urlAdd, {"idFabric": id}).success(function () {
+                                    var tpl = self.template.replace(/<%id%>/g, id).replace(/<%label%>/g, label);
+                                    var el = $(tpl);
+                                    self.cnt.prepend(el);
+                                    self.data[id] = el;
+                                });
+                            },
+                            remove: function (id) {
+                                var self = this;
+                                if (this.exist(id)) {
+                                    $.post(this.urlDelete, {"idFabric": id}).success(function () {
+                                        self.data[id].remove();
+                                        delete self.data[id]
+                                        return true;
+                                    });
+                                }
+                            },
+                            exist: function (id) {
+                                if (this.data[id]) {
+                                    return true;
+                                }
+                                return false;
+                            },
+                            init: function () {
+                                var self = this;
+                                this.cnt = $("#cnt-materials");
+
+                                // Inicjalizacja danych
+                                $("[data-element='cnt-item-fabric']", this.cnt).each(function (i, e) {
+                                    self.data[$(e).attr("data-fabric-id")] = $(e);
+                                });
+
+                                // Obsługa przycisku usuń                        
+                                this.cnt.delegate("[data-trg='fabric-delete']", "click", function (e) {
+                                    self.remove($(this).attr("data-fabric-id"));
+                                });
+
+
+                            }
+
+                        };
+
+                        MaterailManager.init();
+
+                        $("#trg-search-fabric").autocomplete({
+                            source: {% endraw %}"{{ path('material_szukaj') }}"{% raw %},
+                            minLength: 3,
+                            select: function (event, ui) {                            
+                                MaterailManager.add(ui.item.id, ui.item.label);
+                            }
+
+                        });
+                    });
+                </script>            
+            {% endraw %}
+        </div>      
+    {% endif %}
     <button type="submit" class="btn btn-info">Zapisz</button>
 {{ form_end(form) }}    

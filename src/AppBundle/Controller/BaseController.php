@@ -84,7 +84,11 @@ class BaseController extends Controller
 
 
 
-
+    /**
+     * Zwrazca repozytorium użytkowników
+     * 
+     * @return \AppBunlde\Entity\UserRepository
+     */  
     protected function repoUser(){
         return $this->em->getRepository('AppBundle:User');
     }
@@ -105,6 +109,15 @@ class BaseController extends Controller
      */    
     protected function repoPart(){
         return $this->em->getRepository('AppBundle:Part');
+    }
+    
+    /**
+     * Zwrazca repozytorium materiałów
+     * 
+     * @return \AppBunlde\Entity\MaterialRepository
+     */    
+    protected function repoFabric(){
+        return $this->em->getRepository('AppBundle:Fabric');
     }
     
     

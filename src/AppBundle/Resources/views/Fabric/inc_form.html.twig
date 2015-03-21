@@ -1,4 +1,10 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
     {{ form_row(form.name) }}    
+    {{ form_row(form.code) }}  
+    <div class="form-group">
+        {{ form_label(form.quantity) }}
+        {{ form_widget(form.quantity, {'attr': {'class': 'small'} }) }}
+        {{ form_errors(form.quantity) }}
+    </div>
     <button type="submit" class="btn btn-info">Zapisz</button>
 {{ form_end(form) }}    

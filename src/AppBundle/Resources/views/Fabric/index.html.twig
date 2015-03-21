@@ -17,6 +17,8 @@
                 <table class="table">
                     <thead>
                         <th class="text-center">Id</th>
+                        <th class="text-center">Kod</th>
+                        <th class="text-center">Stan magazynowy</th>
                         <th class="text-center">Nazwa</th>
                         <th class="text-center">Utworzony</th>
                         <th class="text-center"></th>                       
@@ -27,8 +29,15 @@
                         {% for fabric in fabrics %}
                         <tr>
                             <td class="text-center">{{ fabric.id }}</td>
+                            <td class="text-center">{{ fabric.code }}</td>
+                            <td class="text-center">{{ fabric.quantity }}</td>
                             <td class="text-center">{{ fabric.name }}</td>
-                            <td class="text-center">{{ fabric.timeAdd | date('Y:m:d H:i') }}</td>                           
+                            <td class="text-center">
+                                {{ fabric.timeAdd | date('Y:m:d H:i') }}
+                                <div>
+                                ({{ fabric.user.name }} {{ fabric.user.surname }})
+                                </div>
+                            </td>                           
                             <td class="text-center">
                                 <a href="{{ path('material_edytuj', {'id': fabric.id}) }}" class="btn btn-info">Edytuj</a>
                             </td>

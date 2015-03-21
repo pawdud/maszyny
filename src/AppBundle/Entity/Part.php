@@ -5,10 +5,12 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Project;
 use AppBundle\Entity\PartRepository;
+use AppBundle\Entity\Fabric;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
@@ -41,10 +43,25 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      */
     private $name;
   
+    
+    
+    /**
+     * 
+     * Materiały
+     * 
+     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Fabric")
+     * @ORM\JoinTable(name="fabric2part",
+     *      joinColumns={@ORM\JoinColumn(name="part_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="fabric_id", referencedColumnName="id")}
+     *      )
+     **/
+    private $fabrics;
+    
+    
 
     /**
      * @var \AppBundle\Entity\User
-     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User", inversedBy="parts")
+     * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User")
      * 
      */
     private $user;
@@ -54,6 +71,27 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\Project", inversedBy="parts")
      */
     private $project;
+    
+    
+    public function __construct()
+    {
+        $this->fabrics = new ArrayCollection();
+    }
+    
+    
+    public function addFabric(Fabric $fabric){
+        $this->fabrics[] = $fabric;
+        return $this;
+    }
+    
+    public function removeFabric(Fabric $fabric){
+        $this->fabrics->removeElement($fabric);
+        return $this;
+    }
+    
+    public function getFabrics(){
+        return $this->fabrics;
+    }
 
     /**
      * Set parentId
