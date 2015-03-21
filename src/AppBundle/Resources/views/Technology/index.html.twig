@@ -1,0 +1,49 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+     <a class="btn btn-success" href="{{ path('procesy_dodaj') }}">Dodaj proces technologiczny</a>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        {% if technologies.getTotalItemCount %}
+            Procesy Technologiczne
+        {% else %}    
+            Brak procesów technologicznych
+        {% endif %}
+        </div>               
+        
+        {% if technologies.getTotalItemCount %}
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <th class="text-center">Id</th>
+                        <th class="text-center">Nazwa</th>
+                        <th class="text-center">Utworzony</th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                    </thead>
+                    
+                    <tbody>
+                        {% for technology in technologies %}
+                        <tr>
+                            <td class="text-center">{{ technology.id }}</td>
+                            <td class="text-center">{{ technology.name }}</td>
+                            <td class="text-center">
+                                {{ technology.timeAdd | date('Y:m:d H:i') }}
+                                
+                            
+                            </td>                          
+                            <td class="text-center">
+                                <a href="{{ path('procesy_edytuj', {'id': technology.id}) }}" class="btn btn-info">Edytuj</a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('procesy_usun', {'id': technology.id}) }}" class="btn btn-danger">Usuń</a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}                        
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
