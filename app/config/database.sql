@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 20 Mar 2015, 21:46
+-- Czas wygenerowania: 21 Mar 2015, 21:05
 -- Wersja serwera: 5.5.38
 -- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
 
@@ -23,17 +23,28 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `fabric` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL COMMENT 'Id użytkownika który utworzył ten materiał',
+  `code` char(100) NOT NULL COMMENT 'Kod materiału',
+  `quantity` decimal(10,2) unsigned NOT NULL COMMENT 'Stan magazynowy',
+  `unit_id` int(10) unsigned DEFAULT NULL COMMENT 'id jednostki',
   `name` varchar(500) NOT NULL,
-  `time_updated` datetime NOT NULL,
+  `time_updated` datetime DEFAULT NULL,
   `time_add` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Materiały' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Materiały' AUTO_INCREMENT=3 ;
+
+--
+-- Zrzut danych tabeli `fabric`
+--
+
+INSERT INTO `fabric` (`id`, `user_id`, `code`, `quantity`, `unit_id`, `name`, `time_updated`, `time_add`) VALUES
+(1, 3, 'GWO', 10.00, NULL, 'Gwoździe 20', '2015-03-21 08:49:30', '2015-03-21 08:43:20'),
+(2, 3, 'GWO30', 2.00, NULL, 'Gwozdie 30', NULL, '2015-03-21 08:46:03');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `
+-- Struktura tabeli dla  `fabric2part`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric2part` (
@@ -50,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla 
+-- Struktura tabeli dla  `part`
 --
 
 CREATE TABLE IF NOT EXISTS `part` (
@@ -72,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `part` (
 --
 
 INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `time_updated`, `time_add`) VALUES
-(2, NULL, 8, 3, 'Pręt dd', '2015-03-20 21:25:07', '2015-03-20 21:24:27');
+(2, NULL, 8, 3, 'Pręt d', '2015-03-20 21:25:07', '2015-03-20 21:24:27');
 
 -- --------------------------------------------------------
 
@@ -96,6 +107,20 @@ CREATE TABLE IF NOT EXISTS `project` (
 
 INSERT INTO `project` (`id`, `user_id`, `name`, `time_updated`, `time_add`) VALUES
 (8, 3, 'Szlifierka', NULL, '2015-03-18 20:28:36');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla  `technology`
+--
+
+CREATE TABLE IF NOT EXISTS `technology` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` int(11) NOT NULL,
+  `time_updated` datetime DEFAULT NULL,
+  `time_add` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Technologie (Frezowanie, Spawanie, Zgrzewanie itd itp)' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -154,4 +179,3 @@ ALTER TABLE `part`
 --
 ALTER TABLE `project`
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
