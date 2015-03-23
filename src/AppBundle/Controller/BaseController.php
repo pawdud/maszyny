@@ -120,6 +120,15 @@ class BaseController extends Controller
         return $this->em->getRepository('AppBundle:Fabric');
     }
     
+    /**
+     * Zwrazca repozytorium technologii
+     * 
+     * @return \AppBunlde\Entity\TechnologyRepository
+     */    
+    protected function repoTechnology(){
+        return $this->em->getRepository('AppBundle:Technology');
+    }
+    
     
     public function redirect($url, $flash='', $status = 302)
     {        
