@@ -2,11 +2,16 @@
 
 namespace AppBundle\Entity;
 use AppBundle\Entity\BaseRepository;
+use Doctrine\Common\Util\Debug;
 
 class PartRepository extends BaseRepository
 {   
     protected static $alias = 'parts';
     protected static $entity = 'AppBundle:Part';  
+    
+    const PARSE_MODE_TREE_FOR_JAVASCRIPT = 1;
+    
+    
     
     
     public function customWhere($name, $value) {
@@ -17,6 +22,62 @@ class PartRepository extends BaseRepository
             return true;
         }
     }
+    
+    
+    public function tree($projectId,  $parentId = 0, $mode=self::PARSE_MODE_TREE_FOR_JAVASCRIPT){
+        
+        $return = array();
+        
+        $sql = " SELECT 
+                *
+                FROM part
+                WHERE 
+                    part.project_id = :project_id
+                AND
+                    part.parent_id  = :parent_id
+                   
+                ";
+        
+        $stmt = $this->getEntityManager()
+                      ->getConnection()
+                      ->prepare($sql);
+        $stmt->bindValue(':project_id', $projectId);
+        $stmt->bindValue(':parent_id', $parentId);       
+        $stmt->execute();
+        
+        $result = $stmt->fetchAll();        
+        if(is_array($result) && !empty($result)){            
+            foreach($result as $row){
+                $children = $this->tree($projectId,  $row['id']);
+                if(is_array($children) && !empty($children)){
+                    $row['children'] = $children;
+                }   
+                if($mode == self::PARSE_MODE_TREE_FOR_JAVASCRIPT){
+                     $return[] = $this->parseRowForJavascript($row);
+                }                
+            }            
+        }            
+        
+        return $return;
+    }
+    
+    
+    
+    private function parseRowForJavascript($row){        
+        $return = array(
+            'title'     => $row['name'],
+            'key'       => $row['id'],
+            'expanded'  => true,
+            'folder'    => isset($row['children'])
+        );
+        
+        if(!empty($row['children'])){
+            $return['children'] = $row['children'];
+        }
+        
+        return $return;
+    }
+    
     
 //    protected function setFromMany(array $crit = array()){
 //        $a1 = ProjectRepository::getAlias();

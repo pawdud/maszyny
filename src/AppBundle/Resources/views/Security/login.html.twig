@@ -1,33 +1,60 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-
-
 {% block content %}
     <div class="container">
-        {% if error is defined %}
-            <div>{{ error.messageKey|trans(error.messageData) }}</div>
-        {% endif %}
-
-        <form action="{{ path('login_check') }}" method="post" class="form-horizontal">
-
-            <div class="form-group">
-                <label for="username">Login:</label>
-                <input type="text" id="username" name="_username" value="{% if last_username is defined %}{{ last_username }}{% endif %}" class="form-control" />
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="login-box">
+                    <div id="login-box-holder">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <header id="login-header">
+                                    {% if error is defined %}
+                                        <div>
+                                            {{ error.messageKey|trans(error.messageData) }}
+                                        </div>
+                                    {% endif %}
+                                    <div id="login-logo">
+                                        <img src="{{ asset('img/logo.png') }}" alt=""/>
+                                    </div>
+                                </header>
+                                <div id="login-box-inner">
+                                    <form role="form" action="{{ path('login_check') }}" method="post" >
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                            <input type="text"  name="_username" class="form-control"  id="username" value="{% if last_username is defined %}{{ last_username }}{% endif %}" placeholder="Podaj login">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                                            <input type="password" name="_password" id="password"  class="form-control" placeholder="Podaj hasło">
+                                        </div>
+                                        <div id="remember-me-wrapper">
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                    <div class="checkbox-nice">
+                                                        <input type="checkbox" id="remember-me" checked="checked" />
+                                                        <label for="remember-me">
+                                                            Zapamietaj mnie
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <a href="forgot-password.html" id="login-forget-link" class="col-xs-6">
+                                                    Zapomniałeś hasła ?
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <button type="submit" class="btn btn-success col-xs-12">LOGUJ</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-
-            <div class="form-group">
-                <label for="password">Hasło:</label>
-                <input type="password" id="password" name="_password" class="form-control"/>
-            </div>
-            
-            {#
-                If you want to control the URL the user
-                is redirected to on success (more details below)
-                <input type="hidden" name="_target_path" value="/account" />
-            #}
-
-            <button type="submit">Zaloguj</button>
-        </form>
-    </div>
+        </div>
+    </div>  
 {% endblock %}

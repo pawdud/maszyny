@@ -31,9 +31,9 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="parent_id", type="integer", nullable=true)
+     * @ORM\Column(name="parent_id", type="integer", nullable=false)
      */
-    private $parentId;
+    private $parentId = 0;
 
     
     /**

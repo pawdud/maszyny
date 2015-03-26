@@ -5,3 +5,6 @@ AppBundle:
     
 login_check:
     pattern: /login_check
+    
+wyloguj:
+   pattern: /wyloguj

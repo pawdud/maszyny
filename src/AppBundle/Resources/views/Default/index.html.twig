@@ -1,5 +1,68 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-{% block content_inner %}    
-    
+{% block content_inner %}                                   
+
+    <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="main-box infographic-box colored emerald-bg">
+            <div class="row">
+                <div class="col-md-3 left-icon-widget">
+                    <span>
+                        <i class="icon-big fa fa-th-large"></i> 
+                    </span>
+                </div>
+                <div class="col-md-9">
+                    <span class="headline">Magazyn materiałów</span>
+                    <a href="{{ path('material_dodaj') }}"><span class="value">Dodaj nowy materiał</span><i class="fa fa-plus-square"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="main-box infographic-box colored green-bg infographic-box-green">
+            <div class="row">
+                <div class="col-md-3 left-icon-widget">
+                    <span>
+                        <i class="icon-big fa fa-wrench"></i> 
+                    </span>
+                </div>
+                <div class="col-md-9">
+                    <span class="headline">Projekt maszyn i detali</span>
+                    <a href="{{ path('projekt_dodaj') }}"><span class="value">Dodaj nowy projekt</span><i class="fa fa-plus-square"></i></a>
+                </div>
+            </div>  
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="main-box infographic-box colored red-bg infographic-box-red">
+            <div class="row">
+                <div class="col-md-3 left-icon-widget">
+                    <span>
+                        <i class="icon-big fa fa-user"></i>
+                    </span>
+                </div>
+                <div class="col-md-9">
+                    <span class="headline">Pracownicy</span>
+                    <a href="{{ path('uzytkownik_dodaj') }}"><span class="value">Dodaj pracownika</span><i class="fa fa-plus-square"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="main-box infographic-box colored purple-bg infographic-box-violet">
+            <div class="row">
+                <div class="col-md-3 left-icon-widget">
+                    <span>
+                        <i class="icon-big fa fa-book"></i>
+                    </span>
+                </div>
+                <div class="col-md-9">
+                    <span class="headline">Technologie</span>
+                    <a href="{{ path('procesy_dodaj') }}">
+                        <span class="value">Dodaj technologie</span>
+                        <i class="fa fa-plus-square"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

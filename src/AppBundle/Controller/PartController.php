@@ -29,6 +29,31 @@ class PartController extends BaseController
     }
 
     /**
+     * @Route("/czesci/drzewo/{id}", name="czesci_drzewo")
+     * @ParamConverter("project", class="AppBundle:Project")
+     */
+    public function treeAction(Request $request, Project $project)
+    {
+        $source = array(
+            array(
+            'key' => 0,
+            'title' => $project->getName(),
+            'folder' => true,
+             'expanded' => true,
+            'children' => $this->repoPart()->tree($project->getId(), 0))
+        );
+        
+        
+        $this->setViewData('source', \json_encode($source));
+        // Dostosowanie trzewka na potrzeby pluginu 'fancytree'
+//        $crit = array();
+//        $qb = $this->repoPart()->many($crit, false, false, true);
+//        $this->setViewData('parts', $this->paginate($qb, 15));
+//        $this->setViewData('project', $project);
+        return $this->render('AppBundle:Part:tree.html.twig');
+    }
+
+    /**
      * @Route("/czesc/dodaj/{id}", name="czesc_dodaj")
      * @ParamConverter("project", class="AppBundle:Project")
      */
@@ -83,6 +108,18 @@ class PartController extends BaseController
         $project = $part->getProject();
         $this->ormRemoveAndFlush($part);
         return $this->redirect($this->generateUrl('czesci', array('id' => $project->getId())), 'Usunięto część');
+    }
+
+    /**
+     * (AJAX) Zarządzanie drzewkiem części
+     * @Route("/czesc/drzewko/{parent_id}/{child_id}", name="czesci_drzewko") 
+     * @ParamConverter("child", class="AppBundle:Part", options={"id" = "child_id"})
+     */
+    public function axTree($parent_id, Part $child)
+    {                
+        $child->setParentId($parent_id);              
+        $this->ormFlush($child);
+        return new Response();
     }
 
     /**

@@ -105,7 +105,7 @@ class BaseController extends Controller
     /**
      * Zwrazca repozytorium części
      * 
-     * @return \AppBunlde\Entity\ProjectRepository
+     * @return \AppBunlde\Entity\PartRepository
      */    
     protected function repoPart(){
         return $this->em->getRepository('AppBundle:Part');

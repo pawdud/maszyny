@@ -8,6 +8,15 @@
     <link href="{{ asset('library/jqueryui/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />   
     <link href="{{ asset('library/jqueryui/jquery-ui.theme.min.css') }}" rel="stylesheet" type="text/css" />   
 
+    {# jquery - fancytree #}    
+    <link href="{{ asset('library/fancytree/skin-win8/ui.fancytree.min.css') }}" rel="stylesheet" type="text/css">
+
+    {# fontawesome #}
+    <link href="{{ asset('library/fontawesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />    
+
+    {# theme #}
+    <link href="{{ asset('css/theme.css') }}" rel="stylesheet" type="text/css" />    
+
     {# style własne #}
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" />    
 {% endblock %}
@@ -16,38 +25,304 @@
 {% block javascripts %}
     {# jquery #}
     <script src="{{ asset('library/jquery/jquery.min.js') }}"></script>
-    
+
     {# bootstrap #}
     <script src="{{ asset('library/bootstrap/js/bootstrap.min.js') }}"></script>
-    
+
     {# jqeury ui #}
     <script src="{{ asset('library/jqueryui/jquery-ui.min.js') }}"></script>
-    
+
+
+    {# jquery - fancytree #}
+    <script src="{{ asset('library/fancytree/jquery.fancytree-all.min.js') }}"></script>
+
+
+
     {# skrypty własne #}
 
 {% endblock %}
 
+{% block javascripts_footer %}
+
+    <script src="{{ asset('js/jquery.nanostroller.min.js') }}"></script>
+
+    <script src="{{ asset('js/scripts.js') }}"></script>
+{% endblock %}
+
+
+
 {% block content %}
-    <div class="container">            
-        <a href="{{ path('projekty') }}">Projekty</a>       
-        <a href="{{ path('uzytkownicy') }}">Użytkownicy</a>
-        <a href="{{ path('materialy') }}">Materiały</a>
-        <a href="{{ path('procesy') }}">Procesy technologiczne</a>
-        <a href="{{ path('projekt_dodaj') }}">Dodaj projekt</a>
+    <div class="container"> 
+        <div id="theme-wrapper">
+            <header class="navbar" id="header-navbar">
+                <div class="container">
+                    <a href="index.html" id="logo" class="navbar-brand">
+                        TTM MAGAZYN
+                    </a>
 
-        {# Nazwa strony #}
-        {% if __header__.name%}
-            <h1>{{ __header__.name }}</h1>
-        {% endif %}
+                    <div class="clearfix">
+                        <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="fa fa-bars"></span>
+                        </button>
 
+                        <div class="nav-no-collapse navbar-left pull-left hidden-sm hidden-xs">
+                            <ul class="nav navbar-nav pull-left">
+                                <li>
+                                    <a class="btn" id="make-small-nav">
+                                        <i class="fa fa-bars"></i>
+                                    </a>
+                                </li>
+                                <li class="dropdown hidden-xs">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-bell"></i>
+                                        <span class="count">8</span>
+                                    </a>
+                                    <ul class="dropdown-menu notifications-list">
+                                        <li class="pointer">
+                                            <div class="pointer-inner">
+                                                <div class="arrow"></div>
+                                            </div>
+                                        </li>
+                                        <li class="item-header">Masz 6 nowych pozycji lub zmian</li>
+                                        <li class="item">
+                                            <a href="#">
+                                                <span class="content">Wykonano technologie skrawania na materiale</span>
+                                                <span class="time"><i class="fa fa-clock-o"></i>13 min.</span>
+                                            </a>
+                                        </li>  
+                                        <li class="item-footer">
+                                            <a href="#">
+                                                Zobacz liste wszystkich zmian
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown hidden-xs">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-envelope-o"></i>
+                                        <span class="count">16</span>
+                                    </a>
+                                    <ul class="dropdown-menu notifications-list messages-list">
+                                        <li class="pointer">
+                                            <div class="pointer-inner">
+                                                <div class="arrow"></div>
+                                            </div>
+                                        </li>
+                                        <li class="item first-item">
+                                            <a href="#">
+                                                <img src="{{ asset('img/messages-photo-1.png') }}" alt=""/>
+                                                <span class="content">
+                                                    <span class="content-headline">
+                                                        Pracownik 1
+                                                    </span>
+                                                    <span class="content-text">
+                                                        Skończyliśmy proces cięcia, proszę o zakup dodatkowej blachy itp......
+                                                    </span>
+                                                </span>
+                                                <span class="time"><i class="fa fa-clock-o"></i>13 min.</span>
+                                            </a>
+                                        </li>
+                                        <li class="item">
+                                            <a href="#">
+                                                <img src="{{ asset('img/messages-photo-2.png') }}" alt=""/>
+                                                <span class="content">
+                                                    <span class="content-headline">
+                                                        Pracownik 2
+                                                    </span>
+                                                    <span class="content-text">
+                                                        Skończyliśmy proces cięcia, proszę o zakup dodatkowej blachy itp......
+                                                    </span>
+                                                </span>
+                                                <span class="time"><i class="fa fa-clock-o"></i>13 min.</span>
+                                            </a>
+                                        </li>
+                                        <li class="item">
+                                            <a href="#">
+                                                <img src="{{ asset('img/messages-photo-3.png') }}" alt=""/>
+                                                <span class="content">
+                                                    <span class="content-headline">
+                                                        Pracownik 3
+                                                    </span>
+                                                    <span class="content-text">
+                                                        Skończyliśmy proces cięcia, proszę o zakup dodatkowej blachy itp......
+                                                    </span>
+                                                </span>
+                                                <span class="time"><i class="fa fa-clock-o"></i>13 min.</span>
+                                            </a>
+                                        </li>
+                                        <li class="item-footer">
+                                            <a href="#">
+                                                Zobacz listę wszystkich pytań i wiadomości
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
 
-        {# Komunikaty "Flash" #}
-        {% for msg in __flash__ %}
-           <div class="alert alert-info" role="alert">{{ msg }}</div>
-        {% endfor %}
+                        <div class="nav-no-collapse pull-right" id="header-nav">
+                            <ul class="nav navbar-nav pull-right">
+                                <li class="mobile-search">
+                                    <a class="btn">
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                    <div class="drowdown-search">
+                                        <form role="search">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" placeholder="Szukaj...">
+                                                <i class="fa fa-search nav-search-icon"></i>
+                                            </div>
+                                        </form>
+                                    </div>
 
-        {% block content_inner %}
+                                </li>
+                                <li class="dropdown profile-dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <img src="{{ asset('img/hubert.jpg') }}" alt=""/>
+                                        <span class="hidden-xs">Kierownik Tomasz Tobiasz</span> <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="user-profile.html"><i class="fa fa-user"></i>Profil</a></li>
+                                        <li><a href="#"><i class="fa fa-cog"></i>Praca</a></li>
+                                        <li><a href="#"><i class="fa fa-envelope-o"></i>Wiadomości</a></li>
+                                        <li><a href="{{ path('wyloguj') }}"><i class="fa fa-power-off"></i>Wyloguj</a></li>
+                                    </ul>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div id="page-wrapper" class="container">
+                <div class="row">
+                    <div id="nav-col">
+                        <section id="col-left" class="col-left-nano">
+                            <div id="col-left-inner" class="col-left-nano-content">
+                                <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">	
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <li class="active">
+                                            <a href="{{ path('homepage') }}">
+                                                <i class="fa fa-dashboard"></i>
+                                                <span>Strona główna</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-toggle">
+                                                <i class="fa fa-book"></i>
+                                                <span>Technologie</span>
+                                                <i class="fa fa-angle-right drop-icon"></i>
+                                            </a>
+                                            <ul class="submenu">
+                                                <li>
+                                                    <a href="{{ path('procesy') }}">
+                                                        Lista 
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('procesy_dodaj') }}">
+                                                        Dodaj
+                                                    </a>
+                                                </li>                                                
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-toggle">
+                                                <i class="fa fa-wrench"></i>
+                                                <span>Projekty</span>
+                                                <i class="fa fa-angle-right drop-icon"></i>
+                                            </a>
+                                            <ul class="submenu">
+                                                <li>
+                                                    <a href="{{ path('projekty') }}">
+                                                        Lista
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('projekt_dodaj') }}">
+                                                        Dodaj
+                                                    </a>
+                                                </li>
 
-        {% endblock %}    
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-toggle">
+                                                <i class="fa fa-th-large"></i>
+                                                <span>Materiały</span>
+                                                <i class="fa fa-angle-right drop-icon"></i>
+                                            </a>
+                                            <ul class="submenu">
+                                                <li>
+                                                    <a href="{{ path('materialy') }}">
+                                                        Lista
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('material_dodaj') }}">
+                                                        Dodaj
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-toggle">
+                                                <i class="fa fa-th-large"></i>
+                                                <span>Pracownicy</span>
+                                                <i class="fa fa-angle-right drop-icon"></i>
+                                            </a>
+                                            <ul class="submenu">
+                                                <li>
+                                                    <a href="{{ path('uzytkownicy') }}">
+                                                        Lista
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('uzytkownik_dodaj') }}">
+                                                        Dodaj
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                        <div id="nav-col-submenu"></div>
+                    </div>
+                    <div id="content-wrapper">
+                        
+                        {# Komunikaty #}
+                        {% for msg in __flash__ %}
+                            <div class="alert alert-info" role="alert">{{ msg }}</div>
+                        {% endfor %}
+
+                        {# Nagłówek #}
+                        <div id="content-header" class="clearfix">
+                            <div class="pull-left">
+                                <ol class="breadcrumb">
+                                    <li><a href="#">{{ __header__.name }}</a></li>
+
+                                </ol>                                                
+                            </div>
+                        </div>  
+                                    
+                        {# Zawartość strony #}
+                        <div>                           
+                            {% block content_inner %}{% endblock %}
+                        </div>
+
+                        {# Stopka #}
+                        <footer id="footer-bar" class="row">
+                            <p id="footer-copyright" class="col-xs-12">
+                                TTM 2015.
+                            </p>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>    
 {% endblock %}
