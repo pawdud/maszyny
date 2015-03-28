@@ -9,8 +9,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PartController extends BaseController
 {
@@ -34,17 +36,20 @@ class PartController extends BaseController
      */
     public function treeAction(Request $request, Project $project)
     {
-        $source = array(
-            array(
-            'key' => 0,
-            'title' => $project->getName(),
-            'folder' => true,
-             'expanded' => true,
-            'children' => $this->repoPart()->tree($project->getId(), 0))
-        );
-        
-        
-        $this->setViewData('source', \json_encode($source));
+
+//        $source = array(
+//            array(
+//                'key' => 0,
+//                'title' => $project->getName(),
+//                'folder' => true,
+//                'expanded' => true,
+//                'children' => $this->repoPart()->tree($project->getId(), 0))
+//        );
+//        Debug::dump($source, 20); exit;
+
+        $this->setViewData('sourceUrl', $this->generateUrl('czesc_drzewko_struktura', array('id' => $project->getId()), UrlGeneratorInterface::ABSOLUTE_URL));
+
+//        $this->setViewData('source', \json_encode($source));
         // Dostosowanie trzewka na potrzeby pluginu 'fancytree'
 //        $crit = array();
 //        $qb = $this->repoPart()->many($crit, false, false, true);
@@ -116,8 +121,8 @@ class PartController extends BaseController
      * @ParamConverter("child", class="AppBundle:Part", options={"id" = "child_id"})
      */
     public function axTree($parent_id, Part $child)
-    {                
-        $child->setParentId($parent_id);              
+    {
+        $child->setParentId($parent_id);
         $this->ormFlush($child);
         return new Response();
     }
@@ -149,6 +154,55 @@ class PartController extends BaseController
         $part->addFabric($fabric);
         $this->ormPersistAndFlush($part);
         return new Response();
+    }
+
+    /**
+     * (AJAX) Struktura dzrzewka projektu
+     * @Route("/czesc/drzewko_struktura/{id}", name="czesc_drzewko_struktura")
+     * @ParamConverter("project", class="AppBundle:Project")
+     */
+    public function axTreeSourceAction(Project $project)
+    {
+        $source = $this->getPartsJsTreeSource($project);
+        return new JsonResponse($source);
+    }
+
+    /**
+     * (AJAX) Struktura dzrzewka projektu
+     * @Route("/czesc/ax_usun/{id}", name="czesc_ax_usun")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function axDeleteAction(Request $request, Part $part)
+    {
+        // Możemy usuwać tylko elementy najniższego poziomu (te które nie posiadają dzieci)
+
+        $project = $part->getProject();
+        $tree = $this->repoPart()->tree($project->getId(), $part->getId());
+        
+        if($tree === array()){
+            $this->ormRemoveAndFlush($part);
+            return new JsonResponse($this->getPartsJsTreeSource($project));
+        }
+
+        
+    }
+
+    /**
+     * 
+     * @param Project $project
+     * @return array
+     */
+    private function getPartsJsTreeSource(Project $project)
+    {
+        $source = array(
+            array(
+                'key' => 0,
+                'title' => $project->getName(),
+                'folder' => true,
+                'expanded' => true,
+                'children' => $this->repoPart()->tree($project->getId(), 0))
+        );
+        return $source;
     }
 
 }

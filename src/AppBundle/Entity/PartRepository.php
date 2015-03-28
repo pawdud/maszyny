@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Entity;
+use AppBundle\Utility\Config;
+
 use AppBundle\Entity\BaseRepository;
 use Doctrine\Common\Util\Debug;
 
@@ -9,10 +11,7 @@ class PartRepository extends BaseRepository
     protected static $alias = 'parts';
     protected static $entity = 'AppBundle:Part';  
     
-    const PARSE_MODE_TREE_FOR_JAVASCRIPT = 1;
-    
-    
-    
+    const PARSE_MODE_TREE_FOR_JAVASCRIPT = 1;    
     
     public function customWhere($name, $value) {
         $a1 = self::getAlias(); 
@@ -68,7 +67,9 @@ class PartRepository extends BaseRepository
             'title'     => $row['name'],
             'key'       => $row['id'],
             'expanded'  => true,
-            'folder'    => isset($row['children'])
+            'folder'    => isset($row['children']),
+            'link_details' => Config::instance()->url('czesc_edytuj', array('id' => $row['id'])),
+            
         );
         
         if(!empty($row['children'])){
@@ -77,6 +78,15 @@ class PartRepository extends BaseRepository
         
         return $return;
     }
+    
+    
+   
+    
+    
+    
+    
+    
+    
     
     
 //    protected function setFromMany(array $crit = array()){

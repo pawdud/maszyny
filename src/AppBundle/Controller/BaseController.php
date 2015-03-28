@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Utility\Config;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -38,6 +40,8 @@ class BaseController extends Controller
     public function setContainer(ContainerInterface $container = null)
     {
         parent::setContainer($container);
+        Config::init($container);
+        
         $this->init();
     }
 

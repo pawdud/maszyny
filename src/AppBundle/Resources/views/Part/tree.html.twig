@@ -1,90 +1,142 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}    
-    <div id="cnt-part-tree">
-        
-        
-    </div>    
+    <table id="cnt-part-tree" class="table">
+    <colgroup>
+    <col width="30px"></col>
+    <col width="30px"></col>
+    <col width="*"></col>
+    <col width="50px"></col>
+    <col width="30px"></col>
+    </colgroup>
+    <thead>
+      <tr> 
+          <th></th> 
+          <th>#</th> 
+          <th></th> 
+          <th></th> 
+          <th></th>          
+      </tr>
+    </thead>
+    <tbody>
+      <tr> 
+          <td></td> 
+          <td></td> 
+          <td></td> 
+          <td></td> 
+          <td></td> 
+      </tr>
+    </tbody>
+  </table> 
     
+
     {% raw %}
-    <script>
-        $(function($){
-            
-            var patternUrlDrzewko = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}" {% raw %};
-            
-           
-            
-            
-           $("#cnt-part-tree").fancytree({
-              extensions: ["dnd"],
-              source: {% endraw %}{{ source | raw }} {% raw %},
-              dnd: {
-                autoExpandMS: 400,
-                focusOnClick: true,
-                preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-                dragStart: function(node, data) {
-                    
-                    
-                    
-                /** This function MUST be defined to enable dragging for the tree.
-                 *  Return false to cancel dragging of node.
-                 */
-                    return true;
-                },
-                dragEnter: function(node, data) {
-                /** data.otherNode may be null for non-fancytree droppables.
-                 *  Return false to disallow dropping on node. In this case
-                 *  dragOver and dragLeave are not called.
-                 *  Return 'over', 'before, or 'after' to force a hitMode.
-                 *  Return ['before', 'after'] to restrict available hitModes.
-                 *  Any other return value will calc the hitMode from the cursor position.
-                 */
-                // Prevent dropping a parent below another parent (only sort
-                // nodes under the same parent)
-                    /*           if(node.parent !== data.otherNode.parent){
-                  return false;
+        <script>
+            $(function ($) {
+                var sourceUrl           = {% endraw %}"{{ sourceUrl }}"{% raw %};
+                var patternUrlDrzewko   = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
+                var patternUrlDelete    = {% endraw %}"{{ path('czesc_ax_usun', {'id': 'part_id'}) }}"{% raw %};   
+
+                $("#cnt-part-tree").fancytree({
+                    extensions: ["table", "dnd"],
+                    source: {
+                      url: sourceUrl,
+                      cache: false
+                    },
+                    checkbox: true,
+                    click: function (e, data) {
+                        
+                       
+                        
+                        //if (data.targetType && data.targetType === "title") {
+                        //    if (data.node.data && data.node.data.link_details) {
+                                // Szczegóły produktu
+                        //        window.location.href = data.node.data.link_details;
+                        //    }
+                       // }
+                    },
+                            
+                    renderColumns: function(event, data) {
+                        var node = data.node,
+                          $tdList = $(node.tr).find(">td");
+                        // (index #0 is rendered by fancytree by adding the checkbox)
+                        $tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
+                        // (index #2 is rendered by fancytree)                                         
+                        var trgDelete = $("<a href='' class='btn btn-danger'>Usuń</a>");                        
+                        trgDelete.on("click", function(e){
+                            e.preventDefault();                              
+                            $.post(patternUrlDelete.replace("part_id", data.node.key)).success(function(source){
+                               data.tree.reload(source);
+                            });
+                        });
+                        
+                        $tdList.eq(3).append(trgDelete);
+                        
+                        if(node.data && node.data.link_details){
+                            $tdList.eq(4).html("<a href='" + node.data.link_details  +  "' class='btn btn-info'>Szczegóły</a>");
+                        }
+                    },
+                            
+                            
+                    table: {
+                        indentation: 20,      // indent 20px per node level
+                        nodeColumnIdx: 2,     // render the node title into the 2nd column
+                        checkboxColumnIdx: 0  // render the checkboxes into the 1st column
+                    },        
+                            
+                    dnd: {
+                        autoExpandMS: 400,
+                        focusOnClick: true,
+                        preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+                        preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                        dragStart: function (node, data) {
+
+
+
+                            /** This function MUST be defined to enable dragging for the tree.
+                             *  Return false to cancel dragging of node.
+                             */
+                            return true;
+                        },
+                        dragEnter: function (node, data) {
+                            /** data.otherNode may be null for non-fancytree droppables.
+                             *  Return false to disallow dropping on node. In this case
+                             *  dragOver and dragLeave are not called.
+                             *  Return 'over', 'before, or 'after' to force a hitMode.
+                             *  Return ['before', 'after'] to restrict available hitModes.
+                             *  Any other return value will calc the hitMode from the cursor position.
+                             */
+                            // Prevent dropping a parent below another parent (only sort
+                            // nodes under the same parent)
+                            /*           if(node.parent !== data.otherNode.parent){
+                             return false;
+                             }
+                             // Don't allow dropping *over* a node (would create a child)
+                             return ["before", "after"];
+                             */
+                            return true;
+                        },
+                        dragDrop: function (node, data) {
+                            if (data.hitMode !== 'over') {
+                                return false;
+                            }
+                            // Wezeł do którego przenosimy
+                            var parent_id = data.node.key;
+                            // Węzeł który przenosimy
+                            var child_id = data.otherNode.key;
+                            // Url do żądania ajax 
+                            var url = patternUrlDrzewko.replace("parent_id", parent_id).replace("child_id", child_id);
+
+                            $.post(url, function (response) {
+                                console.log("response", response);
+                            });
+                            data.otherNode.moveTo(node, data.hitMode);
+                        }
                     }
-                    // Don't allow dropping *over* a node (would create a child)
-                    return ["before", "after"];
-                */
-                    return true;
-                },
-                dragDrop: function(node, data) {
-                    
-                    if(data.hitMode !== 'over'){
-                        return false;
-                    }
-                    
-                    // Wezeł do którego przenosimy
-                    var parent_id = data.node.key; 
-                    // Węzeł który przenosimy
-                    var child_id  = data.otherNode.key;                         
-                    
-                    
-                    
-                    var url = patternUrlDrzewko.replace("parent_id", parent_id).replace("child_id", child_id);
-                    
-                    
-                    console.log("data", data);
-                    console.log("data.node", data.node);
-                    console.log("data.otherNode", data.otherNode);
-                    
-                    
-                   $.post(url, function(response){
-                       console.log("response", response);                         
-                    });
-                    
-                    
-                  /** This function MUST be defined to enable dropping of items on
-                   *  the tree.
-                   */
-                  data.otherNode.moveTo(node, data.hitMode);
-                }
-              }
-           });
-        });
-    </script>        
+                });
+                            
+            });
+        </script>        
     {% endraw %}
-    
+
 {% endblock %}

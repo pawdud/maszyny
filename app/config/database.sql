@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 21 Mar 2015, 21:05
+-- Czas wygenerowania: 28 Mar 2015, 08:51
 -- Wersja serwera: 5.5.38
 -- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
 
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
 
 CREATE TABLE IF NOT EXISTS `part` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
+  `parent_id` int(11) NOT NULL DEFAULT '0',
   `project_id` int(10) unsigned NOT NULL COMMENT 'Id projektu do którego należy ten materiał',
   `user_id` int(10) unsigned NOT NULL COMMENT 'Id użytkownika który utworzył ten materiał',
   `name` varchar(500) NOT NULL,
@@ -76,14 +76,16 @@ CREATE TABLE IF NOT EXISTS `part` (
   KEY `project_id` (`project_id`),
   KEY `user_id` (`user_id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=6 ;
 
 --
 -- Zrzut danych tabeli `part`
 --
 
 INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `time_updated`, `time_add`) VALUES
-(2, NULL, 8, 3, 'Pręt d', '2015-03-20 21:25:07', '2015-03-20 21:24:27');
+(2, 0, 8, 3, 'Pręt d', '2015-03-20 21:25:07', '2015-03-20 21:24:27'),
+(3, 0, 8, 3, 'Noga', '2015-03-26 00:01:00', '2015-03-25 21:35:52'),
+(4, 3, 8, 3, 'Listwa', '2015-03-25 23:29:32', '2015-03-25 21:36:06');
 
 -- --------------------------------------------------------
 
@@ -116,11 +118,18 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `time_updated`, `time_add`) VALU
 
 CREATE TABLE IF NOT EXISTS `technology` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` int(11) NOT NULL,
+  `name` varchar(500) NOT NULL,
   `time_updated` datetime DEFAULT NULL,
   `time_add` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Technologie (Frezowanie, Spawanie, Zgrzewanie itd itp)' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Technologie (Frezowanie, Spawanie, Zgrzewanie itd itp)' AUTO_INCREMENT=2 ;
+
+--
+-- Zrzut danych tabeli `technology`
+--
+
+INSERT INTO `technology` (`id`, `name`, `time_updated`, `time_add`) VALUES
+(1, 'Proces technologiczny 1', '2015-03-26 21:56:43', '2015-03-23 08:29:04');
 
 -- --------------------------------------------------------
 
@@ -158,21 +167,21 @@ INSERT INTO `user` (`id`, `email`, `password`, `salt`, `role`, `name`, `surname`
 -- Ograniczenia dla tabeli `fabric`
 --
 ALTER TABLE `fabric`
-  ADD CONSTRAINT `fabric_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `part` (`user_id`);
+  ADD CONSTRAINT `fabric_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Ograniczenia dla tabeli `fabric2part`
 --
 ALTER TABLE `fabric2part`
-  ADD CONSTRAINT `fabric2part_ibfk_1` FOREIGN KEY (`part_id`) REFERENCES `part` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fabric2part_ibfk_2` FOREIGN KEY (`fabric_id`) REFERENCES `fabric` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fabric2part_ibfk_4` FOREIGN KEY (`fabric_id`) REFERENCES `fabric` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fabric2part_ibfk_3` FOREIGN KEY (`part_id`) REFERENCES `part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ograniczenia dla tabeli `part`
 --
 ALTER TABLE `part`
-  ADD CONSTRAINT `part_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `part_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `part_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `part_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`);
 
 --
 -- Ograniczenia dla tabeli `project`

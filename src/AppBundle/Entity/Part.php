@@ -49,7 +49,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * 
      * Materiały
      * 
-     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Fabric")
+     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Fabric", cascade={"persist", "remove"})
      * @ORM\JoinTable(name="fabric2part",
      *      joinColumns={@ORM\JoinColumn(name="part_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="fabric_id", referencedColumnName="id")}
