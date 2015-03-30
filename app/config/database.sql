@@ -1,23 +1,29 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.0.9deb1.precise~ppa.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 28 Mar 2015, 08:51
--- Wersja serwera: 5.5.38
--- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
+-- Generation Time: Mar 30, 2015 at 10:14 PM
+-- Server version: 5.5.35-0ubuntu0.12.04.2
+-- PHP Version: 5.5.11-3+deb.sury.org~precise+1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
 --
--- Baza danych: `maszyny`
+-- Database: `maszyny`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric`
+-- Table structure for table `fabric`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric` (
@@ -34,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `fabric` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Materiały' AUTO_INCREMENT=3 ;
 
 --
--- Zrzut danych tabeli `fabric`
+-- Dumping data for table `fabric`
 --
 
 INSERT INTO `fabric` (`id`, `user_id`, `code`, `quantity`, `unit_id`, `name`, `time_updated`, `time_add`) VALUES
@@ -44,7 +50,7 @@ INSERT INTO `fabric` (`id`, `user_id`, `code`, `quantity`, `unit_id`, `name`, `t
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric2part`
+-- Table structure for table `fabric2part`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric2part` (
@@ -55,13 +61,14 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
   `time_add` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `part_id` (`part_id`),
-  KEY `fabric_id` (`fabric_id`)
+  KEY `fabric_id` (`fabric_id`),
+  KEY `part_id_2` (`part_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `part`
+-- Table structure for table `part`
 --
 
 CREATE TABLE IF NOT EXISTS `part` (
@@ -76,10 +83,10 @@ CREATE TABLE IF NOT EXISTS `part` (
   KEY `project_id` (`project_id`),
   KEY `user_id` (`user_id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=5 ;
 
 --
--- Zrzut danych tabeli `part`
+-- Dumping data for table `part`
 --
 
 INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `time_updated`, `time_add`) VALUES
@@ -90,7 +97,7 @@ INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `time_up
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `project`
+-- Table structure for table `project`
 --
 
 CREATE TABLE IF NOT EXISTS `project` (
@@ -104,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `project` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Projekty' AUTO_INCREMENT=9 ;
 
 --
--- Zrzut danych tabeli `project`
+-- Dumping data for table `project`
 --
 
 INSERT INTO `project` (`id`, `user_id`, `name`, `time_updated`, `time_add`) VALUES
@@ -113,11 +120,11 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `time_updated`, `time_add`) VALU
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `technology`
+-- Table structure for table `technology`
 --
 
 CREATE TABLE IF NOT EXISTS `technology` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
   `time_updated` datetime DEFAULT NULL,
   `time_add` datetime NOT NULL,
@@ -125,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `technology` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Technologie (Frezowanie, Spawanie, Zgrzewanie itd itp)' AUTO_INCREMENT=2 ;
 
 --
--- Zrzut danych tabeli `technology`
+-- Dumping data for table `technology`
 --
 
 INSERT INTO `technology` (`id`, `name`, `time_updated`, `time_add`) VALUES
@@ -134,7 +141,22 @@ INSERT INTO `technology` (`id`, `name`, `time_updated`, `time_add`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `user`
+-- Table structure for table `technology2part`
+--
+
+CREATE TABLE IF NOT EXISTS `technology2part` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `part_id` int(10) unsigned NOT NULL,
+  `technology_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `part_id` (`part_id`),
+  KEY `technology_id` (`technology_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -152,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Uzytkownicy (administratorzy, pracownicy itd)' AUTO_INCREMENT=5 ;
 
 --
--- Zrzut danych tabeli `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `salt`, `role`, `name`, `surname`, `time_updated`, `time_add`) VALUES
@@ -160,31 +182,42 @@ INSERT INTO `user` (`id`, `email`, `password`, `salt`, `role`, `name`, `surname`
 (4, 'hubert@tomedia.pl', 'hmojpK4u5f15ZrUMIXXYYCHMW3pdpOU9Z+GKGWZuSrhbfSw6K0KuEpynmT6bk03De6Bfu7onV6Z/fk/NupT9Mw==', '367f408ce3e5ca8c91a7579c222d821799ecbb7d', 'ADMIN', 'Hubert', 'Osipowicz', NULL, '2015-03-18 22:09:06');
 
 --
--- Ograniczenia dla zrzutów tabel
+-- Constraints for dumped tables
 --
 
 --
--- Ograniczenia dla tabeli `fabric`
+-- Constraints for table `fabric`
 --
 ALTER TABLE `fabric`
   ADD CONSTRAINT `fabric_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Ograniczenia dla tabeli `fabric2part`
+-- Constraints for table `fabric2part`
 --
 ALTER TABLE `fabric2part`
-  ADD CONSTRAINT `fabric2part_ibfk_4` FOREIGN KEY (`fabric_id`) REFERENCES `fabric` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fabric2part_ibfk_3` FOREIGN KEY (`part_id`) REFERENCES `part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fabric2part_ibfk_3` FOREIGN KEY (`part_id`) REFERENCES `part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fabric2part_ibfk_4` FOREIGN KEY (`fabric_id`) REFERENCES `fabric` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ograniczenia dla tabeli `part`
+-- Constraints for table `part`
 --
 ALTER TABLE `part`
-  ADD CONSTRAINT `part_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `part_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`);
+  ADD CONSTRAINT `part_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  ADD CONSTRAINT `part_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Ograniczenia dla tabeli `project`
+-- Constraints for table `project`
 --
 ALTER TABLE `project`
   ADD CONSTRAINT `project_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `technology2part`
+--
+ALTER TABLE `technology2part`
+  ADD CONSTRAINT `technology2part_ibfk_7` FOREIGN KEY (`technology_id`) REFERENCES `technology` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `technology2part_ibfk_6` FOREIGN KEY (`part_id`) REFERENCES `part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
