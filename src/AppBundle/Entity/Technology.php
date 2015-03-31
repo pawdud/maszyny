@@ -2,9 +2,8 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Project;
 use AppBundle\Entity\PartRepository;
-use AppBundle\Entity\Fabric;
+use AppBundle\Entity\Part;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,8 +42,47 @@ class Technology extends BaseEntity implements GroupSequenceProviderInterface {
      * @ORM\Column(name="name", type="string", length=500, nullable=false)
      */
     private $name;
+    
+    /**
+     *
+     * @var \AppBundle\Entiy\Part
+     * @ORM\ManyToMany(targetEntity="Part", mappedBy="technologies", cascade={"persist", "remove"})
+     */
+    private $parts;
+    
+    public function __construct() {
+        $this->parts = new ArrayCollection();
+    }
+    
+    /**
+     * 
+     * @param \AppBundle\Entity\Part $part
+     * @return \AppBundle\Entity\Technology
+     */
+    public function addParts(Part $part) {
+        $this->parts = $part;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \AppBundle\Entity\Part $part
+     * @return \AppBundle\Entity\Technology
+     */
+    public function removeParts(Part $part) {
+        $this->parts->removeElement($part);
+        return $this;
+    }
+    
+    /**
+     * 
+     * @return \AppBundle\Entity\Part $part
+     */
+    public function getParts() {
+        return $this->parts;
+    }
 
-    public function getGroupSequence() {
+        public function getGroupSequence() {
         return array('add', 'update');
     }
 

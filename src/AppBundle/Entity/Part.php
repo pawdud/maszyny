@@ -2,32 +2,30 @@
 
 namespace AppBundle\Entity;
 
-
 use AppBundle\Entity\Project;
 use AppBundle\Entity\PartRepository;
 use AppBundle\Entity\Fabric;
+use AppBundle\Entity\Technology;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
-
 /**
  * @ORM\Table(name="part")
  * @ORM\Entity(repositoryClass="PartRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Part extends BaseEntity implements GroupSequenceProviderInterface
-{
+class Part extends BaseEntity implements GroupSequenceProviderInterface {
 
-    /** 
+    /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")     
      */
     private $id;
-    
+
     /**
      * @var integer
      *
@@ -35,16 +33,13 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      */
     private $parentId = 0;
 
-    
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=500, nullable=false)
      */
     private $name;
-  
-    
-    
+
     /**
      * 
      * Materiały
@@ -54,10 +49,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *      joinColumns={@ORM\JoinColumn(name="part_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="fabric_id", referencedColumnName="id")}
      *      )
-     **/
+     * */
     private $fabrics;
-    
-    
 
     /**
      * @var \AppBundle\Entity\User
@@ -71,25 +64,58 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\Project", inversedBy="parts")
      */
     private $project;
-    
-    
-    public function __construct()
-    {
+
+    /**
+     * @var \AppBundle\Entity\Technology
+     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Technology", inversedBy="parts", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="technology2part")
+     */
+    private $technologies;
+
+    public function __construct() {
         $this->fabrics = new ArrayCollection();
+        $this->technologies = new ArrayCollection();
     }
-    
-    
-    public function addFabric(Fabric $fabric){
+
+    /**
+     * 
+     * @param \AppBundle\Entity\Technology $technology
+     * @return \AppBundle\Entity\Part
+     */
+    public function addTechnologies(Technology $technology) {
+        $this->technologies = $technology;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \AppBundle\Entity\Technology $technogoy
+     * @return \AppBundle\Entity\Part
+     */
+    public function removeTechnologies(Technology $technogoy) {
+        $this->technologies->removeElement($technogoy);
+        return $this;
+    }
+
+    /**
+     * 
+     * @return \AppBundle\Entity\Technology $technogoy
+     */
+    public function getTechnologies() {
+        return $this->technologies;
+    }
+
+    public function addFabric(Fabric $fabric) {
         $this->fabrics[] = $fabric;
         return $this;
     }
-    
-    public function removeFabric(Fabric $fabric){
+
+    public function removeFabric(Fabric $fabric) {
         $this->fabrics->removeElement($fabric);
         return $this;
     }
-    
-    public function getFabrics(){
+
+    public function getFabrics() {
         return $this->fabrics;
     }
 
@@ -99,8 +125,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @param integer $parentId
      * @return Part
      */
-    public function setParentId($parentId)
-    {
+    public function setParentId($parentId) {
         $this->parentId = $parentId;
 
         return $this;
@@ -111,8 +136,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *
      * @return integer 
      */
-    public function getParentId()
-    {
+    public function getParentId() {
         return $this->parentId;
     }
 
@@ -122,8 +146,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @param string $name
      * @return Part
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
 
         return $this;
@@ -134,8 +157,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *
      * @return string 
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -144,8 +166,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -155,8 +176,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @param \AppBundle\Entity\User $user
      * @return Part
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
-    {
+    public function setUser(\AppBundle\Entity\User $user = null) {
         $this->user = $user;
 
         return $this;
@@ -167,8 +187,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *
      * @return \AppBundle\Entity\User 
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->user;
     }
 
@@ -178,8 +197,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @param \AppBundle\Entity\Project $project
      * @return Part
      */
-    public function setProject(Project $project = null)
-    {
+    public function setProject(Project $project = null) {
         $this->project = $project;
 
         return $this;
@@ -190,13 +208,11 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      *
      * @return \AppBundle\Entity\Project 
      */
-    public function getProject()
-    {
+    public function getProject() {
         return $this->project;
     }
 
-    public function getGroupSequence()
-    {
+    public function getGroupSequence() {
         return array('add', 'update');
     }
 
