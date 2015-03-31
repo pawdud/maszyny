@@ -34,6 +34,13 @@ class Project extends BaseEntity implements GroupSequenceProviderInterface
      * @ORM\Column(name="name", type="string", length=500, nullable=false)
      */
     private $name;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="is_drawing", type="boolean", nullable=true)
+     */
+    private $isDrawing;
 
     /**
      * @var \AppBundle\Entity\User
@@ -131,5 +138,13 @@ class Project extends BaseEntity implements GroupSequenceProviderInterface
     {
         return array('add', 'update');
     }
-
+    
+    public function getIsDrawing(){
+        return $this->isDrawing;
+    }
+    
+    public function setIsDrawing($isDrawing){
+        $this->isDrawing = $isDrawing;
+        return $this;
+    }
 }

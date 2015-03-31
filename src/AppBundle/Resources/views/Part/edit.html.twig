@@ -1,5 +1,13 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}    
-   {{ include('AppBundle:Part:inc_form.html.twig', {'form':form}) }}
+    <a class="btn btn-info" href="{{ path('czesci_drzewo', {'id': part.project.id }) }}">Struktura</a>
+    <div class="clearfix">    
+        <div class="col-md-4">
+            {{ include('AppBundle:Part:inc_tree.html.twig', {'part':part}) }}
+        </div>    
+        <div class="col-md-8">    
+            {{ include('AppBundle:Part:inc_form.html.twig', {'form':form}) }}   
+        </div>
+    </div>
 {% endblock %}

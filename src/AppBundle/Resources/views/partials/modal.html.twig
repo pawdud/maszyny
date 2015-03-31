@@ -1,0 +1,30 @@
+<div class="modal fade" id="cnt-maszyny-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">      
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% raw %}
+<script>
+    (function($, w){
+        w.maszyny = w.maszyny || {};
+        
+        w.maszyny.Modal = {
+            
+            show: function(body){               
+                $("#cnt-maszyny-modal .modal-body").html(body);
+                $("#cnt-maszyny-modal").modal("show");                
+            }            
+        };        
+    })(jQuery, window);
+
+</script>    
+{% endraw %}

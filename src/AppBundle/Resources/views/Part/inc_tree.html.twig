@@ -1,0 +1,29 @@
+ <div id="cnt-part-tree" >
+   
+</div>
+
+{% raw %} 
+    <script>
+        $(function ($) {
+            var sourceUrl           = {% endraw %}"{{ path('czesc_drzewko_struktura',{'id': part.project.id }) }}"{% raw %};
+            var patternUrlDrzewko   = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
+
+            $("#cnt-part-tree").fancytree({               
+                source: {
+                    url: sourceUrl,
+                    cache: false
+                },
+                checkbox: false,
+                
+                click: function(e, data){
+                    e.preventDefault();
+                    if(data.node.data.link_details){
+                        window.location.href = data.node.data.link_details;
+                        
+                    }
+                    return false;                    
+                }
+            });
+        });
+    </script>
+{% endraw %}

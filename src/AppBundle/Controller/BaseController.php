@@ -57,7 +57,12 @@ class BaseController extends Controller
     }
     
     protected function ormFlush(){
-        $this->em->flush();
+        try {
+            $this->em->flush();
+            return true;
+        }catch(\Exception $e){
+            return false;
+        }
     }    
     
     protected function ormRemove($entity){
@@ -66,12 +71,12 @@ class BaseController extends Controller
     
     protected function ormRemoveAndFlush($entity){
        $this->ormRemove($entity);
-       $this->ormFlush();
+       return $this->ormFlush();
     }
 
     protected function ormPersistAndFlush($entity){
         $this->ormPersist($entity);
-        $this->ormFlush($entity);
+        return $this->ormFlush($entity);
     }   
     
     

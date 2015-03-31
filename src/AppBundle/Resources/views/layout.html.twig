@@ -312,6 +312,8 @@
                         {# Zawartość strony #}
                         <div>                           
                             {% block content_inner %}{% endblock %}
+                            
+                            {{ include('AppBundle:partials:modal.html.twig') }}
                         </div>
 
                         {# Stopka #}

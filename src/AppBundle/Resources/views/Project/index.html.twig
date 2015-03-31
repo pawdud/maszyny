@@ -18,6 +18,7 @@
                     <thead>
                         <th class="text-center">Id</th>
                         <th class="text-center">Nazwa</th>
+                        <th class="text-center">Rysunek</th>                        
                         <th class="text-center">Utworzony</th>
                         <th class="text-center"></th>
                         <th class="text-center"></th>
@@ -29,12 +30,10 @@
                         <tr>
                             <td class="text-center">{{ project.id }}</td>
                             <td class="text-center">{{ project.name }}</td>
-                            <td class="text-center">{{ project.timeAdd | date('Y:m:d H:i') }}</td>
+                            <td class="text-center">{% if project.isDrawing %}TAK{% else %}NIE{% endif %} </td>
+                            <td class="text-center">{{ project.timeAdd | date('Y:m:d H:i') }}</td>                            
                             <td class="text-center">
-                                <a href="{{ path('czesci', {'id': project.id}) }}" class="btn btn-info">Części</a>
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ path('czesci_drzewo', {'id': project.id}) }}" class="btn btn-info">Części drzewo</a>
+                                <a href="{{ path('czesci_drzewo', {'id': project.id}) }}" class="btn btn-info">Struktura</a>
                             </td>
                             <td class="text-center">
                                 <a href="{{ path('projekt_edytuj', {'id': project.id}) }}" class="btn btn-info">Edytuj</a>

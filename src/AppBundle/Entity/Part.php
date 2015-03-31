@@ -17,7 +17,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity(repositoryClass="PartRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Part extends BaseEntity implements GroupSequenceProviderInterface {
+class Part extends BaseEntity implements GroupSequenceProviderInterface
+{
 
     /**
      * @ORM\Column(name="id", type="integer")
@@ -72,7 +73,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      */
     private $technologies;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->fabrics = new ArrayCollection();
         $this->technologies = new ArrayCollection();
     }
@@ -82,7 +84,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param \AppBundle\Entity\Technology $technology
      * @return \AppBundle\Entity\Part
      */
-    public function addTechnologies(Technology $technology) {
+    public function addTechnologies(Technology $technology)
+    {
         $this->technologies = $technology;
         return $this;
     }
@@ -92,7 +95,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param \AppBundle\Entity\Technology $technogoy
      * @return \AppBundle\Entity\Part
      */
-    public function removeTechnologies(Technology $technogoy) {
+    public function removeTechnologies(Technology $technogoy)
+    {
         $this->technologies->removeElement($technogoy);
         return $this;
     }
@@ -101,21 +105,25 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * 
      * @return \AppBundle\Entity\Technology $technogoy
      */
-    public function getTechnologies() {
+    public function getTechnologies()
+    {
         return $this->technologies;
     }
 
-    public function addFabric(Fabric $fabric) {
+    public function addFabric(Fabric $fabric)
+    {
         $this->fabrics[] = $fabric;
         return $this;
     }
 
-    public function removeFabric(Fabric $fabric) {
+    public function removeFabric(Fabric $fabric)
+    {
         $this->fabrics->removeElement($fabric);
         return $this;
     }
 
-    public function getFabrics() {
+    public function getFabrics()
+    {
         return $this->fabrics;
     }
 
@@ -125,7 +133,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param integer $parentId
      * @return Part
      */
-    public function setParentId($parentId) {
+    public function setParentId($parentId)
+    {
         $this->parentId = $parentId;
 
         return $this;
@@ -136,7 +145,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      *
      * @return integer 
      */
-    public function getParentId() {
+    public function getParentId()
+    {
         return $this->parentId;
     }
 
@@ -146,7 +156,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param string $name
      * @return Part
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
 
         return $this;
@@ -157,7 +168,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      *
      * @return string 
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -166,7 +178,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      *
      * @return integer 
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -176,7 +189,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param \AppBundle\Entity\User $user
      * @return Part
      */
-    public function setUser(\AppBundle\Entity\User $user = null) {
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
         $this->user = $user;
 
         return $this;
@@ -187,7 +201,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      *
      * @return \AppBundle\Entity\User 
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
@@ -197,7 +212,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      * @param \AppBundle\Entity\Project $project
      * @return Part
      */
-    public function setProject(Project $project = null) {
+    public function setProject(Project $project = null)
+    {
         $this->project = $project;
 
         return $this;
@@ -208,11 +224,24 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface {
      *
      * @return \AppBundle\Entity\Project 
      */
-    public function getProject() {
+    public function getProject()
+    {
         return $this->project;
     }
 
-    public function getGroupSequence() {
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setGroupSequenceProvider(true);
+
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
+            'groups' => array('add', 'update'),
+            'message' => 'Pole wymagane'
+        )));
+    }
+
+    public function getGroupSequence()
+    {
         return array('add', 'update');
     }
 

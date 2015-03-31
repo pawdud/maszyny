@@ -1,10 +1,17 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-    {{ form_row(form.name) }}        
+    {{ form_row(form.name) }}   
+    
+    
+    {# Przypisaywanie technologi #}
+    <div class="form-group">
+          <label class="control-label">Wybierz technologię</label>
+          {{ form_widget(form.technologies) }}            
+    </div>
 
     {% if part is defined and part.id %}
         {# Przypisywanie materiałów #}
         <div class="form-group">
-            <label class="control-label">Materiały</label>
+            <label class="control-label">Wybierz materiały</label>
             <input type="text" id="trg-search-fabric" class="form-control">  
             <ul id="cnt-materials" class="list-group">  
                 {% if part.fabrics | length > 0 %}

@@ -47,8 +47,11 @@ class PartController extends BaseController
 //        );
 //        Debug::dump($source, 20); exit;
 
+        $this->setViewData('project', $project);
         $this->setViewData('sourceUrl', $this->generateUrl('czesc_drzewko_struktura', array('id' => $project->getId()), UrlGeneratorInterface::ABSOLUTE_URL));
-
+        $this->setHeader('Pojekt: ' . $project->getName() . ' - struktura', $project->getName());
+        
+        
 //        $this->setViewData('source', \json_encode($source));
         // Dostosowanie trzewka na potrzeby pluginu 'fancytree'
 //        $crit = array();
@@ -99,7 +102,7 @@ class PartController extends BaseController
         }
 
         $this->setHeader('Edycja cześci: ' . $part->getName());
-        $this->setViewData('form', $form->createView());
+        $this->setViewData('form', $form->createView());        
         $this->setViewData('part', $part);
         return $this->render('AppBundle:Part:edit.html.twig');
     }
@@ -122,9 +125,21 @@ class PartController extends BaseController
      */
     public function axTree($parent_id, Part $child)
     {
+        $response = array(
+            'status' => 'KO',
+            'message' => ''
+        );
         $child->setParentId($parent_id);
-        $this->ormFlush($child);
-        return new Response();
+        if ($this->ormFlush($child))
+        {
+            $response['status'] = 'OK';
+            $response['message'] = 'Przeniesiono pomyślnie';
+            $response['data']   = $this->getPartsJsTreeSource($child->getProject());
+        } else
+        {
+            $response['message'] = 'Nie udało się przenieść pozycji';
+        }
+        return new JsonResponse($response);
     }
 
     /**
@@ -168,23 +183,39 @@ class PartController extends BaseController
     }
 
     /**
-     * (AJAX) Struktura dzrzewka projektu
+     * (AJAX) Usuwanie części ze struktury projektu
      * @Route("/czesc/ax_usun/{id}", name="czesc_ax_usun")
      * @ParamConverter("part", class="AppBundle:Part")
      */
     public function axDeleteAction(Request $request, Part $part)
     {
-        // Możemy usuwać tylko elementy najniższego poziomu (te które nie posiadają dzieci)
+        $response = array(
+            'status' => 'KO',
+            'message' => ''
+        );
 
         $project = $part->getProject();
         $tree = $this->repoPart()->tree($project->getId(), $part->getId());
-        
-        if($tree === array()){
-            $this->ormRemoveAndFlush($part);
-            return new JsonResponse($this->getPartsJsTreeSource($project));
+
+        if ($tree === array())
+        {
+            // Część nie posiada dzieci
+            // Możemy usuwać tylko elementy najniższego poziomu (te które nie posiadają dzieci)
+            if (!$this->ormRemoveAndFlush($part))
+            {
+                $response['message'] = 'Nie udało się usunąć części';
+            } else
+            {
+                $response['message'] = 'Usunięto część';
+                $response['status'] = 'OK';
+                $response['data'] = $this->getPartsJsTreeSource($project);
+            }
+        } else
+        {
+            $response['message'] = 'Nie możesz usunąć tej części gdyż zawiera ona inne części.';
         }
 
-        
+        return new JsonResponse($response);
     }
 
     /**
