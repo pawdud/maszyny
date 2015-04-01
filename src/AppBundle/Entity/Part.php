@@ -73,31 +73,35 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      */
     private $technologies;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="is_drawing", type="boolean", nullable=true)
+     */
+    private $isDrawing;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="is_completed", type="boolean", nullable=true)
+     */
+    private $isCompleted;
+
     public function __construct()
     {
         $this->fabrics = new ArrayCollection();
         $this->technologies = new ArrayCollection();
     }
 
-    /**
-     * 
-     * @param \AppBundle\Entity\Technology $technology
-     * @return \AppBundle\Entity\Part
-     */
-    public function addTechnologies(Technology $technology)
+    public function addTechnology(Technology $technology)
     {
-        $this->technologies = $technology;
+        $this->technologies[] = $technology;
         return $this;
     }
 
-    /**
-     * 
-     * @param \AppBundle\Entity\Technology $technogoy
-     * @return \AppBundle\Entity\Part
-     */
-    public function removeTechnologies(Technology $technogoy)
+    public function removeTechnology(Technology $technology)
     {
-        $this->technologies->removeElement($technogoy);
+        $this->technologies->removeElement($technology);
         return $this;
     }
 
@@ -229,6 +233,27 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
         return $this->project;
     }
 
+    public function getIsDrawing()
+    {
+        return $this->isDrawing;
+    }
+
+    public function setIsDrawing($isDrawing)
+    {
+        $this->isDrawing = $isDrawing;
+        return $this;
+    }
+    
+    public function getIsCompleted()
+    {
+        return $this->isCompleted;
+    }
+
+    public function setIsCompleted($isCompleted)
+    {
+        $this->isCompleted = $isCompleted;
+        return $this;
+    }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {

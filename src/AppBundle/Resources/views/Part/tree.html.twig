@@ -2,9 +2,6 @@
 
 {% block content_inner %}    
     <a class="btn btn-success" href="{{ path('czesc_dodaj', {'id': project.id}) }}">Dodaj część</a>
-
-
-
     
     <table id="cnt-part-tree" class="table">
         <colgroup>
@@ -19,6 +16,9 @@
                 <th>#</th> 
                 <th></th> 
                 <th></th> 
+                <th>Twórca</th>          
+                <th>Rysunek</th>          
+                <th>Gotowa</th>          
                 <th></th>          
                 <th></th>          
             </tr>
@@ -26,6 +26,9 @@
         <tbody>
             <tr> 
 
+                <td></td> 
+                <td></td> 
+                <td></td> 
                 <td></td> 
                 <td></td> 
                 <td></td> 
@@ -42,10 +45,6 @@
                 var sourceUrl = {% endraw %}"{{ sourceUrl }}"{% raw %};
                 var patternUrlDrzewko = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
                 var patternUrlDelete = {% endraw %}"{{ path('czesc_ax_usun', {'id': 'part_id'}) }}"{% raw %};
-
-
-
-
 
 
                 $("#cnt-part-tree").fancytree({
@@ -72,14 +71,28 @@
                                 }
                                 maszyny.Modal.show(response.message);
                             });
-                        });
-
-                        if (data.node.parent.key !== "root_1") {
-                            $tdList.eq(3).append(trgDelete);
-                        }
-
-                        if (node.data && node.data.link_details) {
-                            $tdList.eq(4).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły</a>");
+                        });                        
+                        
+                        if (data.node.parent.key !== "root_1") {                            
+                            // Twórca
+                            $tdList.eq(3).html(data.node.data.user_name);
+                            
+                            // Czy jest wydruk
+                            if(data.node.data.is_drawing){
+                                 $tdList.eq(4).html("<span class='label label-success'>TAK</span>");
+                            }else{
+                                $tdList.eq(4).html("<span class='label label-danger'>NIE</span>");
+                            };      
+                            
+                            // Czy część jest gotowa
+                            if(data.node.data.is_completed){
+                                $tdList.eq(5).html("<span class='label label-success'>TAK</span>");
+                            }else{
+                                $tdList.eq(5).html("<span class='label label-danger'>NIE</span>");
+                            };     
+                       
+                            $tdList.eq(6).append(trgDelete);
+                            $tdList.eq(7).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły</a>");
                         }
 
                     },

@@ -1,0 +1,92 @@
+{# Przypisywanie materiałów #}
+{% extends 'AppBundle:Part:edit_layout.html.twig' %}
+{% block subcontent %}  
+<div class="form-group">
+    <label class="control-label">Wybierz technologie</label>
+    <input type="text" id="trg-search-technology" class="form-control">  
+    <ul id="cnt-technologies" class="list-group">  
+        {% if part.technologies | length  %}
+            {% for technology in part.technologies %}
+                <li data-technology-id="{{ technology.id }}" data-element="cnt-item-technology" class="list-group-item">
+                    {{ technology.name }}  
+                    <a data-trg="technology-delete" data-technology-id="{{ technology.id }}" class="btn btn-danger">Usuń</a>        
+                </li>                
+            {% endfor %}
+        {% endif %}
+    </ul>
+    {% raw %}
+        <script>
+            $(function ($) {
+
+                var TechnologyManager = {
+                    data: {},
+                    cnt: null,
+                    urlAdd: "{% endraw %}{{ path('czesc_dodaj_technologie', {'id': part.id}) }}{% raw %}",
+                    urlDelete: "{% endraw %}{{ path('czesc_usun_technologie', {'id': part.id}) }}{% raw %}",
+                    template: '<li data-technology-id="<%id%>" data-element="cnt-item-technology" class="list-group-item"> <%label%> <a data-trg="technology-delete" data-technology-id="<%id%>" class="btn btn-danger">Usuń</a>',
+                    add: function (id, label) {
+                        var self = this;
+
+                        if (this.exist(id)) {
+                            maszyny.Modal.show('Taka technologia została już dodana');
+                            return false;
+                        }
+                        
+
+                        $.post(this.urlAdd, {"idTechnology": id}).success(function () {
+                            var tpl = self.template.replace(/<%id%>/g, id).replace(/<%label%>/g, label);
+                            var el = $(tpl);
+                            self.cnt.prepend(el);
+                            self.data[id] = el;
+                        });
+                    },
+                    remove: function (id) {
+                        var self = this;
+                        if (this.exist(id)) {
+                            $.post(this.urlDelete, {"idTechnology": id}).success(function () {
+                                self.data[id].remove();
+                                delete self.data[id]
+                                return true;
+                            });
+                        }
+                    },
+                    exist: function (id) {
+                        if (this.data[id]) {
+                            return true;
+                        }
+                        return false;
+                    },
+                    init: function () {
+                        var self = this;
+                        this.cnt = $("#cnt-technologies");
+
+                        // Inicjalizacja danych
+                        $("[data-element='cnt-item-technology']", this.cnt).each(function (i, e) {
+                            self.data[$(e).attr("data-technology-id")] = $(e);
+                        });
+
+                        // Obsługa przycisku usuń                        
+                        this.cnt.delegate("[data-trg='technology-delete']", "click", function (e) {
+                            self.remove($(this).attr("data-technology-id"));
+                        });
+
+
+                    }
+
+                };
+
+                TechnologyManager.init();
+
+                $("#trg-search-technology").autocomplete({
+                    source: {% endraw %}"{{ path('technologia_szukaj') }}"{% raw %},
+                    minLength: 1,
+                    select: function (event, ui) {
+                        TechnologyManager.add(ui.item.id, ui.item.label);
+                    }
+
+                });
+            });
+        </script>            
+    {% endraw %}
+</div>  
+{% endblock %}

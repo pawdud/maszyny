@@ -22,14 +22,16 @@ use Doctrine\Common\Util\Debug;
  * @license MIT
  * 
  */
-class TechnologyController extends BaseController {
+class TechnologyController extends BaseController
+{
 
     /**
      * @Route("/procesy-technologiczne", name="procesy")
      * 
      * @param type Symfony\Component\HttpFoundation\Request
      */
-    public function indexAction(Request $request) {
+    public function indexAction(Request $request)
+    {
         $crit = array();
         $qb = $this->repoTechnology()->many($crit, false, false, true);
         $this->setViewData('technologies', $this->paginate($qb, 15));
@@ -41,13 +43,15 @@ class TechnologyController extends BaseController {
      * 
      * @param type Symfony\Component\HttpFoundation\Request
      */
-    public function addAction(Request $request) {
+    public function addAction(Request $request)
+    {
         $viewData = array();
         $technology = new Technology();
         $form = $this->createForm(new TechnologyType(), $technology);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $this->ormPersistAndFlush($technology);
             return $this->redirect($this->generateUrl('procesy_edytuj', array('id' => $technology->getId())), 'Dodano proces technologiczny');
         }
@@ -61,10 +65,12 @@ class TechnologyController extends BaseController {
      * @Route("/procesy-technologiczne/edytuj/{id}", name="procesy_edytuj")
      * @ParamConverter("technology", class="AppBundle:Technology")
      */
-    public function editAction(Request $request, $technology) {
+    public function editAction(Request $request, $technology)
+    {
         $form = $this->createForm(new TechnologyType(), $technology);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $this->ormPersistAndFlush($technology);
 
             return $this->redirect($this->generateUrl('procesy', array('id' => $technology->getId())), 'Zakualizowano proces technologiczny');
@@ -80,9 +86,37 @@ class TechnologyController extends BaseController {
      * @Route("/procesy-technologiczne/usun/{id}", name="procesy_usun")
      * @ParamConverter("technology", class="AppBundle:Technology")
      */
-    public function deleteAction(Request $request, $technology) {
+    public function deleteAction(Request $request, $technology)
+    {
         $this->ormRemoveAndFlush($technology);
         return $this->redirect($this->generateUrl('procesy', array('id' => $technology->getId())), 'Usunięto proces technologiczny');
+    }
+
+    /**
+     * @Route("/technologia/szukaj", name="technologia_szukaj")
+     * 
+     */
+    public function axSearchAction(Request $request)
+    {
+        $return = array();
+        $term = $request->query->get('term');
+        
+        $technologies = $this->repoTechnology()->many(
+                array('q' => $term), 0, 10
+        );
+
+        if (is_array($technologies) && !empty($technologies))
+        {
+            foreach ($technologies as $technology)
+            {
+                $return[] = array(
+                    'id' => $technology->getId(),
+                    'value' => $technology->getName(),
+                    'label' => $technology->getName() 
+                );
+            }
+        }
+        return new JsonResponse($return);
     }
 
 }

@@ -50,8 +50,8 @@ class PartController extends BaseController
         $this->setViewData('project', $project);
         $this->setViewData('sourceUrl', $this->generateUrl('czesc_drzewko_struktura', array('id' => $project->getId()), UrlGeneratorInterface::ABSOLUTE_URL));
         $this->setHeader('Pojekt: ' . $project->getName() . ' - struktura', $project->getName());
-        
-        
+
+
 //        $this->setViewData('source', \json_encode($source));
         // Dostosowanie trzewka na potrzeby pluginu 'fancytree'
 //        $crit = array();
@@ -70,16 +70,22 @@ class PartController extends BaseController
         $viewData = array();
         $part = new Part();
         $form = $this->createForm(new PartType(), $part);
+        
+        
+        
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
+
+            $part->setParentId($request->request->all()['parentId']);
             $part->setProject($project);
             $part->setUser($this->getUserEntity());
             $this->ormPersistAndFlush($part);
             return $this->redirect($this->generateUrl('czesc_edytuj', array('id' => $part->getId())), 'Dodano część');
         }
 
+        
         $this->setHeader('Dodawanie części', 'Dodawanie części');
         $this->setViewData('form', $form->createView());
         $this->setViewData('project', $project);
@@ -102,10 +108,32 @@ class PartController extends BaseController
         }
 
         $this->setHeader('Edycja cześci: ' . $part->getName());
-        $this->setViewData('form', $form->createView());        
+        $this->setViewData('form', $form->createView());
         $this->setViewData('part', $part);
         return $this->render('AppBundle:Part:edit.html.twig');
     }
+    
+     /**
+     * @Route("/czesc/edytuj_technologie/{id}", name="czesc_edytuj_technologie")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function editTechnologyAction(Request $request, $part)
+    {       
+        $this->setViewData('part', $part);
+        return $this->render('AppBundle:Part:edit_technology.html.twig');
+    }       
+    
+    /**
+     * @Route("/czesc/edytuj_materialy/{id}", name="czesc_edytuj_materialy")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function editMaterialAction(Request $request, $part)
+    {       
+        $this->setViewData('part', $part);
+        return $this->render('AppBundle:Part:edit_fabric.html.twig');
+    }
+    
+    
 
     /**
      * @Route("/czesc/usun/{id}", name="czesc_usun")
@@ -134,7 +162,7 @@ class PartController extends BaseController
         {
             $response['status'] = 'OK';
             $response['message'] = 'Przeniesiono pomyślnie';
-            $response['data']   = $this->getPartsJsTreeSource($child->getProject());
+            $response['data'] = $this->getPartsJsTreeSource($child->getProject());
         } else
         {
             $response['message'] = 'Nie udało się przenieść pozycji';
@@ -167,6 +195,34 @@ class PartController extends BaseController
 
         $fabric = $this->repoFabric()->one(array('id' => $idFabric));
         $part->addFabric($fabric);
+        $this->ormPersistAndFlush($part);
+        return new Response();
+    }
+
+    /**
+     * (AJAX) Usuwanie procesu technologicznego z  części
+     * @Route("/czesc/usun_technologie/{id}", name="czesc_usun_technologie")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function axTechnologyDeleteAction(Request $request, $part)
+    {
+        $idTechnology = $request->request->get('idTechnology');
+        $technology = $this->repoTechnology()->one(array('id' => $idTechnology));
+        $part->removeTechnology($technology);
+        $this->ormPersistAndFlush($part);
+        return new Response();
+    }
+
+    /**
+     * (AJAX) Dodawanie procesu technologicznego do części
+     * @Route("/czesc/dodaj_technologie/{id}", name="czesc_dodaj_technologie")
+     * @ParamConverter("part", class="AppBundle:Part")
+     */
+    public function axTechnologyAddAction(Request $request, $part)
+    {
+        $idTechnology = $request->request->get('idTechnology');
+        $technology = $this->repoTechnology()->one(array('id' => $idTechnology));
+        $part->addTechnology($technology);
         $this->ormPersistAndFlush($part);
         return new Response();
     }

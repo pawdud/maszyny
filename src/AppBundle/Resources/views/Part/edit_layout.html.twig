@@ -1,0 +1,23 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}        
+    {% set route = app.request.attributes.get('_route') %}   
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation"  class="{% if route == 'czesc_edytuj'%}active{% endif %}">
+                <a href="{{ path('czesc_edytuj', {'id': part.id}) }}" >Edycja</a>
+            </li>
+            <li role="presentation" class="{% if route == 'czesc_edytuj_materialy'%}active{% endif %}">
+                <a href="{{ path('czesc_edytuj_materialy', {'id': part.id}) }}" >Materiały</a>
+            </li>
+            <li role="presentation" class="{% if route == 'czesc_edytuj_technologie'%}active{% endif %}">
+                <a href="{{ path('czesc_edytuj_technologie', {'id': part.id}) }}">Technologie</a>
+            </li>          
+        </ul>
+    </div>
+    
+    {% block subcontent %}
+        
+    {% endblock %}
+   
+{% endblock %}

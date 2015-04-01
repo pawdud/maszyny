@@ -1,6 +1,6 @@
-{% extends 'AppBundle::layout.html.twig' %}
+{% extends 'AppBundle:Part:edit_layout.html.twig' %}
 
-{% block content_inner %}    
+{% block subcontent %}  
     <a class="btn btn-info" href="{{ path('czesci_drzewo', {'id': part.project.id }) }}">Struktura</a>
     <div class="clearfix">    
         <div class="col-md-4">

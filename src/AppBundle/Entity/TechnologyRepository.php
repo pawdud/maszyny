@@ -14,16 +14,27 @@ use AppBundle\Entity\BaseRepository;
  * @license MIT
  * 
  */
-class TechnologyRepository extends BaseRepository {
+class TechnologyRepository extends BaseRepository
+{
 
     protected static $alias = 'technology';
     protected static $entity = 'AppBundle:Technology';
 
-    public function customWhere($name, $value) {
+    public function customWhere($name, $value)
+    {
         $a1 = self::getAlias();
-        if ($name == 'id') {
+        if ($name == 'id')
+        {
             $this->qb->andWhere("{$a1}.id = :id");
             $this->qb->setParameter('id', $value);
+            return true;
+        }
+
+        if ($name == 'q')
+        {
+
+            $this->qb->andWhere("{$a1}.name LIKE :q ");
+            $this->qb->setParameter('q', "%{$value}%");
             return true;
         }
     }
