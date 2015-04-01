@@ -2,7 +2,7 @@
     {{ form_row(form.name) }}    
     {{ form_row(form.isDrawing) }} 
     {{ form_row(form.isCompleted) }}
-    {% if not part %}
+    {% if part is not defined %}
         <div class="from-group">
             {# wybieranie części nadrzędnej tylko przy dodawaniu nowej części #}
             <label class="control-label required" for="part_name">Cześć nadrzędna</label>
