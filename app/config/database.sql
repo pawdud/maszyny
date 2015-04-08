@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 07 Kwi 2015, 23:56
+-- Czas wygenerowania: 08 Kwi 2015, 23:41
 -- Wersja serwera: 5.5.35-0ubuntu0.12.04.2
 -- Wersja PHP: 5.5.11-3+deb.sury.org~precise+1
 
@@ -36,14 +36,17 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `technology2part_id` (`technology2part_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Zrzut danych tabeli `event`
 --
 
 INSERT INTO `event` (`id`, `time_start`, `time_end`, `user_id`, `notice`, `technology2part_id`) VALUES
-(1, '2015-04-07 04:01:01', '2015-04-01 07:06:00', 4, 'jakieś uwagi', 1);
+(1, '2015-04-07 04:01:01', '2015-04-07 07:06:00', 4, 'jakieś uwagi', 1),
+(2, '2015-04-08 03:08:00', '2015-04-08 11:00:00', 4, 'żadnych uwag', 1),
+(3, '2015-04-01 05:00:00', '2015-04-01 12:00:00', 4, 'poprzedni tydzien', 1),
+(4, '2015-03-02 03:00:00', '2015-03-02 11:00:00', 4, 'marcowy event', 1);
 
 -- --------------------------------------------------------
 
@@ -88,14 +91,15 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
   KEY `part_id` (`part_id`),
   KEY `fabric_id` (`fabric_id`),
   KEY `part_id_2` (`part_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=3 ;
 
 --
 -- Zrzut danych tabeli `fabric2part`
 --
 
 INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `time_updated`, `time_add`) VALUES
-(1, 4, 1, NULL, '0000-00-00 00:00:00');
+(1, 4, 1, NULL, '0000-00-00 00:00:00'),
+(2, 4, 2, NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
