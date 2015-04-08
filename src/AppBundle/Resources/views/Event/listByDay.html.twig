@@ -1,0 +1,22 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+
+<a href="{{ path('listByDay', {'user_id': '4'}) }}">obecny dzień</a><br />
+<a href="{{ path('listByWeek', {'user_id': '4'}) }}">obecny tydzień</a><br />
+<a href="{{ path('listByMonth', {'user_id': '4'}) }}">obecny miesiąc</a><br />
+
+widok dzienny: <br />
+{% if events.getTotalItemCount %}
+coś jest:<br />
+{% else %}
+nic nie ma
+{% endif %}
+
+{% for event in events %}
+
+{{event.GetTimeStart|date("m/d/Y")}} - {{event.GetTimeEnd|date("m/d/Y")}} - {{event.getNotice}} - {{event.getTechnology2part.getPartId.getName}} - {{event.getTechnology2part.getTechnologyId.getName}}<br />
+{%endfor%}
+
+{% endblock %}
+
