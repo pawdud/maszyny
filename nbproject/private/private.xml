@@ -2,6 +2,19 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/Technology2Part.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/BaseRepository.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/EventRepository.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/Technology2PartRepository.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/TechnologyRepository.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/Part.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/Event.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/User.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/PartRepository.php</file>
+            <file>file:/media/dane/www/maszyny/app/config/database.sql</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/BaseEntity.php</file>
+            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/Fabric.php</file>
+        </group>
     </open-files>
 </project-private>

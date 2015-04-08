@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
+
 /**
  * Description of Event
  * 
@@ -73,7 +74,7 @@ class Event {
      *
      * @var \AppBundle\Entity\Technology2Part
      * 
-     * @ORM\ManyToOne(targetEntity="technology2part", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="Technology2Part", inversedBy="events")
      * @ORM\JoinColumn(name="technology2part_id", referencedColumnName="id")
      */
     private $technology2part;
