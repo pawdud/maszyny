@@ -1,16 +1,46 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-
 {% block content_inner %}    
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-
-    <div class="form-group">
-        <label class="control-label required" for="userEdit_name">Email</label>            
-        {{ form.vars.value.email }}
-    </div>        
-
-    {{ form_row(form.name) }}    
-    {{ form_row(form.surname) }}   
-    <button type="submit" class="btn btn-info">Zapisz</button>
+    <div class="col-md-8"> 
+        <div class="panel panel-default">
+          <div class="panel-heading">Edycja użytkownika </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label required" for="userEdit_name">Email</label>            
+                            {{ form.vars.value.email }}
+                        </div>     
+                    </div>  
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_row(form.name) }}     
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.surname) }}     
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">  
+                            <label>Hasło</label>
+                            <input type="text" class="form-control" placeholder="******" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">  
+                            <label>Powtórz hasło</label>
+                            <input type="text" class="form-control" placeholder="******" />
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary pull-right">Zapisz <i class="fa fa-floppy-o"></i></button>
+            </div>
+        </div>
+    </div>
     {{ form_end(form) }}  
 {% endblock %}

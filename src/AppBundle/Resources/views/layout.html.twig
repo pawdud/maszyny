@@ -15,10 +15,11 @@
     <link href="{{ asset('library/fontawesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />    
 
     {# theme #}
-    <link href="{{ asset('css/theme.css') }}" rel="stylesheet" type="text/css" />    
+    <link href="{{ asset('css/theme.css') }}" rel="stylesheet" type="text/css" /> 
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" />
 
     {# style własne #}
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" />    
+    <link href="{{ asset('css/nanoscroller.css') }}" rel="stylesheet" type="text/css" />    
 {% endblock %}
 
 
@@ -51,13 +52,12 @@
 
 
 
-{% block content %}
-    <div class="container"> 
+{% block content %} 
         <div id="theme-wrapper">
             <header class="navbar" id="header-navbar">
                 <div class="container">
                     <a href="index.html" id="logo" class="navbar-brand">
-                        TTM MAGAZYN
+                        TTM PANEL
                     </a>
 
                     <div class="clearfix">
@@ -199,6 +199,9 @@
                     <div id="nav-col">
                         <section id="col-left" class="col-left-nano">
                             <div id="col-left-inner" class="col-left-nano-content">
+                                <div id="user-left-box" class="clearfix hidden-sm hidden-xs dropdown profile2-dropdown">
+                                    <img src="{{ asset('img/logo.png') }}" alt=""/>   
+                                </div>
                                 <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">	
                                     <ul class="nav nav-pills nav-stacked">
                                         <li class="active">
@@ -209,26 +212,7 @@
                                         </li>
                                         <li>
                                             <a href="#" class="dropdown-toggle">
-                                                <i class="fa fa-book"></i>
-                                                <span>Technologie</span>
-                                                <i class="fa fa-angle-right drop-icon"></i>
-                                            </a>
-                                            <ul class="submenu">
-                                                <li>
-                                                    <a href="{{ path('procesy') }}">
-                                                        Lista 
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ path('procesy_dodaj') }}">
-                                                        Dodaj
-                                                    </a>
-                                                </li>                                                
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="dropdown-toggle">
-                                                <i class="fa fa-wrench"></i>
+                                                <i class="fa fa-cog"></i>
                                                 <span>Projekty</span>
                                                 <i class="fa fa-angle-right drop-icon"></i>
                                             </a>
@@ -244,6 +228,25 @@
                                                     </a>
                                                 </li>
 
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="dropdown-toggle">
+                                                 <i class="fa fa-wrench"></i>
+                                                <span>Technologie</span>
+                                                <i class="fa fa-angle-right drop-icon"></i>
+                                            </a>
+                                            <ul class="submenu">
+                                                <li>
+                                                    <a href="{{ path('procesy') }}">
+                                                        Lista 
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ path('procesy_dodaj') }}">
+                                                        Dodaj
+                                                    </a>
+                                                </li>                                                
                                             </ul>
                                         </li>
                                         <li>
@@ -268,7 +271,7 @@
                                         </li>
                                         <li>
                                             <a href="#" class="dropdown-toggle">
-                                                <i class="fa fa-th-large"></i>
+                                                <i class="fa fa-users"></i>
                                                 <span>Pracownicy</span>
                                                 <i class="fa fa-angle-right drop-icon"></i>
                                             </a>
@@ -325,6 +328,5 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>    
+        </div>   
 {% endblock %}

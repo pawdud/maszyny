@@ -1,10 +1,35 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-    {{ form_row(form.name) }}    
-    {{ form_row(form.code) }}  
-    <div class="form-group">
-        {{ form_label(form.quantity) }}
-        {{ form_widget(form.quantity, {'attr': {'class': 'small'} }) }}
-        {{ form_errors(form.quantity) }}
+<div class="col-md-8"> 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6"> {{ form_row(form.name) }}  </div>
+                <div class="col-md-6"> {{ form_row(form.code) }}  </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_label(form.quantity) }}
+                        {{ form_widget(form.quantity, {'attr': {'class': 'small'} }) }}
+                        {{ form_errors(form.quantity) }}
+                    </div>
+                </div>
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        <label>Kategoria</label>
+                        <select class="form-control">
+                            <option>Nakrętki</option>
+                            <option>Metale</option>
+                            <option>Plastiki</option>
+                            <option>Miedziane</option>
+                            <option>Łozyska</option>
+                        </select>
+                    </div>
+                </div>
+            </div>  
+            <button type="submit" class="btn btn-primary pull-right">Zapisz <i class="fa fa-floppy-o"></i></button>
+        </div>
     </div>
-    <button type="submit" class="btn btn-info">Zapisz</button>
+</div>
 {{ form_end(form) }}    

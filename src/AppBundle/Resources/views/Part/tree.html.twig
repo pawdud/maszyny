@@ -1,9 +1,16 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-{% block content_inner %}    
-    <a class="btn btn-success" href="{{ path('czesc_dodaj', {'id': project.id}) }}">Dodaj część</a>
-    
-    <table id="cnt-part-tree" class="table">
+{% block content_inner %}  
+    <div class="main-box clearfix">
+       <header class="main-box-header clearfix">
+          <div class="filter-block pull-right">
+             <a class="btn btn-primary pull-right" href="{{ path('czesc_dodaj', {'id': project.id}) }}"><i class="fa fa-plus-circle fa-lg"></i> Dodaj część</a>
+          </div>
+        </header>
+
+    <div class="main-box-body clearfix">
+     <div class="table-responsive">
+      <table id="cnt-part-tree" class="table">
         <colgroup>
             <col width="30px"></col>
             <col width="30px"></col>
@@ -13,14 +20,14 @@
         </colgroup>
         <thead>
             <tr>           
-                <th>#</th> 
                 <th></th> 
                 <th></th> 
-                <th>Twórca</th>          
-                <th>Rysunek</th>          
-                <th>Gotowa</th>          
-                <th></th>          
-                <th></th>          
+                <th></th> 
+                <th class="th-part-worker">Pracownik</th>          
+                <th class="th-part-drow">Rysunek</th>          
+                <th class="th-part-ready">Status</th>          
+                <th class="th-part-delete"></th>          
+                <th class="th-part-details"></th>          
             </tr>
         </thead>
         <tbody>
@@ -36,7 +43,10 @@
                 <td></td> 
             </tr>
         </tbody>
-    </table> 
+      </table>
+     </div>
+    </div>
+</div>
 
 
     {% raw %}
@@ -62,7 +72,7 @@
                         // (index #0 is rendered by fancytree by adding the checkbox)
                         $tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
                         // (index #2 is rendered by fancytree)                                         
-                        var trgDelete = $("<a href='' class='btn btn-danger'>Usuń</a>");
+                        var trgDelete = $("<a href='' class='btn btn-danger'>Usuń <i class='fa fa-trash'></i></a>");
                         trgDelete.on("click", function (e) {
                             e.preventDefault();
                             $.post(patternUrlDelete.replace("part_id", data.node.key)).success(function (response) {
@@ -79,20 +89,20 @@
                             
                             // Czy jest wydruk
                             if(data.node.data.is_drawing){
-                                 $tdList.eq(4).html("<span class='label label-success'>TAK</span>");
+                                 $tdList.eq(4).html("<span class='label label-success'>Rysunek ok <i class='fa fa-picture-o'></i></span>");
                             }else{
-                                $tdList.eq(4).html("<span class='label label-danger'>NIE</span>");
+                                $tdList.eq(4).html("<span class='label label-warning'>Brak rysunku</span>");
                             };      
                             
                             // Czy część jest gotowa
                             if(data.node.data.is_completed){
-                                $tdList.eq(5).html("<span class='label label-success'>TAK</span>");
+                                $tdList.eq(5).html("<span class='label label-success'>Gotowa ok <i class='fa fa-thumbs-o-up'></i></span>");
                             }else{
-                                $tdList.eq(5).html("<span class='label label-danger'>NIE</span>");
+                                $tdList.eq(5).html("<span class='label label-warning'>Nie gotowa <i class='fa fa-thumbs-o-down'></i></span>");
                             };     
                        
                             $tdList.eq(6).append(trgDelete);
-                            $tdList.eq(7).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły</a>");
+                            $tdList.eq(7).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły <i class='fa fa-cogs'></i></a>");
                         }
 
                     },

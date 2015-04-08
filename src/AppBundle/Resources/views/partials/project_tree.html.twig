@@ -1,0 +1,57 @@
+ <div id="cnt-part-tree">
+     
+ </div>
+
+{% raw %} 
+    <script>
+        $(function ($) {
+            var sourceUrl           = {% endraw %}"{{ path('czesc_drzewko_struktura',{'id': part.project.id }) }}"{% raw %};
+            var patternUrlDrzewko   = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
+
+            $("#cnt-part-tree").fancytree({
+                extensions: ["dnd"],
+                source: {
+                    url: sourceUrl,
+                    cache: false
+                },
+                checkbox: false,
+                dnd: {
+                    autoExpandMS: 400,
+                    focusOnClick: true,
+                    preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+                    preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                    dragStart: function (node, data) {
+                        return true;
+                    },
+                    dragEnter: function (node, data) {
+                        return true;
+                    },
+                    dragDrop: function (node, data) {
+                        // Węzeł do którego przenosimy
+                        var parent_id = 0;
+                        if (data.node.parent.key === "root_1") {
+                            return false;
+                        }
+                        if (data.hitMode === "over") {
+                            parent_id = data.node.key;
+                        } else if (data.hitMode == "before" || data.hitMode == "after") {
+                            parent_id = data.node.parent.key;
+                        }
+                        // Węzeł który przenosimy
+                        var child_id = data.otherNode.key;
+                        // Url do żądania ajax 
+                        var url = patternUrlDrzewko.replace("parent_id", parent_id).replace("child_id", child_id);
+
+                        $.post(url, function (response) {
+                            if (response.status === "OK") {
+                                data.tree.reload(response.data);
+                            } else {
+                                maszyny.Modal.show(response.message);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+{% endraw %}

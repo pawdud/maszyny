@@ -1,11 +1,34 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
-{% block content_inner %}    
-  {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-    {{ form_row(form.email) }}    
-    {{ form_row(form.password) }}    
-    {{ form_row(form.name) }}    
-    {{ form_row(form.surname) }}       
-    <button type="submit" class="btn btn-info">Zapisz</button>
+{% block content_inner %} 
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}  
+   <div class="col-md-8"> 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">{{ form_row(form.name) }} </div>
+                <div class="col-md-6"> {{ form_row(form.surname) }}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6"> {{ form_row(form.email) }} </div>
+                <div class="col-md-6">
+                    <label>Przypis do grupy</label>
+                    <select class="form-control">
+                        <option>Operator</option>
+                        <option>Kierownik</option>
+                        <option>Administrator</option>
+                    </select> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">  {{ form_row(form.password) }}   </div>
+                <div class="col-md-6"> </div>
+            </div>
+            <button type="submit" class="btn btn-info pull-right">Zapisz <i class="fa fa-floppy-o"></i></button>
+        </div>  
+    </div>   
+  </div>              
 {{ form_end(form) }}  
+
 {% endblock %}

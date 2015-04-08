@@ -1,4 +1,18 @@
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
-    {{ form_row(form.name) }}  
-    <button type="submit" class="btn btn-info">Zapisz</button>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+<div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-8"> {{ form_row(form.name) }}   </div>
+                <div class="col-md-4">
+                    <div class="form-group"> 
+                        <label style="display: block;">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary">Zapisz <i class="fa fa-floppy-o"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>    
 {{ form_end(form) }}    

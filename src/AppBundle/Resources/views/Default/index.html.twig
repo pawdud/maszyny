@@ -1,7 +1,9 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}                                   
-
+<div class="panel panel-default">
+ <div class="panel-heading">Szybkie menu</div>
+   <div class="panel-body"> 
     <div class="col-lg-3 col-sm-6 col-xs-12">
         <div class="main-box infographic-box colored emerald-bg">
             <div class="row">
@@ -11,8 +13,8 @@
                     </span>
                 </div>
                 <div class="col-md-9">
-                    <span class="headline">Magazyn materiałów</span>
-                    <a href="{{ path('material_dodaj') }}"><span class="value">Dodaj nowy materiał</span><i class="fa fa-plus-square"></i></a>
+                    <span class="headline">Baza materiałów</span>
+                    <a href="{{ path('material_dodaj') }}"><span class="value">Dodaj materiał</span><i class="fa fa-plus-square"></i></a>
                 </div>
             </div>
         </div>
@@ -22,12 +24,12 @@
             <div class="row">
                 <div class="col-md-3 left-icon-widget">
                     <span>
-                        <i class="icon-big fa fa-wrench"></i> 
+                        <i class="icon-big fa fa-cog"></i>
                     </span>
                 </div>
                 <div class="col-md-9">
-                    <span class="headline">Projekt maszyn i detali</span>
-                    <a href="{{ path('projekt_dodaj') }}"><span class="value">Dodaj nowy projekt</span><i class="fa fa-plus-square"></i></a>
+                    <span class="headline">Baza projektów</span>
+                    <a href="{{ path('projekt_dodaj') }}"><span class="value">Dodaj projekt</span><i class="fa fa-plus-square"></i></a>
                 </div>
             </div>  
         </div>
@@ -41,7 +43,7 @@
                     </span>
                 </div>
                 <div class="col-md-9">
-                    <span class="headline">Pracownicy</span>
+                    <span class="headline">Baza pracowników</span>
                     <a href="{{ path('uzytkownik_dodaj') }}"><span class="value">Dodaj pracownika</span><i class="fa fa-plus-square"></i></a>
                 </div>
             </div>
@@ -52,11 +54,11 @@
             <div class="row">
                 <div class="col-md-3 left-icon-widget">
                     <span>
-                        <i class="icon-big fa fa-book"></i>
+                        <i class="icon-big fa fa-wrench"></i>
                     </span>
                 </div>
                 <div class="col-md-9">
-                    <span class="headline">Technologie</span>
+                    <span class="headline">Baza Technologii</span>
                     <a href="{{ path('procesy_dodaj') }}">
                         <span class="value">Dodaj technologie</span>
                         <i class="fa fa-plus-square"></i>
@@ -65,4 +67,6 @@
             </div>
         </div>
     </div>
+   </div>                    
+ </div>
 {% endblock %}

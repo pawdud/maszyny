@@ -1,8 +1,11 @@
 {% extends 'AppBundle::layout.html.twig' %}
-
-{% block content_inner %}        
-    {% set route = app.request.attributes.get('_route') %}   
-    <div>
+ 
+{% block content_inner %}  
+    <div class="panel panel-default">
+        <div class="panel-body">
+    {% set route = app.request.attributes.get('_route') %}  
+   
+    <div class="tabs-wrapper"> 
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation"  class="{% if route == 'czesc_edytuj'%}active{% endif %}">
                 <a href="{{ path('czesc_edytuj', {'id': part.id}) }}" >Edycja</a>
@@ -15,9 +18,10 @@
             </li>          
         </ul>
     </div>
-    
+            
     {% block subcontent %}
         
     {% endblock %}
-   
+        </div>
+    </div>
 {% endblock %}
