@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 use DateTime;
+use AppBundle\Component\DatesTransformer;
+use AppBundle\Controller\EventBaseController;
 
 /**
  * Description of EventController
@@ -22,7 +24,7 @@ use DateTime;
  * @license MIT
  * 
  */
-class EventController extends BaseController {
+class EventController extends EventBaseController {
 
     /**
      * 
@@ -34,7 +36,7 @@ class EventController extends BaseController {
      * "user_id": 4}, requirements={"user_id": "\d+"})
      */
     public function indexAction() {
-    return $this->render('AppBundle:Event:index.html.twig');    
+        return $this->render('AppBundle:Event:index.html.twig');
     }
 
     /**
@@ -45,8 +47,9 @@ class EventController extends BaseController {
      * 
      * zwraca listę zdarzeń z wybranego dnia
      * 
-     * @Route("/kalendarz/{user_id}/dzien/{year}/{month}/{day}", name="listByDay", defaults={
-     *      "year": null, "month": null, "day": null},
+     * @Route("/kalendarz/{user_id}/dzien/{year}/{month}/{day}", 
+     *      name="listByDay", 
+     *      defaults={"year": null, "month": null, "day": null},
      *      requirements={"year": "\d+", "month": "\d+", "day": "\d+"})
      */
     public function listByDayAction($user_id, $year, $month, $day) {
@@ -55,9 +58,11 @@ class EventController extends BaseController {
         } else {
             $day = new DateTime("$year-$month-$day");
         }
-
         $qb = $this->repoEvent()->findAllByDay($day);
         $this->setViewData('events', $this->paginate($qb, 15));
+        $this->setViewData('nextUrl', $this->generateNextDayUrl($day));
+        $this->setViewData('previousUrl', $this->generatePreviousDayUrl($day));
+        $this->setViewData('current', $day);
         return $this->render('AppBundle:Event:listByDay.html.twig');
     }
 
@@ -69,8 +74,9 @@ class EventController extends BaseController {
      * 
      * zwraca listę zdarzeń z wybranego tygodnia, w którym zawarta jest data z adresu 
      * 
-     * @Route("/kalendarz/{user_id}/tydzien/{year}/{month}/{day}", name="listByWeek", defaults={
-     *      "year": null, "month": null, "day": null},
+     * @Route("/kalendarz/{user_id}/tydzien/{year}/{month}/{day}", 
+     *      name="listByWeek", 
+     *      defaults={"year": null, "month": null, "day": null},
      *      requirements={"year": "\d+", "month": "\d+", "day": "\d+"})
      */
     public function listByWeekAction($user_id, $year, $month, $day) {
@@ -82,6 +88,9 @@ class EventController extends BaseController {
 
         $qb = $this->repoEvent()->findAllByWeek($day);
         $this->setViewData('events', $this->paginate($qb, 15));
+        $this->setViewData('nextUrl', $this->generateNextWeekUrl($day));
+        $this->setViewData('previousUrl', $this->generatePreviousWeekUrl($day));
+        $this->setViewData('current', $day);
         return $this->render('AppBundle:Event:listByWeek.html.twig');
     }
 
@@ -92,8 +101,9 @@ class EventController extends BaseController {
      * 
      * zwraca listę zdarzeń z wybranego miesiąca, w którym zawarta jest data z adresu 
      * 
-     * @Route("/kalendarz/{user_id}/miesiac/{year}/{month}", name="listByMonth", defaults={
-     *      "year": null, "month": null},
+     * @Route("/kalendarz/{user_id}/miesiac/{year}/{month}", 
+     *      name="listByMonth", 
+     *      defaults={"year": null, "month": null},
      *      requirements={"year": "\d+", "month": "\d+"})
      */
     public function listByMonthAction($user_id, $year, $month) {
@@ -102,8 +112,10 @@ class EventController extends BaseController {
         } else {
             $day = new DateTime("$year-$month-01");
         }
-
         $qb = $this->repoEvent()->findAllByMonth($day);
+         $this->setViewData('nextUrl', $this->generateNextMonthUrl($day));
+        $this->setViewData('previousUrl', $this->generatePreviousMonthUrl($day));
+        $this->setViewData('current', $day);
         $this->setViewData('events', $this->paginate($qb, 15));
         return $this->render('AppBundle:Event:listByMonth.html.twig');
     }
