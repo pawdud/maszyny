@@ -57,6 +57,25 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
      * 
      */
     private $user;
+    
+    
+    /**
+     * @var \AppBundle\Entity\FabricCategory
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\FabricCategory")     
+     * @ORM\JoinColumn(name="fabric_category_id", referencedColumnName="id")
+     * 
+     */
+    private $category;
+    
+    /**
+     * @var \AppBundle\Entity\FabricUnit
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\FabricUnit")     
+     * @ORM\JoinColumn(name="fabric_unit_id", referencedColumnName="id")
+     * 
+     */
+    private $unit;
 
     /**
      * Set name
@@ -163,6 +182,25 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
     public function getGroupSequence()
     {
         return array('add', 'update');
+    }
+    
+    
+    public function getCategory(){
+        return $this->category;
+    }
+    
+    public function setCategory($category){
+        $this->category = $category;
+        return $this;
+    }
+    
+    public function getUnit(){
+        return $this->unit;
+    }
+    
+    public function setUnit($unit){
+        $this->unit = $unit;
+        return $this;
     }
     
     

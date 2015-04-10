@@ -1,0 +1,60 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+    
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        {% if fabricUnits.getTotalItemCount %}
+            Jednostki materiałów <i class="fa fa-th-large"></i>
+        {% else %}    
+            Brak jednostek materiałów
+        {% endif %}
+        </div>               
+
+            <div class="panel-body">           
+            {% if fabricUnits.getTotalItemCount %}
+            <div class="main-box-body clearfix">
+              <div class="table-responsive">  
+                <table class="table">
+                    <thead>
+                        <th class="text-center">Id</th>                       
+                        <th class="text-center">Nazwa</th>                       
+                        <th class="text-center">Symbol</th>                       
+                        <th class="text-center">Precyzja</th>                       
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>                       
+                    </thead>
+                    
+                    <tbody>
+                        {% for fabricUnit in fabricUnits %}
+                        <tr>
+                            <td class="text-center">{{ fabricUnit.id }}</td>                            
+                            <td class="text-center">{{ fabricUnit.name }}</td>   
+                            <td class="text-center">{{ fabricUnit.unit }}</td>   
+                            <td class="text-center">{{ fabricUnit.scale }}</td>   
+                                                    
+                            <td style="width: 15%;">
+                                <a href="{{ path('material_jednostka_edytuj', {'id': fabricUnit.id}) }}" class="table-link" title="Edytuj">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                                <a href="{{ path('material_jednostka_usun', {'id': fabricUnit.id}) }}" class="table-link danger" title="Usuń">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                    </span>  
+                                </a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}                        
+                    </tbody>
+                  </table>
+                 </div>
+               </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -8,6 +8,13 @@
             </div>
 
             <div class="row">
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         {{ form_label(form.quantity) }}
@@ -15,18 +22,13 @@
                         {{ form_errors(form.quantity) }}
                     </div>
                 </div>
-                <div class="col-md-6"> 
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Kategoria</label>
-                        <select class="form-control">
-                            <option>Nakrętki</option>
-                            <option>Metale</option>
-                            <option>Plastiki</option>
-                            <option>Miedziane</option>
-                            <option>Łozyska</option>
-                        </select>
+                        {{ form_label(form.unit) }}
+                        {{ form_widget(form.unit, {'attr': {'class': 'small'} }) }}
+                        {{ form_errors(form.unit) }}
                     </div>
-                </div>
+                </div>                
             </div>  
             <button type="submit" class="btn btn-primary pull-right">Zapisz <i class="fa fa-floppy-o"></i></button>
         </div>

@@ -1,0 +1,19 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}    
+<div class="col-md-8"> 
+    <div class="panel panel-default">
+        <div class="panel-body">           
+
+            <div class="row">               
+                <div class="col-md-6"> 
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                </div>
+            </div>  
+            <button type="submit" class="btn btn-primary pull-right">Zapisz <i class="fa fa-floppy-o"></i></button>
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}    

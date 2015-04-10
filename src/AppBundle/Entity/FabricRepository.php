@@ -2,7 +2,8 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\BaseRepository;
+
+
 
 class FabricRepository extends BaseRepository
 {
@@ -30,10 +31,10 @@ class FabricRepository extends BaseRepository
         }
     }
 
-//    protected function setFromMany(array $crit = array()){
-//        $a1 = ProjectRepository::getAlias();
-//        $a2 = ActionRepository::getAlias();
-//        $this->qb->select($a1, $a2)
-//        ->innerJoin("{$a1}.actions", $a2);
-//    }
+    protected function setSelectMany(array $crit = array()){      
+        $a1 = self::getAlias();
+        $a2 = FabricCategoryRepository::getAlias();
+        $this->qb->select($a1, $a2)
+        ->innerJoin("{$a1}.category", $a2);
+    }
 }

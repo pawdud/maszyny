@@ -1,0 +1,58 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+    
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        {% if fabricCategories.getTotalItemCount %}
+            Kategoria materiałów <i class="fa fa-th-large"></i>
+        {% else %}    
+            Brak kategorii materiałów
+        {% endif %}
+        </div>               
+
+            <div class="panel-body">           
+            {% if fabricCategories.getTotalItemCount %}
+            <div class="main-box-body clearfix">
+              <div class="table-responsive">  
+                <table class="table">
+                    <thead>
+                        <th class="text-center">Id</th>                       
+                        <th class="text-center">Nazwa</th>                       
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>                       
+                    </thead>
+                    
+                    <tbody>
+                        {% for fabricCategory in fabricCategories %}
+                        <tr>
+                            <td class="text-center">{{ fabricCategory.id }}</td>                            
+                            <td class="text-center">{{ fabricCategory.name }}</td>   
+                            <td class="text-center">
+                                {{ fabricCategory.timeAdd | date('Y:m:d H:i') }}                              
+                            </td>                           
+                            <td style="width: 15%;">
+                                <a href="{{ path('material_kategoria_edytuj', {'id': fabricCategory.id}) }}" class="table-link" title="Edytuj">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                                <a href="{{ path('material_kategoria_usun', {'id': fabricCategory.id}) }}" class="table-link danger" title="Usuń">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                    </span>  
+                                </a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}                        
+                    </tbody>
+                  </table>
+                 </div>
+               </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

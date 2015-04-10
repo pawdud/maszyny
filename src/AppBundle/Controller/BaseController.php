@@ -61,6 +61,8 @@ class BaseController extends Controller
             $this->em->flush();
             return true;
         }catch(\Exception $e){
+            throw $e;
+            exit($e->getMessage());
             return false;
         }
     }    
@@ -94,45 +96,62 @@ class BaseController extends Controller
 
 
     /**
-     * Zwrazca repozytorium użytkowników
+     * Zwraca repozytorium użytkowników
      * 
-     * @return \AppBunlde\Entity\UserRepository
+     * @return \AppBundle\Entity\UserRepository
      */  
     protected function repoUser(){
         return $this->em->getRepository('AppBundle:User');
     }
     
     /**
-     * Zwrazca repozytorium projektów
+     * Zwraca repozytorium projektów
      * 
-     * @return \AppBunlde\Entity\ProjectRepository
+     * @return \AppBundle\Entity\ProjectRepository
      */    
     protected function repoProject(){
         return $this->em->getRepository('AppBundle:Project');
     }
     
     /**
-     * Zwrazca repozytorium części
+     * Zwraca repozytorium części
      * 
-     * @return \AppBunlde\Entity\PartRepository
+     * @return \AppBundle\Entity\PartRepository
      */    
     protected function repoPart(){
         return $this->em->getRepository('AppBundle:Part');
     }
     
     /**
-     * Zwrazca repozytorium materiałów
+     * Zwraca repozytorium materiałów
      * 
-     * @return \AppBunlde\Entity\MaterialRepository
+     * @return \AppBundle\Entity\FabricRepository
      */    
     protected function repoFabric(){
         return $this->em->getRepository('AppBundle:Fabric');
     }
+    /**
+     * Zwraca repozytorium kategorii materiałów
+     * 
+     * @return \AppBundle\Entity\FabricCategoryRepository
+     */    
+    protected function repoFabricCategory(){
+        return $this->em->getRepository('AppBundle:FabricCategory');
+    }
     
     /**
-     * Zwrazca repozytorium technologii
+     * Zwraca repozytorium jednostek materiałów
      * 
-     * @return \AppBunlde\Entity\TechnologyRepository
+     * @return \AppBundle\Entity\FabricUnitRepository
+     */    
+    protected function repoFabricUnit(){
+        return $this->em->getRepository('AppBundle:FabricUnit');
+    }
+    
+    /**
+     * Zwraca repozytorium technologii
+     * 
+     * @return \AppBundle\Entity\TechnologyRepository
      */    
     protected function repoTechnology(){
         return $this->em->getRepository('AppBundle:Technology');
