@@ -2,13 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Entity/EventRepository.php</file>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Controller/EventBaseController.php</file>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Resources/views/Event/listByWeek.html.twig</file>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Controller/BaseController.php</file>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Controller/EventController.php</file>
-            <file>file:/media/dane/www/maszyny/src/AppBundle/Component/DatesTransformer.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
