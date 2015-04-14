@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 07 Kwi 2015, 23:56
+-- Czas wygenerowania: 10 Kwi 2015, 23:55
 -- Wersja serwera: 5.5.35-0ubuntu0.12.04.2
 -- Wersja PHP: 5.5.11-3+deb.sury.org~precise+1
 
@@ -36,14 +36,18 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `technology2part_id` (`technology2part_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Zrzut danych tabeli `event`
 --
 
 INSERT INTO `event` (`id`, `time_start`, `time_end`, `user_id`, `notice`, `technology2part_id`) VALUES
-(1, '2015-04-07 04:01:01', '2015-04-01 07:06:00', 4, 'jakieś uwagi', 1);
+(1, '2015-04-07 04:01:01', '2015-04-07 07:06:00', 4, 'jakieś uwagi', 1),
+(2, '2015-04-08 03:08:00', '2015-04-08 11:00:00', 4, 'żadnych uwag', 1),
+(3, '2015-04-01 05:00:00', '2015-04-01 12:00:00', 4, 'poprzedni tydzien', 1),
+(4, '2015-03-02 03:00:00', '2015-03-02 11:00:00', 4, 'marcowy event', 1),
+(5, '2015-04-08 07:00:00', '2015-04-08 09:00:00', 4, 'drugi event', 1);
 
 -- --------------------------------------------------------
 
@@ -88,14 +92,15 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
   KEY `part_id` (`part_id`),
   KEY `fabric_id` (`fabric_id`),
   KEY `part_id_2` (`part_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=3 ;
 
 --
 -- Zrzut danych tabeli `fabric2part`
 --
 
 INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `time_updated`, `time_add`) VALUES
-(1, 4, 1, NULL, '0000-00-00 00:00:00');
+(1, 4, 1, NULL, '0000-00-00 00:00:00'),
+(2, 4, 2, NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -126,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `part` (
 INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `is_drawing`, `is_completed`, `name`, `time_updated`, `time_add`) VALUES
 (2, 0, 8, 3, NULL, NULL, 'Pręt d', '2015-03-20 21:25:07', '2015-03-20 21:24:27'),
 (3, 0, 8, 3, NULL, NULL, 'Noga', '2015-03-26 00:01:00', '2015-03-25 21:35:52'),
-(4, 3, 8, 3, NULL, NULL, 'Listwa', '2015-03-25 23:29:32', '2015-03-25 21:36:06');
+(4, 3, 8, 3, 1, 1, 'Listwa', '2015-03-25 23:29:32', '2015-03-25 21:36:06');
 
 -- --------------------------------------------------------
 

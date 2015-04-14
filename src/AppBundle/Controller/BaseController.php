@@ -157,7 +157,24 @@ class BaseController extends Controller
         return $this->em->getRepository('AppBundle:Technology');
     }
     
+    /**
+     * Zwrazca repozytorium event
+     * 
+     * @return \AppBunlde\Entity\Event
+     */    
+    protected function repoEvent(){
+        return $this->em->getRepository('AppBundle:Event');
+    }
     
+    /**
+     * Zwrazca repozytorium technology2part
+     * 
+     * @return \AppBunlde\Entity\Technology2Part
+     */    
+    protected function repoTechnology2Partt(){
+        return $this->em->getRepository('AppBundle:Technology2Part');
+    }
+        
     public function redirect($url, $flash='', $status = 302)
     {        
         $this->addFlash('__flash__', $flash);
