@@ -4,11 +4,13 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-
-
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * User
+ * Użytkownicy
  * 
  *
  * @ORM\Table(name="user")
@@ -16,8 +18,35 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks()
  *
  */
-class User
+class User implements GroupSequenceProviderInterface
 {
+    
+    /**
+     * Pracownik
+     */
+    const ROLE_EMPLOYEE = 'EMPLOYEE';
+    
+    /**
+     * Manager
+     */
+    const ROLE_MANAGER = 'MANAGER';
+    
+    /**
+     * Administrator
+     */
+    const ROLE_ADMIN = 'ADMIN';       
+    
+    
+    public static function getRoles(){
+        return array(
+            self::ROLE_EMPLOYEE => 'Pracownik',
+            self::ROLE_MANAGER => 'Manager',
+            self::ROLE_ADMIN => 'Administrator',
+        );
+    }
+    
+    
+
     /**
      * @var string
      *
@@ -31,6 +60,7 @@ class User
      * @ORM\Column(name="password", type="string", length=32, nullable=false)
      */
     private $password;
+
     /**
      * @var string
      *
@@ -44,14 +74,14 @@ class User
      * @ORM\Column(name="role", type="string", length=50, nullable=false)
      */
     private $role;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=500, nullable=true)
      */
     private $name;
-    
+
     /**
      * @var string
      *
@@ -65,7 +95,7 @@ class User
      * @ORM\Column(name="time_updated", type="datetime", nullable=true)
      */
     private $timeUpdated;
-    
+
     /**
      * @var \DateTime
      *
@@ -81,8 +111,6 @@ class User
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-
 
     /**
      * Set email
@@ -153,6 +181,12 @@ class User
         return $this->role;
     }
     
+    
+    public function getRoleName(){        
+        return self::getRoles()[$this->role];
+    }
+    
+
     /**
      * Set role
      *
@@ -198,32 +232,38 @@ class User
     {
         return $this->timeUpdated;
     }
-    
-    public function getTimeAdd(){
+
+    public function getTimeAdd()
+    {
         return $this->timeAdd;
     }
-    
-    public function setTimeAdd(\DateTime $timeAdd){
+
+    public function setTimeAdd(\DateTime $timeAdd)
+    {
         $this->timeAdd = $timeAdd;
         return $this;
     }
-    
-    public function setName($name){
+
+    public function setName($name)
+    {
         $this->name = $name;
     }
-    public function getName(){
-       return $this->name;
+
+    public function getName()
+    {
+        return $this->name;
     }
-    
-    public function setSurname($surname){
+
+    public function setSurname($surname)
+    {
         $this->surname = $surname;
         return $this;
     }
-    
-    public function getSurname(){
-       return $this->surname;
+
+    public function getSurname()
+    {
+        return $this->surname;
     }
-    
 
     /**
      * Get id
@@ -234,15 +274,60 @@ class User
     {
         return $this->id;
     }
-    
-    /** 
+
+    /**
      * Ustawia domyślny czas dodania
      * 
      * @ORM\PrePersist()
      */
-    public function setDefaultTimeAdd(){       
-        if(!$this->timeAdd){
+    public function setDefaultTimeAdd()
+    {
+        if (!$this->timeAdd)
+        {
             $this->setTimeAdd(new \DateTime());
         }
     }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setGroupSequenceProvider(true);
+        
+        
+        $metadata->addPropertyConstraint('password', new Assert\NotBlank(array(
+            'message' => 'Pole wymagane',
+            'groups' => array('add', 'password')
+        )));
+        
+        $metadata->addPropertyConstraint('email', new Assert\NotBlank(array(
+            'message' => 'Pole wymagane',
+            'groups' => array('add')
+        )));
+        
+        // Email musi być unikalny
+        $metadata->addConstraint(new UniqueEntity(array(
+            'fields' => 'email',
+            'message' => 'Pole musi być unikalne',
+            'groups' => array('add')
+            
+        )));        
+
+        // Imię nie może być puste
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
+            'message' => 'Pole wymagane',
+            'groups' => array('add', 'edit')
+        )));  
+        
+        // Nazwisko nie może być puste
+        $metadata->addPropertyConstraint('surname', new Assert\NotBlank(array(
+            'message' => 'Pole wymagane',
+            'groups' => array('add', 'edit')
+        )));  
+      
+    }
+    
+    public function getGroupSequence()
+    {        
+       return array();
+    }
+
 }

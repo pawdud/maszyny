@@ -4,10 +4,12 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\FabricRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Util\Debug;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Materiały
@@ -57,8 +59,7 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
      * 
      */
     private $user;
-    
-    
+
     /**
      * @var \AppBundle\Entity\FabricCategory
      *
@@ -67,7 +68,7 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
      * 
      */
     private $category;
-    
+
     /**
      * @var \AppBundle\Entity\FabricUnit
      *
@@ -164,7 +165,9 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
      */
     public function setQuantity($quantity)
     {
-        $this->quantity = $quantity;
+        
+        
+        $this->quantity = str_replace(',', '.', $quantity);
 
         return $this;
     }
@@ -183,48 +186,78 @@ class Fabric extends BaseEntity implements GroupSequenceProviderInterface
     {
         return array('add', 'update');
     }
-    
-    
-    public function getCategory(){
+
+    public function getCategory()
+    {
         return $this->category;
     }
-    
-    public function setCategory($category){
+
+    public function setCategory($category)
+    {
         $this->category = $category;
         return $this;
     }
-    
-    public function getUnit(){
+
+    public function getUnit()
+    {
         return $this->unit;
     }
-    
-    public function setUnit($unit){
+
+    public function setUnit($unit)
+    {
         $this->unit = $unit;
         return $this;
     }
-    
-    
+
+    /**
+     * Sprawdza czy ilość jest poprawna     
+     * @param ExecutionContextInterface $context
+     */
+    public function validateQuatnity(ExecutionContextInterface $context)
+    {
+        if (!empty($this->quantity))
+        {
+            if (!is_numeric($this->quantity))
+            {
+                $context->buildViolation('Wymagana wartość liczbowa')
+                        ->atPath('quantity')
+                        ->addViolation();
+            }else{
+                $decimals = ( (int) $this->quantity != $this->quantity ) ? (strlen($this->quantity) - strpos($this->quantity, '.')) - 1 : 0;
+                
+                if($decimals > $this->unit->getScale()){
+                     $context->buildViolation('Maksymalnie ' . $this->unit->getScale() . ' miejsc po przecinku')
+                        ->atPath('quantity')
+                        ->addViolation();
+                }
+            }
+            
+        }
+    }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {       
+    {
 
-        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(            
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
             'message' => 'Pole wymagane',
         )));
-        
-        $metadata->addPropertyConstraint('code', new Assert\NotBlank(array(            
+
+        $metadata->addPropertyConstraint('code', new Assert\NotBlank(array(
             'message' => 'Pole wymagane',
         )));
-        
-        $metadata->addPropertyConstraint('quantity', new Assert\NotBlank(array(            
+
+        $metadata->addPropertyConstraint('quantity', new Assert\NotBlank(array(
             'message' => 'Pole wymagane',
         )));
-        
+
         // Kod musi być unikalny
         $metadata->addConstraint(new UniqueEntity(array(
-            'fields'  => 'code',
-            'message'  => 'Kod musi być unikalny',
+            'fields' => 'code',
+            'message' => 'Kod musi być unikalny',
         )));
+
+        // Walidacja ilości
+        $metadata->addConstraint(new Assert\Callback('validateQuatnity'));
     }
 
 }

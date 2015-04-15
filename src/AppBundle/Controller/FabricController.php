@@ -43,7 +43,7 @@ class FabricController extends BaseController
         {
             $fabric->setUser($this->getUserEntity());
             $this->ormPersistAndFlush($fabric);
-            return $this->redirect($this->generateUrl('material_edytuj', array('id' => $fabric->getId())), 'Dodano materiał');
+            return $this->redirect($this->generateUrl('materialy'), 'Dodano materiał');
         }
 
         $this->setHeader('Dodawanie materiału', 'Dodawanie materiału');
@@ -63,7 +63,7 @@ class FabricController extends BaseController
         {
             $this->ormPersistAndFlush($fabric);
 
-            return $this->redirect($this->generateUrl('material_edytuj', array('id' => $fabric->getId())), 'Zakualizowano material');
+            return $this->redirect($this->generateUrl('materialy'), 'Zakualizowano material');
         }
 
         $this->setHeader('Edycja materiału: ' . $fabric->getName());

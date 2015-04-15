@@ -38,6 +38,7 @@
                         <th class="text-center">Nazwisko</th>
                         <th class="text-center">Utworzono</th>
                         <th class="text-center"></th>
+                        <th class="text-center"></th>
                     </thead>
                     
                     <tbody>
@@ -45,12 +46,18 @@
                         <tr>
                             <td class="text-center">{{ user.id }}</td>
                             <td class="text-center">{{ user.email }}</td>
-                            <td class="text-center">{{ user.role }}</td>
+                            <td class="text-center">{{ user.roleName }}</td>
                             <td class="text-center">{{ user.name }}</td>
                             <td class="text-center">{{ user.surname }}</td>
                             <td class="text-center">{{ user.timeAdd | date('Y:m:d H:i') }}</td>
                             <td style="width: 15%;">
                                 <a href="{{ path('uzytkownik_edytuj', {'id': user.id}) }}" class="table-link" title="Edytuj">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                                <a href="{{ path('uzytkownik_haslo', {'id': user.id}) }}" class="table-link" title="Zmień hasło">
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

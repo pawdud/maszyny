@@ -53,7 +53,7 @@ class TechnologyController extends BaseController
         if ($form->isSubmitted() && $form->isValid())
         {
             $this->ormPersistAndFlush($technology);
-            return $this->redirect($this->generateUrl('procesy_edytuj', array('id' => $technology->getId())), 'Dodano proces technologiczny');
+            return $this->redirect($this->generateUrl('procesy'), 'Dodano proces technologiczny');
         }
 
         $this->setHeader('Dodawanie procesu technologicznego', 'Dodawanie procesu technologicznego');
@@ -72,8 +72,7 @@ class TechnologyController extends BaseController
         if ($form->isSubmitted() && $form->isValid())
         {
             $this->ormPersistAndFlush($technology);
-
-            return $this->redirect($this->generateUrl('procesy', array('id' => $technology->getId())), 'Zakualizowano proces technologiczny');
+            return $this->redirect($this->generateUrl('procesy'), 'Zakualizowano proces technologiczny');
         }
 
         $this->setHeader('Edycja procesu technologicznego: ' . $technology->getName());

@@ -38,7 +38,7 @@ class ProjectController extends BaseController
         {
             $project->setUser($this->getUserEntity());
             $this->ormPersistAndFlush($project);
-            return $this->redirect($this->generateUrl('projekt_edytuj', array('id' => $project->getId())), 'Dodano projekt');
+            return $this->redirect($this->generateUrl('projekty'), 'Dodano projekt');
         }
 
         $this->setHeader('Dodawanie projektu', 'Dodawanie projektu');
@@ -58,7 +58,7 @@ class ProjectController extends BaseController
         {
             $this->ormPersistAndFlush($project);
           
-            return $this->redirect($this->generateUrl('projekt_edytuj', array('id' => $project->getId())), 'Zakualizowano projekt');
+            return $this->redirect($this->generateUrl('projekty'), 'Zakualizowano projekt');
         }
 
         $this->setHeader('Edycja projektu: ' . $project->getName());

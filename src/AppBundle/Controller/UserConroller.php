@@ -5,12 +5,16 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Form\Type\UserAddType;
 use AppBundle\Form\Type\UserEditType;
+use AppBundle\Form\Type\UserPasswordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Doctrine\Common\Util\Debug;
 
+/**
+ * Użytkownicy
+ */
 class UserConroller extends BaseController
 {
 
@@ -39,13 +43,10 @@ class UserConroller extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
-            // Kodowanie hasła
-            $encoder = $this->get('security.encoder_factory')->getEncoder(new \AppBundle\Entity\User());
-            $salt = sha1(uniqid());
-            $hashedPassword = $encoder->encodePassword($form->getData()->getPassword(), $salt);
+            // Kodowanie hasła            
+            list($hashedPassword, $salt) = $this->encodePassword($form->getData()->getPassword());
             $user->setPassword($hashedPassword);
             $user->setSalt($salt);
-            $user->setRole('ADMIN');
             // Zapisywanie użytkownika
             $this->ormPersistAndFlush($user);
             return $this->redirect($this->generateUrl('uzytkownicy', array('id' => $user->getId())), 'Dodano użytkownika');
@@ -57,6 +58,8 @@ class UserConroller extends BaseController
     }
 
     /**
+     * Edycja
+     * 
      * @Route("/uzytkownik/edytuj/{id}", name="uzytkownik_edytuj")
      * @ParamConverter("user", class="AppBundle:User")
      */
@@ -66,8 +69,11 @@ class UserConroller extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
+            list($hashedPassword, $salt) = $this->encodePassword($form->getData()->getPassword());
+            $user->setPassword($hashedPassword);
+            $user->setSalt($salt);
             $this->ormPersistAndFlush($user);
-            return $this->redirect($this->generateUrl('uzytkownik_edytuj', array('id' => $user->getId())), 'Zakualizowano użytkownika');
+            return $this->redirect($this->generateUrl('uzytkownicy'), 'Zaktualizowano dane użytkownika: ' . $user->getEmail());
         }
 
         $this->setHeader('Edycja uzytkownika: ' . $user->getEmail());
@@ -76,13 +82,60 @@ class UserConroller extends BaseController
     }
 
     /**
+     * Zmiana hasła
+     * 
+     * @Route("/uzytkownik/haslo/{id}", name="uzytkownik_haslo")
+     * @ParamConverter("user", class="AppBundle:User")
+     */
+    public function passwordAction(Request $request, $user)
+    {
+        $form = $this->createForm(new UserPasswordType(), $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            list($hashedPassword, $salt) = $this->encodePassword($form->getData()->getPassword());
+            $user->setPassword($hashedPassword);
+            $user->setSalt($salt);
+            $this->ormPersistAndFlush($user);
+            return $this->redirect($this->generateUrl('uzytkownicy', array('id' => $user->getId())), 'Zmieniono hasło użytkownika: ' . $user->getEmail());
+        }
+
+        $this->setHeader('Zmiana hasła użytkownika: ' . $user->getEmail(), 'Zmiana hasła użytkownika: ' . $user->getEmail());
+        $this->setViewData('form', $form->createView());
+        return $this->render('AppBundle:User:password.html.twig');
+    }
+
+    /**
+     * Usuwanie
      * @Route("/uzytkownik/usun/{id}", name="uzytkownik_usun")
      * @ParamConverter("user", class="AppBundle:User")
      */
     public function deleteAction(Request $request, $user)
     {
         $this->ormRemoveAndFlush($user);
-        return $this->redirect($this->generateUrl('uzytkownicy'), 'Usunięto użytkownika');
+        return $this->redirect($this->generateUrl('uzytkownicy'), 'Usunięto użytkownika:' . $user->getEmail());
+    }
+
+    /**
+     * 
+     * Kodowanie hasła
+     * 
+     * @param type $password
+     * @return array(
+     *  0 => $hashedPassword,
+     *  1 => $salt
+     * )
+     */
+    private function encodePassword($password)
+    {
+        $encoder = $this->get('security.encoder_factory')->getEncoder(new \AppBundle\Entity\User());
+        $salt = sha1(uniqid());
+        $hashedPassword = $encoder->encodePassword($password, $salt);
+
+        return array(
+            0 => $hashedPassword,
+            1 => $salt,
+        );
     }
 
 }

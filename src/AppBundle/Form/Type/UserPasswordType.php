@@ -11,39 +11,32 @@ use Doctrine\Common\Util\Debug;
 
 
 /**
- * Dodawanie użytkowników
+ * Zmiana hasła użytkownika
  */
-class UserAddType extends AbstractType
+class UserPasswordType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-        ->add('email', 'text', array('label' => 'Email'))
+        $builder        
         ->add('password', 'repeated', array(
             'type' => 'password',
             'invalid_message' => 'Hasła muszą się zgadzać',           
             'required' => true,
             'first_options' => array('label' => 'Hasło'),
             'second_options' => array('label' => 'Powtórz hasło'),
-        ))
-        ->add('name', 'text', array('label' => 'Imię'))
-        ->add('surname', 'text', array('label' => 'Nazwisko'))
-        ->add('role', 'choice', array(
-            'choices' => User::getRoles(),
-            'label' => 'Uprawnienia'
-        ));
+        ));       
         
     }
 
     public function getName()
     {
-        return 'userAdd';
+        return 'userPassword';
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver){        
         $resolver->setDefaults(array(
-            'validation_groups' => array('add')
+            'validation_groups' => array('password')
         ));
     }
 }
