@@ -23,10 +23,10 @@ class EventRepository extends BaseRepository {
      * 
      * wyszukuje eventy z dnia
      */
-    public function findAllByDay(\DateTime $date) {
+    public function findAllByDay(\DateTime $date, $current_user_id) {
         $start = new \DateTime($date->format('Y-m-d 00:00'));
         $end = new \DateTime($date->format('Y-m-d 23:59:59'));
-        return $this->findAllByDates($start, $end);
+        return $this->findAllByDates($start, $end, $current_user_id);
     }
 
     /**
@@ -36,10 +36,10 @@ class EventRepository extends BaseRepository {
      * 
      * ustala datę poniedziałku i niedzieli z danego tygodnia, w którym zaiwera się data z adresu
      */
-    public function findAllByWeek(\DateTime $date) {
+    public function findAllByWeek(\DateTime $date, $current_user_id) {
         $monday = DatesTransformer::toMonday($date)->setTime(0, 0);
         $sunday = DatesTransformer::toSunday($date)->setTime(23, 59, 59);
-        return $this->findAllByDates($monday, $sunday);
+        return $this->findAllByDates($monday, $sunday, $current_user_id);
     }
 
     /**
@@ -49,10 +49,10 @@ class EventRepository extends BaseRepository {
      * 
      * ustala datę pierwszego i ostatniego dnia miesiąca w którym zawiera się data z adresu 
      */
-    public function findAllByMonth(\DateTime $date) {
+    public function findAllByMonth(\DateTime $date, $current_user_id) {
         $start = DatesTransformer::toFirstMonthDay($date)->setTime(0, 0);
         $end = DatesTransformer::toLastMonthDay($date)->setTime(23, 59, 59);
-        return $this->findAllByDates($start, $end);
+        return $this->findAllByDates($start, $end, $current_user_id);
     }
 
     /**
@@ -63,13 +63,14 @@ class EventRepository extends BaseRepository {
      * 
      * wyszukuje eventy miedzy dwoma datami
      */
-    public function findAllByDates(\DateTime $start, \DateTime $end) {
+    public function findAllByDates(\DateTime $start, \DateTime $end, $current_user_id) {
         $q = $this->getEntityManager()->createQuery("SELECT e
                                      FROM AppBundle:Event e
-                                     WHERE e.time_start >= :start AND e.time_start <= :end
+                                     WHERE e.time_start >= :start AND e.time_start <= :end AND e.user = :current_user_id
                                      ORDER BY e.time_start ASC, e.time_end ASC")
                 ->setParameter('start', $start)
-                ->setParameter('end', $end);
+                ->setParameter('end', $end)
+                ->setParameter('current_user_id', $current_user_id);
         return $q->getResult();
     }
 
