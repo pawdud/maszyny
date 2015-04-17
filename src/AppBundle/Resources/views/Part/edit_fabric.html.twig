@@ -2,91 +2,160 @@
 {% extends 'AppBundle:Part:edit_layout.html.twig' %}
 
 {% block subcontent %}
-    <div class="form-group">
-        <label class="control-label">Wybierz materiały</label>
-        <input type="text" id="trg-search-fabric" class="form-control">  
-        <ul id="cnt-materials" class="list-group">  
-            {% if part.fabrics | length > 0 %}
-                {% for fabric in part.fabrics %}
-                    <li data-fabric-id="{{ fabric.id }}" data-element="cnt-item-fabric" class="list-group-item">
-                        {{ fabric.name }} [{{ fabric.code }}]        
-                        <a data-trg="fabric-delete" data-fabric-id="{{ fabric.id }}" class="btn btn-danger">Usuń</a>        
-                    </li>                
-                {% endfor %}
-            {% endif %}
-        </ul>
-        {% raw %}
-            <script>
-                $(function ($) {
+    <a id="trg-fabric-add" href="{{ path('czesc_dodaj_material', {'id': part.id}) }}" class="btn btn-success">Dodaj materiał</a>
 
-                    var MaterailManager = {
-                        data: {},
-                        cnt: null,
-                        urlAdd: "{% endraw %}{{ path('czesc_dodaj_material', {'id': part.id}) }}{% raw %}",
-                        urlDelete: "{% endraw %}{{ path('czesc_usun_material', {'id': part.id}) }}{% raw %}",
-                        template: '<li data-fabric-id="<%id%>" data-element="cnt-item-fabric" class="list-group-item"> <%label%> <a data-trg="fabric-delete" data-fabric-id="<%id%>" class="btn btn-danger">Usuń</a>',
-                        add: function (id, label) {
-                            var self = this;
+    
+    {% if part.fabrics2part | length %}
+    
+    <table class="table table-bordered" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th class="text-center">Nazwa</th>
+                <th class="text-center">Ilość</th>
+                <th class="text-center"></th>
+                <th class="text-center"></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for fabric2part in part.fabrics2part %}
+            <tr>
+                <td class="text-center">
+                    {{ fabric2part.fabric.name }}
+                </td>
+                <td class="text-center">
+                    {{ fabric2part.quantity }}
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-info" href="">Edytuj</a>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-danger" href="">Usuń</a>
+                </td>
+            </tr>    
+            {% endfor %}
+        </tbody>
+        
+    </table>
+        
+    {% endif %}
+    
+    
 
-                            if (this.exist(id)) {
-                                alert('Taki materiał już został dodany');
-                                return false;
-                            }
-                            ;
+    <div id="cnt-modal-fabric" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Dodawanie materiału</h4>
+                </div>
+                <form class="form" id="form-fabric" action="">  
+                    <div class="modal-body">                    
 
-                            $.post(this.urlAdd, {"idFabric": id}).success(function () {
-                                var tpl = self.template.replace(/<%id%>/g, id).replace(/<%label%>/g, label);
-                                var el = $(tpl);
-                                self.cnt.prepend(el);
-                                self.data[id] = el;
-                            });
-                        },
-                        remove: function (id) {
-                            var self = this;
-                            if (this.exist(id)) {
-                                $.post(this.urlDelete, {"idFabric": id}).success(function () {
-                                    self.data[id].remove();
-                                    delete self.data[id]
-                                    return true;
-                                });
-                            }
-                        },
-                        exist: function (id) {
-                            if (this.data[id]) {
-                                return true;
-                            }
-                            return false;
-                        },
-                        init: function () {
-                            var self = this;
-                            this.cnt = $("#cnt-materials");
+                            <div class="form-group">
+                                <label>Materiał:</label>
+                                <input type="text" name="fabric2part[fabric_id]" id="fabric2part_fabric_id"  value=""  id="trg-search-fabric" class="form-control">      
+                            </div>     
+                            <div class="form-group" id="placeholder-unit">
+                                <label>Ilość:</label>
+                                <input type="text" name="fabric2part[quantity]" id="fabric2part_quantity" value="" id="trg-set-quantity"  class="form-control">
+                                <span id="quatnity-unit-placeholder"></span>
+                            </div>                    
 
-                            // Inicjalizacja danych
-                            $("[data-element='cnt-item-fabric']", this.cnt).each(function (i, e) {
-                                self.data[$(e).attr("data-fabric-id")] = $(e);
-                            });
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                    </div>
+                </form>  
+            </div>
+        </div>
+    </div>
+    
+    {% raw %}
+        <script>
+            $(function ($) {
+                var MaterailManager = {
+                    init: function () {
+                        var self = this;
+                        this.cntModal = $("#cnt-modal-fabric").modal({
+                            show: false
+                        });
+                        this.cntForm = $("#form-fabric");
+                    },
+                    
+                    
+                    save: function(){
+                        
+                        
+                        
+                    },
+                    
+                    
+                    add: function (data) {
+                        var self = this;
+                        $.post(this.urlAdd, {"idFabric": id}).success(function (response) {
+                            console.log();
+                        });
+                    },
+                    update: function (id, data) {
 
-                            // Obsługa przycisku usuń                        
-                            this.cnt.delegate("[data-trg='fabric-delete']", "click", function (e) {
-                                self.remove($(this).attr("data-fabric-id"));
-                            });
+                    },
+                    remove: function (id) {
 
+                    },
+                    resetForm: function () {
+                        this.cntForm[0].reset();
+                        $("#placeholder-unit").hide();
+                    },
+                    showModal: function (data) {                        
+                        this.resetForm();
+                        this.setFormData(data);
+                        this.cntModal.modal("show");
+                    },
+                    hideModal: function () {
+                        this.resetForm();
+                        this.cntModal.modal("hide");
+                    },
+                    setFormData: function (data) {
+                        if (data.action) {
+                            this.cntForm.attr("action", data.action)
+                        };
 
-                        }
+                        if (data.fabric_id) {
+                            $("#fabric2part_fabric_id").val(data.fabric_id);
+                        };
 
-                    };
+                        if (data.quantity) {
+                            $("#fabric2part_quanity").val(data.quantity);
+                        };
 
-                    MaterailManager.init();
+                    }
+                };
 
-                    $("#trg-search-fabric").autocomplete({
-                        source: {% endraw %}"{{ path('material_szukaj') }}"{% raw %},
-                        minLength: 1,
-                        select: function (event, ui) {
-                            MaterailManager.add(ui.item.id, ui.item.label);
-                        }
+                MaterailManager.init();
+
+                // Dodawanie materiału
+                $("#trg-fabric-add").on("click", function (e) {
+                    e.preventDefault();
+                    MaterailManager.showModal({
+                        action: $(this).attr("href")
                     });
                 });
-            </script>            
-        {% endraw %}
-    </div>      
+
+                // Wyszukiwarka materaiłów
+                $("#trg-search-fabric").autocomplete({
+                    source: {% endraw %}"{{ path('material_szukaj') }}"{% raw %},
+                    minLength: 1,
+                    select: function (event, ui) {
+                        MaterailManager.add(ui.item.id, ui.item.label);
+                    }
+                });
+
+
+            });
+        </script>            
+    {% endraw %}
+    
+    
 {% endblock %}

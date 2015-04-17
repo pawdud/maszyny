@@ -42,7 +42,7 @@ class UserConroller extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
-        {
+        {            
             // Kodowanie hasła            
             list($hashedPassword, $salt) = $this->encodePassword($form->getData()->getPassword());
             $user->setPassword($hashedPassword);
@@ -73,6 +73,7 @@ class UserConroller extends BaseController
             $user->setPassword($hashedPassword);
             $user->setSalt($salt);
             $this->ormPersistAndFlush($user);
+           
             return $this->redirect($this->generateUrl('uzytkownicy'), 'Zaktualizowano dane użytkownika: ' . $user->getEmail());
         }
 
@@ -130,7 +131,13 @@ class UserConroller extends BaseController
     {
         $encoder = $this->get('security.encoder_factory')->getEncoder(new \AppBundle\Entity\User());
         $salt = sha1(uniqid());
+        Debug::dump($encoder); 
         $hashedPassword = $encoder->encodePassword($password, $salt);
+        Debug::dump($password);
+        Debug::dump($hashedPassword);
+        Debug::dump($salt);
+        
+       
 
         return array(
             0 => $hashedPassword,

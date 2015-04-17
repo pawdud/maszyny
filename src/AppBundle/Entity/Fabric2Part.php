@@ -2,28 +2,46 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Fabric2PartRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Fabric2part
+ * Materiały przyporządkowane do części
+ * 
+ * @ORM\Table(name="fabric2part")
+ * @ORM\Entity(repositoryClass="Fabric2PartRepository")
+ * @ORM\HasLifecycleCallbacks()
+ * 
  */
-class Fabric2part
+class Fabric2Part
 {
-    /**
-     * @var integer
+
+   /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")     
      */
     private $id;
 
-    /**
-     * @var \AppBundle\Entity\Fabric
+    /**     
+     * 
+     * @ORM\ManyToOne(targetEntity="Fabric")
+     * @ORM\JoinColumn(name="fabric_id", referencedColumnName="id")
      */
     private $fabric;
 
-    /**
-     * @var \AppBundle\Entity\Part
+    /**     
+     * 
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Part", inversedBy="fabrics2part")
+     * @ORM\JoinColumn(name="part_id", referencedColumnName="id")
      */
     private $part;
 
+    /**
+     * @ORM\Column(name="quantity", type="decimal", nullable=true)
+     * @var float
+     */
+    private $quantity;
 
     /**
      * Get id
@@ -80,4 +98,16 @@ class Fabric2part
     {
         return $this->part;
     }
+
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+        return $this;
+    }
+
 }

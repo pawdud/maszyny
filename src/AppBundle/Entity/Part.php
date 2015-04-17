@@ -42,16 +42,9 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
     private $name;
 
     /**
-     * 
-     * Materiały
-     * 
-     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Fabric", cascade={"persist", "remove"})
-     * @ORM\JoinTable(name="fabric2part",
-     *      joinColumns={@ORM\JoinColumn(name="part_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="fabric_id", referencedColumnName="id")}
-     *      )
-     * */
-    private $fabrics;
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Fabric2Part", mappedBy="part",  cascade={"persist", "remove"})
+     */
+    private $fabrics2part;
 
     /**
      * @var \AppBundle\Entity\User
@@ -79,7 +72,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @ORM\Column(name="is_drawing", type="boolean", nullable=true)
      */
     private $isDrawing;
-    
+
     /**
      * @var integer
      *
@@ -89,8 +82,8 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
 
     public function __construct()
     {
-        $this->fabrics = new ArrayCollection();
         $this->technologies = new ArrayCollection();
+        $this->fabrics2part = new ArrayCollection();
     }
 
     public function addTechnology(Technology $technology)
@@ -114,21 +107,21 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
         return $this->technologies;
     }
 
-    public function addFabric(Fabric $fabric)
+    public function addFabric2Part(Fabric2Part $fabric2part)
     {
-        $this->fabrics[] = $fabric;
+        $this->fabrics2part[] = $fabric2part;
         return $this;
     }
 
-    public function removeFabric(Fabric $fabric)
+    public function removeFabric2Part(Fabric2Part $fabric2part)
     {
-        $this->fabrics->removeElement($fabric);
+        $this->fabrics2part->removeElement($fabric);
         return $this;
     }
 
-    public function getFabrics()
+    public function getFabrics2Part()
     {
-        return $this->fabrics;
+        return $this->fabrics2part;
     }
 
     /**
@@ -243,7 +236,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
         $this->isDrawing = $isDrawing;
         return $this;
     }
-    
+
     public function getIsCompleted()
     {
         return $this->isCompleted;

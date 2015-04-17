@@ -168,7 +168,7 @@ class PartController extends BaseController
             $response['message'] = 'Nie udało się przenieść pozycji';
         }
         return new JsonResponse($response);
-    }
+    }    
 
     /**
      * (AJAX) Usuwanie materiału z części

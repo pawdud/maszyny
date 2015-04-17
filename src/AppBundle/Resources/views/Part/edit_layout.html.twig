@@ -1,27 +1,30 @@
 {% extends 'AppBundle::layout.html.twig' %}
- 
+
 {% block content_inner %}  
     <div class="panel panel-default">
         <div class="panel-body">
-    {% set route = app.request.attributes.get('_route') %}  
-   
-    <div class="tabs-wrapper"> 
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"  class="{% if route == 'czesc_edytuj'%}active{% endif %}">
-                <a href="{{ path('czesc_edytuj', {'id': part.id}) }}" >Edycja</a>
-            </li>
-            <li role="presentation" class="{% if route == 'czesc_edytuj_materialy'%}active{% endif %}">
-                <a href="{{ path('czesc_edytuj_materialy', {'id': part.id}) }}" >Materiały</a>
-            </li>
-            <li role="presentation" class="{% if route == 'czesc_edytuj_technologie'%}active{% endif %}">
-                <a href="{{ path('czesc_edytuj_technologie', {'id': part.id}) }}">Technologie</a>
-            </li>          
-        </ul>
-    </div>
-            
-    {% block subcontent %}
-        
-    {% endblock %}
+            {% set route = app.request.attributes.get('_route') %}  
+
+            <div class="tabs-wrapper"> 
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation"  class="{% if route == 'czesc_edytuj'%}active{% endif %}">
+                        <a href="{{ path('czesc_edytuj', {'id': part.id}) }}" >Edycja</a>
+                    </li>
+                    <li role="presentation" class="{% if route == 'czesc_edytuj_materialy'%}active{% endif %}">
+                        <a href="{{ path('czesc_edytuj_materialy', {'id': part.id}) }}" >Materiały</a>
+                    </li>
+                    <li role="presentation" class="{% if route == 'czesc_edytuj_technologie'%}active{% endif %}">
+                        <a href="{{ path('czesc_edytuj_technologie', {'id': part.id}) }}">Technologie</a>
+                    </li>          
+                </ul>
+            </div>
+
+            <div class="col-md-4">
+                {{ include('AppBundle:Part:inc_tree.html.twig', {'part':part}) }}
+            </div> 
+            <div class="col-md-8">            
+            {% block subcontent %}{% endblock %}
         </div>
     </div>
+</div>
 {% endblock %}
