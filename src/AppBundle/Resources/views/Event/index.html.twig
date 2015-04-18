@@ -2,11 +2,9 @@
 
 {% block content_inner %}
 
-kalendarz:<br />
-
-<a href="{{ path('listByDay', {'user_id': '4'}) }}">obecny dzień</a><br />
-<a href="{{ path('listByWeek', {'user_id': '4'}) }}">obecny tydzień</a><br />
-<a href="{{ path('listByMonth', {'user_id': '4'}) }}">obecny miesiąc</a><br />
-
+{% for user in users %}
+{% set userid = user.getId %}
+<a href="{{ path('listByDay', {'user_id': userid}) }}">{{user.getemail}}</a><br />
+{% endfor %}
 
 {% endblock %}

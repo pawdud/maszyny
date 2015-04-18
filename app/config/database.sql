@@ -1,14 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.0.9deb1.precise~ppa.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 17 Kwi 2015, 22:09
--- Wersja serwera: 5.5.38
--- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
+-- Czas wygenerowania: 18 Kwi 2015, 00:36
+-- Wersja serwera: 5.5.35-0ubuntu0.12.04.2
+-- Wersja PHP: 5.5.11-3+deb.sury.org~precise+1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Baza danych: `maszyny`
@@ -17,20 +23,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `calendar_settings`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla  `event`
+-- Struktura tabeli dla tabeli `event`
 --
 
 CREATE TABLE IF NOT EXISTS `event` (
@@ -43,25 +36,20 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `technology2part_id` (`technology2part_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Zrzut danych tabeli `event`
+--
+
+INSERT INTO `event` (`id`, `time_start`, `time_end`, `user_id`, `notice`, `technology2part_id`) VALUES
+(2, '2015-04-17 04:00:00', '2015-04-17 08:00:00', 3, NULL, 1),
+(3, '2015-04-17 12:00:00', '2015-04-17 18:00:00', 4, NULL, 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `event_categories`
---
-
-CREATE TABLE IF NOT EXISTS `event_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `color` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla  `fabric`
+-- Struktura tabeli dla tabeli `fabric`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric` (
@@ -91,7 +79,7 @@ INSERT INTO `fabric` (`id`, `fabric_category_id`, `user_id`, `code`, `quantity`,
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric2part`
+-- Struktura tabeli dla tabeli `fabric2part`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric2part` (
@@ -118,7 +106,7 @@ INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `quantity`, `time_updat
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric_category`
+-- Struktura tabeli dla tabeli `fabric_category`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric_category` (
@@ -141,7 +129,7 @@ INSERT INTO `fabric_category` (`id`, `name`, `time_updated`, `time_add`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric_unit`
+-- Struktura tabeli dla tabeli `fabric_unit`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric_unit` (
@@ -166,7 +154,7 @@ INSERT INTO `fabric_unit` (`id`, `name`, `unit`, `scale`, `time_updated`, `time_
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `part`
+-- Struktura tabeli dla tabeli `part`
 --
 
 CREATE TABLE IF NOT EXISTS `part` (
@@ -197,7 +185,7 @@ INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `is_draw
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `project`
+-- Struktura tabeli dla tabeli `project`
 --
 
 CREATE TABLE IF NOT EXISTS `project` (
@@ -223,7 +211,7 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `is_drawing`, `time_updated`, `t
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `technology`
+-- Struktura tabeli dla tabeli `technology`
 --
 
 CREATE TABLE IF NOT EXISTS `technology` (
@@ -246,7 +234,7 @@ INSERT INTO `technology` (`id`, `name`, `time_updated`, `time_add`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `technology2part`
+-- Struktura tabeli dla tabeli `technology2part`
 --
 
 CREATE TABLE IF NOT EXISTS `technology2part` (
@@ -268,7 +256,7 @@ INSERT INTO `technology2part` (`id`, `part_id`, `technology_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `user`
+-- Struktura tabeli dla tabeli `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -300,6 +288,13 @@ INSERT INTO `user` (`id`, `email`, `password`, `salt`, `role`, `name`, `surname`
 --
 
 --
+-- Ograniczenia dla tabeli `event`
+--
+ALTER TABLE `event`
+  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `event_ibfk_2` FOREIGN KEY (`technology2part_id`) REFERENCES `technology2part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Ograniczenia dla tabeli `fabric`
 --
 ALTER TABLE `fabric`
@@ -318,3 +313,7 @@ ALTER TABLE `fabric2part`
 ALTER TABLE `part`
   ADD CONSTRAINT `part_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   ADD CONSTRAINT `part_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
