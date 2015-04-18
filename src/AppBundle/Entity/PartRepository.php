@@ -6,6 +6,9 @@ use AppBundle\Utility\Config;
 use AppBundle\Entity\BaseRepository;
 use Doctrine\Common\Util\Debug;
 
+/**
+ * Części
+ */
 class PartRepository extends BaseRepository
 {
 
@@ -81,13 +84,12 @@ class PartRepository extends BaseRepository
     {
         $return = array(
             'title' => $row['name'],
-            'key' => $row['id'],            
+            'key' => $row['id'],
             'is_drawing' => (bool) $row['is_drawing'],
-            'is_completed' => (bool) $row['is_completed'],            
+            'is_completed' => (bool) $row['is_completed'],
             'user_name' => $row['user_name'],
             'expanded' => true,
             'folder' => isset($row['children']),
-            
             'link_details' => Config::instance()->url('czesc_edytuj', array('id' => $row['id'])),
         );
 
@@ -99,10 +101,13 @@ class PartRepository extends BaseRepository
         return $return;
     }
 
-//    protected function setFromMany(array $crit = array()){
-//        $a1 = ProjectRepository::getAlias();
-//        $a2 = ActionRepository::getAlias();
-//        $this->qb->select($a1, $a2)
-//        ->innerJoin("{$a1}.actions", $a2);
-//    }
+    protected function setSelectMany(array $crit = array())
+    {
+        $a1 = self::getAlias();
+        $a2 = Fabric2PartRepository::getAlias();
+        $this->qb->select($a1, $a2)
+                ->from(self::$entity, $a1)
+                ->leftJoin('{$a1}.fabrics2part', $a2);
+    }
+
 }

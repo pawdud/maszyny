@@ -130,7 +130,7 @@ class BaseRepository extends EntityRepository {
     }
 
     protected function setSelectOne(array $crit = array()) {
-        
+        $this->setSelectMany($crit);
     }
 
     protected function _i(array $crit, $paramName) {

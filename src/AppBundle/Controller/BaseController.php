@@ -127,9 +127,19 @@ class BaseController extends Controller
      * 
      * @return \AppBundle\Entity\FabricRepository
      */    
+    protected function repoFabric2Part(){
+        return $this->em->getRepository('AppBundle:Fabric2Part');
+    }
+    
+    /**
+     * Zwraca repozytorium powiązania materiałów z częściami
+     * 
+     * @return \AppBundle\Entity\FabricRepository
+     */    
     protected function repoFabric(){
         return $this->em->getRepository('AppBundle:Fabric');
     }
+    
     /**
      * Zwraca repozytorium kategorii materiałów
      * 
@@ -177,9 +187,16 @@ class BaseController extends Controller
         
     public function redirect($url, $flash='', $status = 302)
     {        
-        $this->addFlash('__flash__', $flash);
+        $this->setFlashMsg($flash);
         return parent::redirect($url, $status);
     }
+    
+    
+    public function setFlashMsg($flash){        
+        $this->addFlash('__flash__', $flash);
+    }
+    
+    
     
     
     protected function flashGetFlash($key){

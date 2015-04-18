@@ -1,90 +1,120 @@
 {# Przypisywanie materiałów #}
 {% extends 'AppBundle:Part:edit_layout.html.twig' %}
 {% block subcontent %}  
-<div class="form-group">
-    <label class="control-label">Wybierz technologie</label>
-    <input type="text" id="trg-search-technology" class="form-control">  
-    <ul id="cnt-technologies" class="list-group">  
-        {% if part.technologies | length  %}
-            {% for technology in part.technologies %}
-                <li data-technology-id="{{ technology.id }}" data-element="cnt-item-technology" class="list-group-item">
-                    {{ technology.name }}  
-                    <a data-trg="technology-delete" data-technology-id="{{ technology.id }}" class="btn btn-danger">Usuń</a>        
-                </li>                
+<div class="form-group">    
+    <a class="btn btn-success" id="trg-technology-add" href="{{ path('czesc_technologia_dodaj', {'id': part.id}) }}">Dodaj techmologię</a>    
+    
+    {% if part.technologies2part | length %}
+    <table class="table table-bordered" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th class="text-center">Nazwa</th>
+                <th class="text-center">Gotowa</th>
+                <th class="text-center"></th>
+                <th class="text-center"></th>
+                <th class="text-center"></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for technology2part in part.technologies2part %}
+            <tr>
+                <td class="text-center">
+                    {{ technology2part.technology.name }}
+                </td>
+                <td class="text-center">
+                   <span class="label {% if technology2part.isCompleted %}label-success{% else %}label-warning{% endif %}">
+                       {% if technology2part.isCompleted %} TAK {% else %} NIE {% endif %}
+                   </span>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-info trg-technology-edit" href="#">Harmonogram</a>
+                </td>                
+                <td class="text-center">
+                    <a class="btn btn-info trg-technology-edit" href="{{ path('czesc_technologia_edytuj', {'id': part.id, 'id_technology2part': technology2part.id}) }}">Edytuj</a>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-danger" href="{{ path('czesc_technologia_usun', {'id': part.id, 'id_technology2part': technology2part.id }) }}">Usuń</a>
+                </td>
+            </tr>    
             {% endfor %}
-        {% endif %}
-    </ul>
+        </tbody>        
+    </table>
+    {% endif %}        
+    
+    <div id="modal-ajax" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
     {% raw %}
-        <script>
-            $(function ($) {
-
-                var TechnologyManager = {
-                    data: {},
-                    cnt: null,
-                    urlAdd: "{% endraw %}{{ path('czesc_dodaj_technologie', {'id': part.id}) }}{% raw %}",
-                    urlDelete: "{% endraw %}{{ path('czesc_usun_technologie', {'id': part.id}) }}{% raw %}",
-                    template: '<li data-technology-id="<%id%>" data-element="cnt-item-technology" class="list-group-item"> <%label%> <a data-trg="technology-delete" data-technology-id="<%id%>" class="btn btn-danger">Usuń</a>',
-                    add: function (id, label) {
-                        var self = this;
-
-                        if (this.exist(id)) {
-                            maszyny.Modal.show('Taka technologia została już dodana');
-                            return false;
+        <script>       
+            
+            var ModalAjax = {
+                cnt: null,
+                
+                init: function(){
+                    var self = this;
+                    this.cnt = $("#modal-ajax");
+                    this.cnt.modal({
+                        show: false
+                    });
+                    
+                    $(this.cnt).delegate("form", "submit", function(e){        
+                        e.preventDefault();                                   
+                        var url = $(this).attr("action");
+                        var data = $(this).serialize()
+                        self.load(url, data);
+                    });
+                    
+                },
+                
+                show: function(title){
+                  var title = title || "";
+                  this.cnt.find(".modal-title").html(title);
+                  this.cnt.modal("show");  
+                },                
+                
+                load: function(url, data){
+                    var self = this;
+                    $.post(url, data).success(function(data, statusText, xhr){                        
+                        console.log("statusCode", xhr.getResponseHeader("ttm-reload"));
+                        
+                        if(xhr.getResponseHeader("ttm-reload")){
+                            window.location.reload();
+                        }else{
+                            self.cnt.find(".modal-body").html(data);
                         }
                         
-
-                        $.post(this.urlAdd, {"idTechnology": id}).success(function () {
-                            var tpl = self.template.replace(/<%id%>/g, id).replace(/<%label%>/g, label);
-                            var el = $(tpl);
-                            self.cnt.prepend(el);
-                            self.data[id] = el;
-                        });
-                    },
-                    remove: function (id) {
-                        var self = this;
-                        if (this.exist(id)) {
-                            $.post(this.urlDelete, {"idTechnology": id}).success(function () {
-                                self.data[id].remove();
-                                delete self.data[id]
-                                return true;
-                            });
-                        }
-                    },
-                    exist: function (id) {
-                        if (this.data[id]) {
-                            return true;
-                        }
-                        return false;
-                    },
-                    init: function () {
-                        var self = this;
-                        this.cnt = $("#cnt-technologies");
-
-                        // Inicjalizacja danych
-                        $("[data-element='cnt-item-technology']", this.cnt).each(function (i, e) {
-                            self.data[$(e).attr("data-technology-id")] = $(e);
-                        });
-
-                        // Obsługa przycisku usuń                        
-                        this.cnt.delegate("[data-trg='technology-delete']", "click", function (e) {
-                            self.remove($(this).attr("data-technology-id"));
-                        });
-
-
-                    }
-
-                };
-
-                TechnologyManager.init();
-
-                $("#trg-search-technology").autocomplete({
-                    source: {% endraw %}"{{ path('technologia_szukaj') }}"{% raw %},
-                    minLength: 1,
-                    select: function (event, ui) {
-                        TechnologyManager.add(ui.item.id, ui.item.label);
-                    }
-
-                });
+                        
+                    });
+                }                
+            };
+            
+            ModalAjax.init();
+            
+            // Dodawanie technologi
+            $("#trg-technology-add").on("click", function(e){
+               e.preventDefault();
+               ModalAjax.show("Dodawanie technologi");
+               ModalAjax.load($(this).attr("href"));               
+            });
+            
+            // Edycja technologi
+            $(".trg-technology-edit").on("click", function(e){
+               e.preventDefault();
+               ModalAjax.show("Edycja technologi");
+               ModalAjax.load($(this).attr("href"));               
             });
         </script>            
     {% endraw %}

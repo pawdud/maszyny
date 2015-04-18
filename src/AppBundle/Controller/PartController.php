@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\Part;
 use AppBundle\Form\Type\PartType;
+use AppBundle\Entity\Fabric2Part;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,6 +120,9 @@ class PartController extends BaseController
      */
     public function editTechnologyAction(Request $request, $part)
     {       
+//        Debug::dump($part->getTechnologies2Part()); exit;
+        
+        
         $this->setViewData('part', $part);
         return $this->render('AppBundle:Part:edit_technology.html.twig');
     }       
@@ -128,11 +132,10 @@ class PartController extends BaseController
      * @ParamConverter("part", class="AppBundle:Part")
      */
     public function editMaterialAction(Request $request, $part)
-    {       
+    {  
         $this->setViewData('part', $part);
         return $this->render('AppBundle:Part:edit_fabric.html.twig');
-    }
-    
+    }   
     
 
     /**
@@ -168,36 +171,81 @@ class PartController extends BaseController
             $response['message'] = 'Nie udało się przenieść pozycji';
         }
         return new JsonResponse($response);
-    }    
-
+    }
+    
+    
+    
     /**
-     * (AJAX) Usuwanie materiału z części
-     * @Route("/czesc/usun_material/{id}", name="czesc_usun_material")
+     * Dodawanie/Edycja powiązania materiału do części
+     * @Route("/czesc/zapisz_material/{id}", name="czesc_zapisz_material")
      * @ParamConverter("part", class="AppBundle:Part")
      */
-    public function axFabricDeleteAction(Request $request, $part)
-    {
-        $idFabric = $request->request->get('idFabric');
-        $fabric = $this->repoFabric()->one(array('id' => $idFabric));
-        $part->removeFabric($fabric);
-        $this->ormPersistAndFlush($part);
-        return new Response();
+    public function axFabricSaveAction(Request $request, Part $part){        
+        $response = array(
+            'status' => 'KO',
+            'message' => ''
+        );        
+        
+        $params = isset($request->request->all()['fabric2part']) ? $request->request->all()['fabric2part'] : array();
+        $errors = array();
+        
+        if(empty($params['fabric_id'])){
+            $errors['fabric_id'] = 'Proszę wybrać materiał';
+        }
+        
+        if(empty($params['quantity'])){
+            $errors['quantity'] = 'Proszę podać ilość';
+        }    
+        
+        if(empty($errors['fabric_id'])){
+            $fabric = $this->repoFabric()->one(array('id' => $params['fabric_id'])); 
+            if(!$fabric || !$fabric->getId()){
+                $errors['fabric_id'] = 'Nieprawidłowy materiał';
+            }            
+        }        
+        
+        if($errors === array()){
+            
+            // Czy takie powiązanie istnieje
+            $fabric2Part = $this->repoFabric2Part()->one(array(
+               'fabric' => $fabric,
+               'part' => $part
+            ));                  
+            
+            if(!$fabric2Part || !$fabric2Part->getId()){
+                $flash = 'Dodano materiał';
+                // Jeśli powiązanie nie istnieje tworzymy je
+                $fabric2Part = new Fabric2Part();
+                $fabric2Part->setFabric($fabric);
+                $fabric2Part->setPart($part);          
+                $this->em->persist($fabric2Part);
+                
+            }else{
+                $flash = 'Zaktualizowano materiał';
+            }
+            
+            $fabric2Part->setQuantity($params['quantity']);            
+            $part->addFabric2Part($fabric2Part);
+            $this->em->flush();
+            $this->setFlashMsg($flash);
+            $response['status'] = 'OK';            
+        }
+        
+        return new JsonResponse($response);
+    }
+    
+    
+     /**
+     * Usuwanie materiału z części
+     * @Route("/czesc/usun_material/{id}/{id_fabric2part}", name="czesc_usun_material")
+     * @ParamConverter("part", options={"mapping": {"id": "id"}})
+     * @ParamConverter("fabric2part", options={"mapping": {"id_fabric2part": "id"}})
+     */    
+    public function fabricDeleteAction(Request $request, Part $part,  Fabric2Part $fabric2part){    
+        $msg = $this->ormRemoveAndFlush($fabric2part) ? 'Usunięto materiał': 'Nie udało się usunąć materiału';
+        return $this->redirect($this->generateUrl('czesc_edytuj_materialy', array('id' => $part->getId())), $msg);
     }
 
-    /**
-     * (AJAX) Dodawanie materiału do części
-     * @Route("/czesc/dodaj_material/{id}", name="czesc_dodaj_material")
-     * @ParamConverter("part", class="AppBundle:Part")
-     */
-    public function axFabricAddAction(Request $request, $part)
-    {
-        $idFabric = $request->request->get('idFabric');
-
-        $fabric = $this->repoFabric()->one(array('id' => $idFabric));
-        $part->addFabric($fabric);
-        $this->ormPersistAndFlush($part);
-        return new Response();
-    }
 
     /**
      * (AJAX) Usuwanie procesu technologicznego z  części

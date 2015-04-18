@@ -25,7 +25,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\HasLifecycleCallbacks()
  * 
  */
-class Technology2Part {
+class Technology2Part
+{
 
     /**
      *
@@ -44,29 +45,34 @@ class Technology2Part {
      * @ORM\ManyToOne(targetEntity="Technology")
      * @ORM\JoinColumn(name="technology_id", referencedColumnName="id")
      */
-    private $technology_id;
-    
+    private $technology;
+
     /**
      *
      * @var 
      * 
-     * @ORM\ManyToOne(targetEntity="Part")
+     * @ORM\ManyToOne(targetEntity="Part", inversedBy="technologies2Part")
      * @ORM\JoinColumn(name="part_id", referencedColumnName="id")
      */
-    private $part_id;
-    
-     /**
+    private $part;
+
+    /**
+     * @ORM\Column(name="is_completed", type="boolean", nullable=true)
+     */
+    private $isCompleted;
+
+    /**
      * 
      * @var \AppBundle\Entity\Event
      * 
      * @ORM\OneToMany(targetEntity="Event", mappedBy="technology2part")
      */
     private $events;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->events = new ArrayCollection();
     }
-
 
     /**
      * Get id
@@ -84,9 +90,9 @@ class Technology2Part {
      * @param \AppBundle\Entity\Technology $technologyId
      * @return Technology2Part
      */
-    public function setTechnologyId(\AppBundle\Entity\Technology $technologyId = null)
+    public function setTechnology(Technology $technology = null)
     {
-        $this->technology_id = $technologyId;
+        $this->technology = $technology;
 
         return $this;
     }
@@ -96,9 +102,9 @@ class Technology2Part {
      *
      * @return \AppBundle\Entity\Technology 
      */
-    public function getTechnologyId()
+    public function getTechnology()
     {
-        return $this->technology_id;
+        return $this->technology;
     }
 
     /**
@@ -107,10 +113,9 @@ class Technology2Part {
      * @param \AppBundle\Entity\Part $partId
      * @return Technology2Part
      */
-    public function setPartId(\AppBundle\Entity\Part $partId = null)
+    public function setPart(Part $part = null)
     {
-        $this->part_id = $partId;
-
+        $this->part = $part;
         return $this;
     }
 
@@ -119,9 +124,9 @@ class Technology2Part {
      *
      * @return \AppBundle\Entity\Part 
      */
-    public function getPartId()
+    public function getPart()
     {
-        return $this->part_id;
+        return $this->part;
     }
 
     /**
@@ -145,6 +150,7 @@ class Technology2Part {
     public function removeEvent(\AppBundle\Entity\Event $events)
     {
         $this->events->removeElement($events);
+        return $this;
     }
 
     /**
@@ -155,5 +161,16 @@ class Technology2Part {
     public function getEvents()
     {
         return $this->events;
+    }
+
+    public function setIsCompleted($isCompleted)
+    {
+        $this->isCompleted = $isCompleted;
+        return $this;
+    }
+    
+    public function getIsCompleted()
+    {
+       return $this->isCompleted;
     }
 }

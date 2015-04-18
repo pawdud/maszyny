@@ -100,8 +100,9 @@ class Fabric2Part
     }
 
     public function getQuantity()
-    {
-        return $this->quantity;
+    {        
+        $scale = $this->getFabric()->getUnit()->getScale();
+        return number_format($this->quantity, $scale, '.', '');
     }
 
     public function setQuantity($quantity)

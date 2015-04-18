@@ -23,12 +23,29 @@ class Fabric2PartRepository extends BaseRepository
     public function customWhere($name, $value)
     {
         $a1 = self::getAlias();
+        
+        
         if ($name == 'id')
         {
             $this->qb->andWhere("{$a1}.id = :id");
             $this->qb->setParameter('id', $value);
             return true;
         }
+        
+        if ($name == 'fabric')
+        {
+            $this->qb->andWhere("{$a1}.fabric = :fabric");
+            $this->qb->setParameter('fabric', $value);
+            return true;
+        }
+        
+        if ($name == 'part')
+        {
+            $this->qb->andWhere("{$a1}.part = :part");
+            $this->qb->setParameter('part', $value);
+            return true;
+        }       
+        
 
         if ($name == 'q')
         {

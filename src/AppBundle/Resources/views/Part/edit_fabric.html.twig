@@ -2,7 +2,18 @@
 {% extends 'AppBundle:Part:edit_layout.html.twig' %}
 
 {% block subcontent %}
-    <a id="trg-fabric-add" href="{{ path('czesc_dodaj_material', {'id': part.id}) }}" class="btn btn-success">Dodaj materiał</a>
+    
+    {% raw %}
+        <style>
+            .ui-autocomplete.ui-widget-content {
+                z-index: 9999 !important;
+            }            
+        </style>
+        
+    {% endraw %}
+    
+    
+    <a id="trg-fabric-add" href="{{ path('czesc_zapisz_material', {'id': part.id}) }}" class="btn btn-success">Dodaj materiał</a>
 
     
     {% if part.fabrics2part | length %}
@@ -24,48 +35,49 @@
                     {{ fabric2part.fabric.name }}
                 </td>
                 <td class="text-center">
-                    {{ fabric2part.quantity }}
+                    {{ fabric2part.quantity }}                    
+                    <span class="unit">{{ fabric2part.fabric.unit.unit }}</span>
                 </td>
                 <td class="text-center">
-                    <a class="btn btn-info" href="">Edytuj</a>
+                    <a class="btn btn-info trg-fabric-edit" data-fabric-id="{{ fabric2part.fabric.id }}" data-fabric-name="{{ fabric2part.fabric.name }}" data-quantity="{{ fabric2part.quantity }}" data-unit-unit="{{ fabric2part.fabric.unit.unit }}"  href="{{ path('czesc_zapisz_material', {'id': part.id}) }}">Edytuj</a>
                 </td>
                 <td class="text-center">
-                    <a class="btn btn-danger" href="">Usuń</a>
+                    <a class="btn btn-danger" href="{{ path('czesc_usun_material', {'id': part.id, 'id_fabric2part': fabric2part.id }) }}">Usuń</a>
                 </td>
             </tr>    
             {% endfor %}
-        </tbody>
-        
+        </tbody>        
     </table>
         
     {% endif %}
     
     
 
-    <div id="cnt-modal-fabric" class="modal fade">
+    <div id="cnt-modal-fabric" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Dodawanie materiału</h4>
+                    <h4 class="modal-title"></h4>
                 </div>
                 <form class="form" id="form-fabric" action="">  
-                    <div class="modal-body">                    
-
+                    <input type="hidden" name="fabric2part[fabric_id]" value="" id="fabric2part_fabric_id">
+                    <div class="modal-body">       
                             <div class="form-group">
                                 <label>Materiał:</label>
-                                <input type="text" name="fabric2part[fabric_id]" id="fabric2part_fabric_id"  value=""  id="trg-search-fabric" class="form-control">      
+                                <input type="text"  value="" id="trg-search-fabric" class="form-control" required>      
                             </div>     
                             <div class="form-group" id="placeholder-unit">
                                 <label>Ilość:</label>
-                                <input type="text" name="fabric2part[quantity]" id="fabric2part_quantity" value="" id="trg-set-quantity"  class="form-control">
-                                <span id="quatnity-unit-placeholder"></span>
+                                <br />
+                                <input type="text" name="fabric2part[quantity]" id="fabric2part_quantity" value="" id="trg-set-quantity"  class="form-control" style="width: 100px; display: inline-block;" required>
+                                <span class="unit" id="placeholder-unit-unit"></span>
                             </div>                    
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
-                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
                     </div>
                 </form>  
             </div>
@@ -75,49 +87,69 @@
     {% raw %}
         <script>
             $(function ($) {
-                var MaterailManager = {
+                var MaterailManager = {                    
+                    urlSave: "{% endraw %}{{ path('czesc_zapisz_material', {'id': part.id}) }}{% raw %}",
+                    
                     init: function () {
                         var self = this;
+                        // Modal
                         this.cntModal = $("#cnt-modal-fabric").modal({
                             show: false
                         });
-                        this.cntForm = $("#form-fabric");
-                    },
-                    
-                    
-                    save: function(){
-                        
-                        
-                        
-                    },
-                    
-                    
-                    add: function (data) {
-                        var self = this;
-                        $.post(this.urlAdd, {"idFabric": id}).success(function (response) {
-                            console.log();
+                        // Formularz
+                        this.cntForm = $("#form-fabric");    
+                        this.cntForm.on("submit", function(e){
+                            e.preventDefault();                            
+                            var url = $(this).attr("action");
+                            var data = $(this).serialize();                            
+                            $.post(self.urlSave, data, function(response){
+                                if(response.status === "OK"){
+                                    window.location.reload();
+                                }
+                            });
                         });
-                    },
-                    update: function (id, data) {
-
-                    },
-                    remove: function (id) {
-
-                    },
+                        
+                       
+                        // Wyszukiwarka materiałow 
+                        $("#trg-search-fabric").autocomplete({
+                            source: {% endraw %}"{{ path('material_szukaj') }}"{% raw %},
+                            minLength: 1,
+                            select: function (event, ui) {                               
+                                self.setFormData(ui.item.data);
+                            }
+                        });
+                    },                    
                     resetForm: function () {
                         this.cntForm[0].reset();
                         $("#placeholder-unit").hide();
+                        $("#trg-search-fabric").prop("disabled", false);
+                        
                     },
-                    showModal: function (data) {                        
-                        this.resetForm();
+                    showModal: function (data, title) {   
+                        var data = data || {};
+                        var title = title || "";
+                        
+                        this.resetForm(); 
+                        
+                        // Tyuł mldala
+                        this.cntModal.find(".modal-title").html(title);
+                        
+                        if(data.fabric_id){
+                           // Edycja materailu - nie można zmieniąć materiału
+                            $("#trg-search-fabric").prop("disabled", true);
+                        };                     
+                                              
                         this.setFormData(data);
                         this.cntModal.modal("show");
                     },
+                    
                     hideModal: function () {
                         this.resetForm();
                         this.cntModal.modal("hide");
                     },
                     setFormData: function (data) {
+                        var data = data || {};
+                        
                         if (data.action) {
                             this.cntForm.attr("action", data.action)
                         };
@@ -127,9 +159,18 @@
                         };
 
                         if (data.quantity) {
-                            $("#fabric2part_quanity").val(data.quantity);
+                            $("#placeholder-unit").show();
+                            $("#fabric2part_quantity").val(data.quantity);
                         };
-
+                        
+                        if (data.fabric_name) {
+                            $("#trg-search-fabric").val(data.fabric_name);
+                        };
+                        
+                        if (data.unit_unit) {
+                            $("#placeholder-unit").fadeIn("slow");
+                            $("#placeholder-unit-unit").html(data.unit_unit);
+                        };
                     }
                 };
 
@@ -140,18 +181,20 @@
                     e.preventDefault();
                     MaterailManager.showModal({
                         action: $(this).attr("href")
-                    });
+                    }, "Dodawanie materiału");
                 });
-
-                // Wyszukiwarka materaiłów
-                $("#trg-search-fabric").autocomplete({
-                    source: {% endraw %}"{{ path('material_szukaj') }}"{% raw %},
-                    minLength: 1,
-                    select: function (event, ui) {
-                        MaterailManager.add(ui.item.id, ui.item.label);
-                    }
+                // Edycja materiału
+                $(".trg-fabric-edit").on("click", function (e) {
+                    e.preventDefault();
+                    MaterailManager.showModal({
+                        action: $(this).attr("href"),
+                        fabric_id: $(this).attr("data-fabric-id"),
+                        fabric_name: $(this).attr("data-fabric-name"),
+                        quantity: $(this).attr("data-quantity"),
+                        unit_unit: $(this).attr("data-unit-unit")
+                    }, "Edycja materiału");
                 });
-
+               
 
             });
         </script>            

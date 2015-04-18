@@ -93,6 +93,8 @@ class FabricController extends BaseController
         $fabrics = $this->repoFabric()->many(
                 array('q' => $term), 0, 10
         );
+        
+        //Debug::dump($fabrics); exit;
 
         if (is_array($fabrics) && !empty($fabrics))
         {
@@ -102,6 +104,11 @@ class FabricController extends BaseController
                     'id' => $fabric->getId(),
                     'value' => $fabric->getName() . ' [' . $fabric->getCode() . ']',
                     'label' => $fabric->getName() . ' [' . $fabric->getCode() . ']',
+                    'data' => array(
+                        'fabric_id' => $fabric->getId(),
+                        'fabric_name' => $fabric->getName(),
+                        'unit_unit'    => $fabric->getUnit()->getUnit()
+                    )
                 );
             }
         }

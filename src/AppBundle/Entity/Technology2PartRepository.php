@@ -1,8 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
-
-use Doctrine\ORM\BaseRepository;
+use AppBundle\Entity\BaseRepository;
 
 /**
  * Technology2PartRepository

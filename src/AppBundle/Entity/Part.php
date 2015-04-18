@@ -47,6 +47,11 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
     private $fabrics2part;
 
     /**
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Technology2Part", mappedBy="part", cascade={"persist", "remove"}) 
+     */
+    private $technologies2part;
+
+    /**
      * @var \AppBundle\Entity\User
      * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\User")
      * 
@@ -58,13 +63,6 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      * @ORM\ManyToOne(targetEntity="\AppBundle\Entity\Project", inversedBy="parts")
      */
     private $project;
-
-    /**
-     * @var \AppBundle\Entity\Technology
-     * @ORM\ManyToMany(targetEntity="\AppBundle\Entity\Technology", inversedBy="parts", cascade={"persist", "remove"})
-     * @ORM\JoinTable(name="technology2part")
-     */
-    private $technologies;
 
     /**
      * @var integer
@@ -82,29 +80,29 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
 
     public function __construct()
     {
-        $this->technologies = new ArrayCollection();
+        $this->technologies2part = new ArrayCollection();
         $this->fabrics2part = new ArrayCollection();
     }
 
-    public function addTechnology(Technology $technology)
+    public function addTechnology2Part(Technology2Part $technology2part)
     {
-        $this->technologies[] = $technology;
+        $this->technologies2part[] = $technology2part;
         return $this;
     }
 
-    public function removeTechnology(Technology $technology)
+    public function removeTechnology2Part(Technology2Part $technology2part)
     {
-        $this->technologies->removeElement($technology);
+        $this->technologies2part->removeElement($technology2part);
         return $this;
     }
 
     /**
      * 
-     * @return \AppBundle\Entity\Technology $technogoy
+     * @return \AppBundle\Entity\Technology2Part $technology2part
      */
-    public function getTechnologies()
+    public function getTechnologies2Part()
     {
-        return $this->technologies;
+        return $this->technologies2part;
     }
 
     public function addFabric2Part(Fabric2Part $fabric2part)
@@ -115,7 +113,7 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
 
     public function removeFabric2Part(Fabric2Part $fabric2part)
     {
-        $this->fabrics2part->removeElement($fabric);
+        $this->fabrics2part->removeElement($fabric2part);
         return $this;
     }
 
