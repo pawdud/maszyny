@@ -92,9 +92,7 @@ class FabricController extends BaseController
 
         $fabrics = $this->repoFabric()->many(
                 array('q' => $term), 0, 10
-        );
-        
-        //Debug::dump($fabrics); exit;
+        );       
 
         if (is_array($fabrics) && !empty($fabrics))
         {

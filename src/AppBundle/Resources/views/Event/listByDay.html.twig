@@ -2,12 +2,26 @@
 
 {% block content_inner %}
 
+{% set current_user_id = current_user.getId %}
+
+{% for user in users %}
+{% set userid = user.getId %}
+{% if userid != current_user_id %}
+<a href="{{ path('listByDay', {'user_id': userid}) }}">{{user.getemail}}</a><br />
+{% endif %}
+{% endfor %}
+
+<br />
+<br />
 
 
 
-<a href="{{ path('listByDay', {'user_id': '4'}) }}">dzień</a><br />
-<a href="{{ path('listByWeek', {'user_id': '4'}) }}">tydzień</a><br />
-<a href="{{ path('listByMonth', {'user_id': '4'}) }}">miesiąc</a><br />
+<div>czas pracy: {{current_user.getemail}} - widok dzienny</div>
+
+
+
+<a href="{{ path('listByWeek', {'user_id': current_user_id}) }}">tydzień</a><br />
+<a href="{{ path('listByMonth', {'user_id': current_user_id}) }}">miesiąc</a><br />
 
 <a href="{{previousUrl}}">poprzedni dzień </a>
 {{current|date('Y-m-d')}}

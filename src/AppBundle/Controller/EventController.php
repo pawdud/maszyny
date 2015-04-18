@@ -36,6 +36,10 @@ class EventController extends EventBaseController {
      * "user_id": 4}, requirements={"user_id": "\d+"})
      */
     public function indexAction() {
+
+        $qb = $this->repoUser()->findAll();
+        $this->setViewData('users', $this->paginate($qb, 100));
+
         return $this->render('AppBundle:Event:index.html.twig');
     }
 
@@ -58,10 +62,14 @@ class EventController extends EventBaseController {
         } else {
             $day = new DateTime("$year-$month-$day");
         }
-        $qb = $this->repoEvent()->findAllByDay($day);
+        $current_user = $this->repoUser()->find($user_id);
+        $qb = $this->repoEvent()->findAllByDay($day, $user_id);
         $this->setViewData('events', $this->paginate($qb, 15));
-        $this->setViewData('nextUrl', $this->generateNextDayUrl($day));
-        $this->setViewData('previousUrl', $this->generatePreviousDayUrl($day));
+        $users = $this->repoUser()->findAll();
+        $this->setViewData('users', $this->paginate($users, 100));
+        $this->setViewData('current_user', $current_user);
+        $this->setViewData('nextUrl', $this->generateNextDayUrl($day, $current_user));
+        $this->setViewData('previousUrl', $this->generatePreviousDayUrl($day, $current_user));
         $this->setViewData('current', $day);
         return $this->render('AppBundle:Event:listByDay.html.twig');
     }
@@ -86,10 +94,14 @@ class EventController extends EventBaseController {
             $day = new DateTime("$year-$month-$day");
         }
 
-        $qb = $this->repoEvent()->findAllByWeek($day);
+        $qb = $this->repoEvent()->findAllByWeek($day, $user_id);
         $this->setViewData('events', $this->paginate($qb, 15));
-        $this->setViewData('nextUrl', $this->generateNextWeekUrl($day));
-        $this->setViewData('previousUrl', $this->generatePreviousWeekUrl($day));
+        $users = $this->repoUser()->findAll();
+        $this->setViewData('users', $this->paginate($users, 100));
+        $current_user = $this->repoUser()->find($user_id);
+        $this->setViewData('current_user', $current_user);
+        $this->setViewData('nextUrl', $this->generateNextWeekUrl($day, $current_user));
+        $this->setViewData('previousUrl', $this->generatePreviousWeekUrl($day, $current_user));
         $this->setViewData('current', $day);
         return $this->render('AppBundle:Event:listByWeek.html.twig');
     }
@@ -112,9 +124,13 @@ class EventController extends EventBaseController {
         } else {
             $day = new DateTime("$year-$month-01");
         }
-        $qb = $this->repoEvent()->findAllByMonth($day);
-         $this->setViewData('nextUrl', $this->generateNextMonthUrl($day));
-        $this->setViewData('previousUrl', $this->generatePreviousMonthUrl($day));
+        $qb = $this->repoEvent()->findAllByMonth($day, $user_id);
+        $users = $this->repoUser()->findAll();
+        $this->setViewData('users', $this->paginate($users, 100));
+        $current_user = $this->repoUser()->find($user_id);
+        $this->setViewData('current_user', $current_user);
+        $this->setViewData('nextUrl', $this->generateNextMonthUrl($day, $current_user));
+        $this->setViewData('previousUrl', $this->generatePreviousMonthUrl($day, $current_user));
         $this->setViewData('current', $day);
         $this->setViewData('events', $this->paginate($qb, 15));
         return $this->render('AppBundle:Event:listByMonth.html.twig');

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 17 Kwi 2015, 22:09
+-- Czas wygenerowania: 18 Kwi 2015, 15:13
 -- Wersja serwera: 5.5.38
 -- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
 
@@ -13,19 +13,6 @@ SET time_zone = "+00:00";
 --
 -- Baza danych: `maszyny`
 --
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla  `calendar_settings`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -43,20 +30,15 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `technology2part_id` (`technology2part_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
--- Struktura tabeli dla  `event_categories`
+-- Zrzut danych tabeli `event`
 --
 
-CREATE TABLE IF NOT EXISTS `event_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `color` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+INSERT INTO `event` (`id`, `time_start`, `time_end`, `user_id`, `notice`, `technology2part_id`) VALUES
+(2, '2015-04-17 04:00:00', '2015-04-17 08:00:00', 3, NULL, 1),
+(3, '2015-04-17 12:00:00', '2015-04-17 18:00:00', 4, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -84,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `fabric` (
 
 INSERT INTO `fabric` (`id`, `fabric_category_id`, `user_id`, `code`, `quantity`, `fabric_unit_id`, `name`, `time_updated`, `time_add`) VALUES
 (1, 1, 3, 'GWO', 10.00, 4, 'Gwoździe 20', '2015-03-21 08:49:30', '2015-03-21 08:43:20'),
-(2, 1, 3, 'GWO30', 2.00, NULL, 'Gwozdie 30', NULL, '2015-03-21 08:46:03'),
+(2, 1, 3, 'GWO30', 2.00, 3, 'Gwozdie 30', NULL, '2015-03-21 08:46:03'),
 (3, 1, 3, 'GWO20', 3.21, 3, 'Gwoździe', '2015-04-14 22:41:56', '2015-04-14 22:41:25'),
 (4, 3, 3, 'DYB20', 2000.00, 5, 'Dyble', NULL, '2015-04-14 22:46:15');
 
@@ -112,7 +94,6 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
 
 INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `quantity`, `time_updated`, `time_add`) VALUES
 (1, 3, 1, 1.0000, NULL, '0000-00-00 00:00:00'),
-(2, 2, 1, 2.0000, NULL, '0000-00-00 00:00:00'),
 (3, 4, 1, 5.0000, NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
@@ -253,17 +234,19 @@ CREATE TABLE IF NOT EXISTS `technology2part` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `part_id` int(10) unsigned NOT NULL,
   `technology_id` int(10) unsigned NOT NULL,
+  `is_completed` tinyint(1) DEFAULT NULL COMMENT 'Czy technologia została wykonana',
   PRIMARY KEY (`id`),
   KEY `part_id` (`part_id`),
   KEY `technology_id` (`technology_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Zrzut danych tabeli `technology2part`
 --
 
-INSERT INTO `technology2part` (`id`, `part_id`, `technology_id`) VALUES
-(1, 3, 1);
+INSERT INTO `technology2part` (`id`, `part_id`, `technology_id`, `is_completed`) VALUES
+(1, 3, 1, NULL),
+(2, 2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -298,6 +281,13 @@ INSERT INTO `user` (`id`, `email`, `password`, `salt`, `role`, `name`, `surname`
 --
 -- Ograniczenia dla zrzutów tabel
 --
+
+--
+-- Ograniczenia dla tabeli `event`
+--
+ALTER TABLE `event`
+  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `event_ibfk_2` FOREIGN KEY (`technology2part_id`) REFERENCES `technology2part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ograniczenia dla tabeli `fabric`
