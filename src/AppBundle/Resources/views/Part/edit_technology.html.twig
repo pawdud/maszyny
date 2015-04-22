@@ -13,6 +13,7 @@
                 <th class="text-center"></th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
+                <th class="text-center"></th>
             </tr>
         </thead>
         
@@ -26,9 +27,12 @@
                    <span class="label {% if technology2part.isCompleted %}label-success{% else %}label-warning{% endif %}">
                        {% if technology2part.isCompleted %} TAK {% else %} NIE {% endif %}
                    </span>
-                </td>
+                </td> 
+                <td>
+                    <a class="btn btn-success trg-event2technology-add" href="{{ path('czesc_technologia_zdarzenie_dodaj', {'id':technology2part.id}) }}" data-technology-name="{{ technology2part.technology.name }}">Dodaj zdarzenie</a>
+                </td>  
                 <td class="text-center">
-                    <a class="btn btn-info trg-technology-edit" href="#">Harmonogram</a>
+                    <a class="btn btn-info trg-event2technology-list" href="{{ path('czesc_technologia_zdarzenia', {'id': technology2part.id }) }}" data-technology-name="{{ technology2part.technology.name }}">Zdarzenia</a>
                 </td>                
                 <td class="text-center">
                     <a class="btn btn-info trg-technology-edit" href="{{ path('czesc_technologia_edytuj', {'id': part.id, 'id_technology2part': technology2part.id}) }}">Edytuj</a>
@@ -36,7 +40,7 @@
                 <td class="text-center">
                     <a class="btn btn-danger" href="{{ path('czesc_technologia_usun', {'id': part.id, 'id_technology2part': technology2part.id }) }}">Usuń</a>
                 </td>
-            </tr>    
+            </tr> 
             {% endfor %}
         </tbody>        
     </table>
@@ -79,17 +83,25 @@
                     
                 },
                 
-                show: function(title){
+                show: function(title, url, data){                    
                   var title = title || "";
+                  var url   = url || "";
+                  var data = data || {};    
+                  this.reset();
                   this.cnt.find(".modal-title").html(title);
                   this.cnt.modal("show");  
-                },                
+                  this.load(url, data);
+                 
+                },               
+                
+                reset: function(){
+                  this.cnt.find(".modal-title").html("");  
+                  this.cnt.find(".modal-body").html("");  
+                },
                 
                 load: function(url, data){
                     var self = this;
-                    $.post(url, data).success(function(data, statusText, xhr){                        
-                        console.log("statusCode", xhr.getResponseHeader("ttm-reload"));
-                        
+                    $.post(url, data).success(function(data, statusText, xhr){     
                         if(xhr.getResponseHeader("ttm-reload")){
                             window.location.reload();
                         }else{
@@ -106,16 +118,28 @@
             // Dodawanie technologi
             $("#trg-technology-add").on("click", function(e){
                e.preventDefault();
-               ModalAjax.show("Dodawanie technologi");
-               ModalAjax.load($(this).attr("href"));               
+               ModalAjax.show("Dodawanie technologi", $(this).attr("href"));                          
             });
             
             // Edycja technologi
             $(".trg-technology-edit").on("click", function(e){
                e.preventDefault();
-               ModalAjax.show("Edycja technologi");
-               ModalAjax.load($(this).attr("href"));               
+               ModalAjax.show("Edycja technologi", $(this).attr("href"));                   
             });
+            
+            // Dodawanie zdarzenie do technologii
+            $(".trg-event2technology-add").on("click", function(e){
+               e.preventDefault();
+               ModalAjax.show("Dodawanie zdarzenia do technologii: " + $(this).attr("data-technology-name"), $(this).attr("href"));                   
+            });
+            
+            // Lista zdarzeń dla technologii
+            $(".trg-event2technology-list").on("click", function(e){
+               e.preventDefault();
+               ModalAjax.show("Lista zdarzeń dla technologii: " + $(this).attr("data-technology-name"), $(this).attr("href"));                   
+            });
+            
+            
         </script>            
     {% endraw %}
 </div>  

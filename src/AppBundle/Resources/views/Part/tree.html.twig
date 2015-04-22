@@ -9,6 +9,23 @@
         </header>
 
     <div class="main-box-body clearfix">
+        
+        <form class="form form-inline"  id="search-part-form">
+            <div class="form-group">
+                <label>Technologia</label>
+                <select  class="form-control trg-part-search" name="technology_id">
+                    {% for technology in technologies %}
+                        <option value="{{ technology.id }}">{{ technology.name }}</option>                        
+                    {% endfor %}                    
+                </select>
+                
+                
+            </div>
+            
+        
+               
+        </form>
+        
      <div class="table-responsive">
       <table id="cnt-part-tree" class="table">
         <colgroup>
@@ -25,7 +42,7 @@
                 <th></th> 
                 <th class="th-part-worker">Pracownik</th>          
                 <th class="th-part-drow">Rysunek</th>          
-                <th class="th-part-ready">Status</th>          
+                <th class="th-part-ready">Technologie</th>          
                 <th class="th-part-delete"></th>          
                 <th class="th-part-details"></th>          
             </tr>
@@ -94,12 +111,27 @@
                                 $tdList.eq(4).html("<span class='label label-warning'>Brak rysunku</span>");
                             };      
                             
+                            
+                            if(data.node.data.technologies){
+                               var htmlTechnologies = [];
+                               
+                               $.each(data.node.data.technologies, function(i, el){
+                                   var classSpan = !!el.is_completed ? "label-success" : "label-warning";
+                                   var classIcon = !!el.is_completed ? "fa-thumbs-o-up" : "fa-thumbs-o-down";                                   
+                                   htmlTechnologies.push("<span style='display:block; margin-bottom: 5px;' class='label " + classSpan  + "'>"  + el.name + " <i class='fa " + classIcon + "'></i></span>");
+                               });
+                               
+                               
+                                $tdList.eq(5).html(htmlTechnologies.join(''));
+                            };
+                            
+                            
                             // Czy część jest gotowa
-                            if(data.node.data.is_completed){
-                                $tdList.eq(5).html("<span class='label label-success'>Gotowa ok <i class='fa fa-thumbs-o-up'></i></span>");
-                            }else{
-                                $tdList.eq(5).html("<span class='label label-warning'>Nie gotowa <i class='fa fa-thumbs-o-down'></i></span>");
-                            };     
+                            //if(data.node.data.is_completed){
+                            //    $tdList.eq(5).html("<span class='label label-success'>Gotowa ok <i class='fa fa-thumbs-o-up'></i></span>");
+                           // }else{
+                            //    $tdList.eq(5).html("<span class='label label-warning'>Nie gotowa <i class='fa fa-thumbs-o-down'></i></span>");
+                            //};     
                        
                             $tdList.eq(6).append(trgDelete);
                             $tdList.eq(7).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły <i class='fa fa-cogs'></i></a>");
@@ -161,7 +193,6 @@
                             var url = patternUrlDrzewko.replace("parent_id", parent_id).replace("child_id", child_id);
 
                             $.post(url, function (response) {
-                                console.log("response", response);
                                 if (response.status === "OK") {
                                     data.tree.reload(response.data);
                                 } else {
@@ -172,7 +203,15 @@
                         }
                     }
                 });
-
+                
+                
+                $(".trg-part-search").on("change", function(e){                    
+                    $("#cnt-part-tree").fancytree("option", "source", {
+                        url: sourceUrl + "?" + $("#search-part-form").serialize(),
+                        cache: false
+                    });                    
+                    $("#cnt-part-tree").fancytree("getTree").reload();        
+                });
             });
         </script>        
     {% endraw %}

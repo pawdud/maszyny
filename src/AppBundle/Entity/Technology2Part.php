@@ -51,7 +51,7 @@ class Technology2Part
      *
      * @var 
      * 
-     * @ORM\ManyToOne(targetEntity="Part", inversedBy="technologies2Part")
+     * @ORM\ManyToOne(targetEntity="Part", inversedBy="technologies2part")
      * @ORM\JoinColumn(name="part_id", referencedColumnName="id")
      */
     private $part;

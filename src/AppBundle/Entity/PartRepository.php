@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use AppBundle\Utility\Config;
 use AppBundle\Entity\BaseRepository;
 use Doctrine\Common\Util\Debug;
+use Doctrine\DBAL\Connection;
 
 /**
  * Części
@@ -35,9 +36,12 @@ class PartRepository extends BaseRepository
             return true;
         }
     }
+    
 
-    public function tree($projectId, $parentId = 0, $mode = self::PARSE_MODE_TREE_FOR_JAVASCRIPT)
+    public function tree($projectId, $parentId = 0, $mode = self::PARSE_MODE_TREE_FOR_JAVASCRIPT, array $partsIdsTree = array())
     {
+        
+         //Debug::dump($partsIdsTree); exit;
 
         $return = array();
 
@@ -47,25 +51,39 @@ class PartRepository extends BaseRepository
                 FROM part p
                 JOIN user u ON u.id = p.user_id
                 WHERE 
-                    p.project_id = :project_id
+                    p.project_id = ?
                 AND
-                    p.parent_id  = :parent_id
+                    p.parent_id  = ?
                    
                 ";
-
-        $stmt = $this->getEntityManager()
+        
+        
+        $parameters = array($projectId, $parentId);        
+        $types = array(\PDO::PARAM_INT, \PDO::PARAM_INT);
+        
+        
+        if($partsIdsTree){
+            $sql .= "AND p.id IN (?) ";
+            $parameters[] = $partsIdsTree;
+            $types[] = Connection::PARAM_STR_ARRAY;
+        }
+        
+        
+        
+        
+        $result = $this->getEntityManager()
                 ->getConnection()
-                ->prepare($sql);
-        $stmt->bindValue(':project_id', $projectId);
-        $stmt->bindValue(':parent_id', $parentId);
-        $stmt->execute();
-
-        $result = $stmt->fetchAll();
+                ->executeQuery($sql, $parameters, $types)
+                ->fetchAll();
+        
+        
         if (is_array($result) && !empty($result))
         {
             foreach ($result as $row)
             {
-                $children = $this->tree($projectId, $row['id']);
+                $row['technologies'] = $this->getTechnologies($row['id']);
+
+                $children = $this->tree($projectId, $row['id'], $mode, $partsIdsTree);
                 if (is_array($children) && !empty($children))
                 {
                     $row['children'] = $children;
@@ -97,6 +115,46 @@ class PartRepository extends BaseRepository
         {
             $return['children'] = $row['children'];
         }
+
+        if (!empty($row['technologies']))
+        {
+            foreach($row['technologies'] as & $v){
+                $v['is_completed'] = (bool) $v['is_completed'];
+            }
+            
+            
+            $return['technologies'] = $row['technologies'];
+        }
+
+
+        return $return;
+    }
+
+    /**
+     * 
+     * @param integer $id id części
+     */
+    private function getTechnologies($id)
+    {
+        $sql = " SELECT 
+                   t.*,
+                   t2p.is_completed
+                FROM technology t
+                JOIN technology2part t2p ON t2p.technology_id = t.id
+                WHERE
+                    t2p.part_id = :id
+        ";
+
+        $stmt = $this->getEntityManager()
+                ->getConnection()
+                ->prepare($sql);
+
+
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $return = $stmt->fetchAll();
+        
+//        Debug::dump($return);
 
         return $return;
     }

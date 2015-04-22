@@ -5,10 +5,12 @@ namespace AppBundle\Entity;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Technology2Part;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Util\Debug;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 /**
@@ -43,7 +45,7 @@ class Event {
      * 
      * @ORM\Column(name="time_start", type="datetime", nullable=false)
      */
-    private $time_start;
+    private $timeStart;
 
     /**
      *
@@ -51,7 +53,7 @@ class Event {
      * 
      * @ORM\Column(name="time_end", type="datetime", nullable=false)
      */
-    private $time_end;
+    private $timeEnd;
 
     /**
      *
@@ -72,10 +74,9 @@ class Event {
 
     /**
      *
-     * @var \AppBundle\Entity\Technology2Part
-     * 
+     * @var \AppBundle\Entity\Technology2Part     
      * @ORM\ManyToOne(targetEntity="Technology2Part", inversedBy="events")
-     * @ORM\JoinColumn(name="technology2part_id", referencedColumnName="id")
+     * 
      */
     private $technology2part;
 
@@ -98,7 +99,7 @@ class Event {
      */
     public function setTimeStart($timeStart)
     {
-        $this->time_start = $timeStart;
+        $this->timeStart = $timeStart;
 
         return $this;
     }
@@ -110,7 +111,7 @@ class Event {
      */
     public function getTimeStart()
     {
-        return $this->time_start;
+        return $this->timeStart;
     }
 
     /**
@@ -121,7 +122,7 @@ class Event {
      */
     public function setTimeEnd($timeEnd)
     {
-        $this->time_end = $timeEnd;
+        $this->timeEnd = $timeEnd;
 
         return $this;
     }
@@ -133,7 +134,7 @@ class Event {
      */
     public function getTimeEnd()
     {
-        return $this->time_end;
+        return $this->timeEnd;
     }
 
     /**
@@ -188,10 +189,9 @@ class Event {
      * @param \AppBundle\Entity\technology2part $technology2part
      * @return Event
      */
-    public function setTechnology2part(\AppBundle\Entity\technology2part $technology2part = null)
+    public function setTechnology2Part(Technology2Part $technology2part = null)
     {
         $this->technology2part = $technology2part;
-
         return $this;
     }
 
@@ -204,4 +204,38 @@ class Event {
     {
         return $this->technology2part;
     }
+    
+    
+    public function validateDateRange(ExecutionContextInterface $context){
+        if($this->timeEnd instanceof \DateTime && $this->timeStart instanceof \DateTime){
+            if($this->timeStart >= $this->timeEnd){
+               $context
+                       ->buildViolation('Czas zakończenia musi być większa od czasu rozpoczęcia')
+                       ->addViolation();
+            }            
+        }
+    }
+
+
+    
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {       
+        $metadata->addPropertyConstraint('timeStart', new Assert\DateTime(array(
+            'message' => 'Nieprawidłowa data'
+        )));
+        
+        $metadata->addPropertyConstraint('timeEnd', new Assert\DateTime(array(
+            'message' => 'Nieprawidłowa data'
+        )));
+        
+        
+        
+        // Walidacja ilości
+        $metadata->addConstraint(new Assert\Callback('validateDateRange'));
+    }
+    
+    
+    
+    
+    
 }

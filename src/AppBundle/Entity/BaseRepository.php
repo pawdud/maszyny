@@ -108,6 +108,14 @@ class BaseRepository extends EntityRepository {
         $this->reset();
         $this->setSelectMany($crit);
         $this->setWhere($crit);
+        
+        
+        if(!empty($crit['__order__']) && is_array($crit['__order__'])){
+            $this->setOrder($crit['__order__']);
+        }
+        
+        $this->setOrder();
+        
 
         if (is_numeric($offset)) {
             $this->qb->setFirstResult($offset);
@@ -138,5 +146,12 @@ class BaseRepository extends EntityRepository {
             return true;
         }
     }
+    
+    protected function setOrder(array $order = array()){        
+        foreach($order as $sort => $order){
+            $this->qb->addOrderBy($sort, $order); 
+        }
+    }
+    
 
 }

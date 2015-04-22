@@ -1,0 +1,22 @@
+{% if events | length %}
+<table class="table table-striped">
+    <thead>
+        <th class="text-center">Id</th>
+        <th class="text-center">Czas rozpoczęcia</th>
+        <th class="text-center">Czas zakończenia</th>
+        <th class="text-center">Uwagi</th>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.id }}</td>
+            <td class="text-center">{{ event.timeStart | date('Y.m.d H:i') }}</td>
+            <td class="text-center">{{ event.timeEnd | date('Y.m.d H:i') }}</td>
+            <td class="text-center">{{ event.notice }}</td>
+        </tr>   
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <h3>Brak zdarzeń</h3>    
+{% endif %}

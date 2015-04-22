@@ -42,16 +42,10 @@ class Technology extends BaseEntity implements GroupSequenceProviderInterface {
      * @ORM\Column(name="name", type="string", length=500, nullable=false)
      */
     private $name;
-    
-    /**
-     *
-     * @var \AppBundle\Entiy\Part
-     * @ORM\ManyToMany(targetEntity="Part", mappedBy="technologies", cascade={"persist", "remove"})
-     */
-    private $parts;
+
     
     public function __construct() {
-        $this->parts = new ArrayCollection();
+        
     }
     
     /**

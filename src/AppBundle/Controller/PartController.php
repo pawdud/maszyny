@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Project;
 use AppBundle\Entity\Part;
+use AppBundle\Entity\PartRepository;
 use AppBundle\Form\Type\PartType;
 use AppBundle\Entity\Fabric2Part;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -35,8 +36,13 @@ class PartController extends BaseController
      * @Route("/czesci/drzewo/{id}", name="czesci_drzewo")
      * @ParamConverter("project", class="AppBundle:Project")
      */
-    public function treeAction(Request $request, Project $project)
-    {
+    public function treeAction(Request $request, $id, Project $project)
+    {        
+        
+        $this->setViewData('technologies', $this->repoProject()->getTechnologies($id)); 
+        
+        
+        
 
 //        $source = array(
 //            array(
@@ -280,9 +286,22 @@ class PartController extends BaseController
      * @Route("/czesc/drzewko_struktura/{id}", name="czesc_drzewko_struktura")
      * @ParamConverter("project", class="AppBundle:Project")
      */
-    public function axTreeSourceAction(Project $project)
+    public function axTreeSourceAction(Request $request, $id, Project $project)
     {
-        $source = $this->getPartsJsTreeSource($project);
+        
+        $technologyId = $request->query->get('technology_id', false);
+        $partsIdsTree = array();
+        if($technologyId){
+            $partsIds       = $this->repoProject()->getPartsIdByTechnology($id, $technologyId);
+            $partsData   = $this->repoProject()->getPartsData($id);
+            $partsIdsTree   = array_values($this->repoProject()->getPartsTree($partsIds, $partsData));
+        }
+        
+        
+       
+        
+        
+        $source = $this->getPartsJsTreeSource($project, $partsIdsTree);
         return new JsonResponse($source);
     }
 
@@ -327,7 +346,7 @@ class PartController extends BaseController
      * @param Project $project
      * @return array
      */
-    private function getPartsJsTreeSource(Project $project)
+    private function getPartsJsTreeSource(Project $project, array $partsIdsTree = array())
     {
         $source = array(
             array(
@@ -335,8 +354,11 @@ class PartController extends BaseController
                 'title' => $project->getName(),
                 'folder' => true,
                 'expanded' => true,
-                'children' => $this->repoPart()->tree($project->getId(), 0))
+                'children' => $this->repoPart()->tree($project->getId(), 0, PartRepository::PARSE_MODE_TREE_FOR_JAVASCRIPT, $partsIdsTree))
         );
+        
+        
+        
         return $source;
     }
 

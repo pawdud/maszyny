@@ -1,0 +1,13 @@
+{# dodawanie #}
+
+{{ form_start(form, { 'action': app.request.requestUri} ) }}  
+    {{ form_errors(form) }}
+
+
+    {{ form_row(form.timeStart) }}  
+    {{ form_row(form.timeEnd) }}  
+    {{ form_row(form.notice) }}  
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Zapisz <i class="fa fa-floppy-o"></i></button>
+    </div>
+{{ form_end(form) }}    
