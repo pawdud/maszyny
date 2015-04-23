@@ -38,7 +38,7 @@
                     <a class="btn btn-info trg-technology-edit" href="{{ path('czesc_technologia_edytuj', {'id': part.id, 'id_technology2part': technology2part.id}) }}">Edytuj</a>
                 </td>
                 <td class="text-center">
-                    <a class="btn btn-danger" href="{{ path('czesc_technologia_usun', {'id': part.id, 'id_technology2part': technology2part.id }) }}">Usuń</a>
+                    <a class="btn btn-danger trg-delete" href="{{ path('czesc_technologia_usun', {'id': part.id, 'id_technology2part': technology2part.id }) }}">Usuń</a>
                 </td>
             </tr> 
             {% endfor %}

@@ -42,7 +42,7 @@
                     <a class="btn btn-info trg-fabric-edit" data-fabric-id="{{ fabric2part.fabric.id }}" data-fabric-name="{{ fabric2part.fabric.name }}" data-quantity="{{ fabric2part.quantity }}" data-unit-unit="{{ fabric2part.fabric.unit.unit }}"  href="{{ path('czesc_zapisz_material', {'id': part.id}) }}">Edytuj</a>
                 </td>
                 <td class="text-center">
-                    <a class="btn btn-danger" href="{{ path('czesc_usun_material', {'id': part.id, 'id_fabric2part': fabric2part.id }) }}">Usuń</a>
+                    <a class="btn btn-danger trg-delete" href="{{ path('czesc_usun_material', {'id': part.id, 'id_fabric2part': fabric2part.id }) }}">Usuń</a>
                 </td>
             </tr>    
             {% endfor %}

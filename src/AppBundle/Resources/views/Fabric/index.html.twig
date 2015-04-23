@@ -1,85 +1,89 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}
-    
-    
+
+
     <div class="panel panel-default">
         <div class="panel-heading">
-        {% if fabrics.getTotalItemCount %}
-            Materiały <i class="fa fa-th-large"></i>
-        {% else %}    
-            Brak materialów
-        {% endif %}
+            {% if fabrics.getTotalItemCount %}
+                Materiały <i class="fa fa-th-large"></i>
+            {% else %}    
+                Brak materialów
+            {% endif %}
         </div>               
 
-            <div class="panel-body">
-                <header class="main-box-header clearfix">
-                    <div class="filter-block pull-right">
-                        <div class="form-group pull-left">
-                            <input type="text" placeholder="Szukaj..." class="form-control">
-                            <i class="fa fa-search search-icon"></i>
-                        </div>
-                        <div class="form-group pull-left">                            
-                        <select class="form-control">
-                            <option>Kategoria</option>
-                            <option>Nakrętki</option>
-                            <option>Metale</option>
-                            <option>Inne</option>
-                            <option>Miedź</option>
-                        </select>
-                        </div>
-                        <a class="btn btn-success" href="{{ path('material_dodaj') }}"><i class="fa fa-plus-circle"></i> Dodaj material </a>
+        <div class="panel-body">
+            <header class="main-box-header clearfix">
+                <a class="btn btn-primary pull-left" href="{{ path('material_dodaj') }}"> 
+                    <i class="fa fa-plus-circle fa-lg"></i> Dodaj materiał
+                </a>
+                <form class="form form-inline pull-right" method="get">                        
+                    <div class="form-group ">
+                        <input name="search[q]" value="{%if search.q is defined %}{{ search.q }}{% endif %}" type="text" placeholder="Szukaj..." class="form-control">
+
                     </div>
-                </header>
+                    <div class="form-group ">
+                        <select class="form-control" name="search[category]" type="text">
+                            <option value="">dowolna</option>
+                            {% for category in categories %}
+                                <option {% if search.category is defined and search.category == category.id %}selected{% endif %} value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>                            
+                    </div>
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-success">Szukaj  <i class="fa fa-search search-icon"></i></button>
+                    </div>
+                </form>
+            </header>
 
             {% if fabrics.getTotalItemCount %}
-            <div class="main-box-body clearfix">
-              <div class="table-responsive">  
-                <table class="table">
-                    <thead>
-                        <th class="text-center">Id</th>
-                        <th class="text-center">Kod</th>
-                        <th class="text-center">Nazwa</th>
-                        <th class="text-center">Stan magazynowy</th>
-                         <th class="text-center">Kategoria</th>
-                        <th class="text-center">Utworzony</th>
-                        <th class="text-center"></th>                       
-                    </thead>
-                    
-                    <tbody>
-                        {% for fabric in fabrics %}
-                        <tr>
-                            <td class="text-center">{{ fabric.id }}</td>
-                            <td class="text-center">{{ fabric.code }}</td>
-                            <td class="text-center">{{ fabric.name }}</td>
-                            <td class="text-center">{{ fabric.quantity }}</td>
-                            <td class="text-center">{{ fabric.category.name }}</td>
-                            <td class="text-center">
-                                {{ fabric.timeAdd | date('Y:m:d H:i') }}
-                                <div>
-                                ({{ fabric.user.name }} {{ fabric.user.surname }})
-                                </div>
-                            </td>                           
-                            <td style="width: 15%;">
-                                <a href="{{ path('material_edytuj', {'id': fabric.id}) }}" class="table-link" title="Edytuj">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                                <a href="{{ path('material_usun', {'id': fabric.id}) }}" class="table-link danger" title="Usuń">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                    </span>  
-                                </a>
-                            </td>                            
-                        </tr>
-                        {% endfor %}                        
-                    </tbody>
-                  </table>
-                 </div>
-               </div>
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive">  
+                        <table class="table">
+                            <thead>
+                            <th class="text-center">Id</th>
+                            <th class="text-center">Kod</th>
+                            <th class="text-center">Nazwa</th>
+                            <th class="text-center">Stan magazynowy</th>
+                            <th class="text-center">Kategoria</th>
+                            <th class="text-center">Utworzony</th>
+                            <th class="text-center"></th>                       
+                            </thead>
+
+                            <tbody>
+                                {% for fabric in fabrics %}
+                                    <tr>
+                                        <td class="text-center">{{ fabric.id }}</td>
+                                        <td class="text-center">{{ fabric.code }}</td>
+                                        <td class="text-center">{{ fabric.name }}</td>
+                                        <td class="text-center">{{ fabric.quantity }} <span class="unit">{{ fabric.unit.unit }}</span></td>
+                                        <td class="text-center">{{ fabric.category.name }}</td>
+                                        <td class="text-center">
+                                            {{ fabric.timeAdd | date('Y:m:d H:i') }}
+                                            <div>
+                                                ({{ fabric.user.name }} {{ fabric.user.surname }})
+                                            </div>
+                                        </td>                           
+                                        <td style="width: 15%;">
+                                            <a href="{{ path('material_edytuj', {'id': fabric.id}) }}" class="table-link" title="Edytuj">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a href="{{ path('material_usun', {'id': fabric.id}) }}" class="table-link danger trg-delete" title="Usuń">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                                </span>  
+                                            </a>
+                                        </td>                            
+                                    </tr>
+                                {% endfor %}                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </div>

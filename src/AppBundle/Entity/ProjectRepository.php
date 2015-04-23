@@ -20,6 +20,12 @@ class ProjectRepository extends BaseRepository
             $this->qb->setParameter('id', $value);
             return true;
         }
+        if ($name == 'q')
+        {
+            $this->qb->andWhere("{$a1}.name LIKE :q");
+            $this->qb->setParameter('q', "%{$value}%" );
+            return true;
+        }
     }
 
     // Lista wszystkich 

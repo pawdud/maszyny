@@ -1,81 +1,85 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}
-     
-    
+
+
     <div class="panel panel-default">
         <div class="panel-heading">
-        {% if users.getTotalItemCount %}
-            Użytkownicy
-        {% else %}    
-            Brak uzytkowników
-        {% endif %}
+            {% if users.getTotalItemCount %}
+                Użytkownicy
+            {% else %}    
+                Brak uzytkowników
+            {% endif %}
         </div>               
-        
-           <div class="panel-body">
-               <header class="main-box-header clearfix">
-                   <div class="filter-block pull-right">
-                       <div class="form-group pull-left">
-                           <input type="text" placeholder="Szukaj..." class="form-control">
-                           <i class="fa fa-search search-icon"></i>
-                       </div>
-                       <a class="btn btn-primary" href="{{ path('uzytkownik_dodaj') }}">
-                           <i class="fa fa-user-plus"></i> Dodaj użytkownika
-                       </a>
-                   </div>
-               </header>
-               
-               {% if users.getTotalItemCount %}
-               
-             <div class="main-box-body clearfix">
-              <div class="table-responsive">      
-                <table class="table">
-                    <thead>
-                        <th class="text-center">Id</th>
-                        <th class="text-center">Login</th>
-                        <th class="text-center">Uprawnienia</th>
-                        <th class="text-center">Imię</th>
-                        <th class="text-center">Nazwisko</th>
-                        <th class="text-center">Utworzono</th>
-                        <th class="text-center"></th>
-                        <th class="text-center"></th>
-                    </thead>
-                    
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td class="text-center">{{ user.id }}</td>
-                            <td class="text-center">{{ user.email }}</td>
-                            <td class="text-center">{{ user.roleName }}</td>
-                            <td class="text-center">{{ user.name }}</td>
-                            <td class="text-center">{{ user.surname }}</td>
-                            <td class="text-center">{{ user.timeAdd | date('Y:m:d H:i') }}</td>
-                            <td style="width: 15%;">
-                                <a href="{{ path('uzytkownik_edytuj', {'id': user.id}) }}" class="table-link" title="Edytuj">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                                <a href="{{ path('uzytkownik_haslo', {'id': user.id}) }}" class="table-link" title="Zmień hasło">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                                <a href="{{ path('uzytkownik_usun', {'id': user.id}) }}" class="table-link danger" title="Usuń">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </td>                            
-                        </tr>
-                        {% endfor %}                        
-                    </tbody>
-                 </table>
+
+        <div class="panel-body">   
+            
+            <header class="main-box-header clearfix">
+                <a class="btn btn-primary pull-left" href="{{ path('uzytkownik_dodaj') }}">
+                    <i class="fa fa-user-plus"></i> Dodaj użytkownika
+                </a>
+                <form class="form form-inline pull-right" method="get">                        
+                    <div class="form-group ">
+                        <input name="search[q]" value="{%if search.q is defined %}{{ search.q }}{% endif %}" type="text" placeholder="Szukaj..." class="form-control">
+
+                    </div>
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-success">Szukaj <i class="fa fa-search search-icon"></i></button>
+                    </div>
+                </form>
+            </header>
+                        
+            {% if users.getTotalItemCount %}
+
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive">      
+                        <table class="table">
+                            <thead>
+                            <th class="text-center">Id</th>
+                            <th class="text-center">Login</th>
+                            <th class="text-center">Uprawnienia</th>
+                            <th class="text-center">Imię</th>
+                            <th class="text-center">Nazwisko</th>
+                            <th class="text-center">Utworzono</th>
+                            <th class="text-center"></th>
+                            <th class="text-center"></th>
+                            </thead>
+
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td class="text-center">{{ user.id }}</td>
+                                        <td class="text-center">{{ user.email }}</td>
+                                        <td class="text-center">{{ user.roleName }}</td>
+                                        <td class="text-center">{{ user.name }}</td>
+                                        <td class="text-center">{{ user.surname }}</td>
+                                        <td class="text-center">{{ user.timeAdd | date('Y:m:d H:i') }}</td>
+                                        <td style="width: 15%;">
+                                            <a href="{{ path('uzytkownik_edytuj', {'id': user.id}) }}" class="table-link" title="Edytuj">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a href="{{ path('uzytkownik_haslo', {'id': user.id}) }}" class="table-link" title="Zmień hasło">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a href="{{ path('uzytkownik_usun', {'id': user.id}) }}" class="table-link danger trg-delete" title="Usuń">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </td>                            
+                                    </tr>
+                                {% endfor %}                        
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-              </div>
             </div>
         {% endif %}
     </div>

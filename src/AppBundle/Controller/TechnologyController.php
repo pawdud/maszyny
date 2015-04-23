@@ -33,8 +33,14 @@ class TechnologyController extends BaseController
     public function indexAction(Request $request)
     {
         $crit = array();
+        $search = $request->query->get('search', array());        
+        if(!empty($search['q'])){
+            $crit['q'] = $search['q'];
+        }       
+        
         $qb = $this->repoTechnology()->many($crit, false, false, true);
         $this->setViewData('technologies', $this->paginate($qb, 15));
+        $this->setViewData('search', $search);
         return $this->render('AppBundle:Technology:index.html.twig');
     }
 

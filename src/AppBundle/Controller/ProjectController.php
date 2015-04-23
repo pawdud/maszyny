@@ -18,9 +18,23 @@ class ProjectController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        
+        $search = $request->query->get('search', array());
+        
         $crit = array();
+        
+        if(!empty($search['q'])){
+            $crit['q'] = $search['q'];
+        }
+        
+//        Debug::dump($crit); exit;
+      
+       
+        
+        
         $qb = $this->repoProject()->many($crit, false, false, true);
         $this->setViewData('projects', $this->paginate($qb, 15));
+        $this->setViewData('search', $search);
         return $this->render('AppBundle:Project:index.html.twig');
     }
 

@@ -4,66 +4,71 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-        {% if technologies.getTotalItemCount %}
-            Procesy Technologiczne <i class="fa fa-wrench"></i>
-        {% else %}    
-            Brak procesów technologicznych
-        {% endif %}
+            {% if technologies.getTotalItemCount %}
+                Procesy Technologiczne <i class="fa fa-wrench"></i>
+            {% else %}    
+                Brak procesów technologicznych
+            {% endif %}
         </div>               
-            <div class="panel-body">
-                <header class="main-box-header clearfix">
-                    <div class="filter-block pull-right">
-                        <div class="form-group pull-left">
-                            <input type="text" placeholder="Szukaj..." class="form-control">
-                            <i class="fa fa-search search-icon"></i>
-                        </div>
-                        <a class="btn btn-success" href="{{ path('procesy_dodaj') }}"><i class="fa fa-plus-circle"></i> Dodaj proces technologiczny</a>
+        <div class="panel-body">
+            <header class="main-box-header clearfix">
+                <a class="btn btn-primary pull-left" href="{{ path('procesy_dodaj') }}"> 
+                    <i class="fa fa-plus-circle fa-lg"></i> Dodaj proces technologiczny
+                </a>
+                <form class="form form-inline pull-right" method="get">                        
+                    <div class="form-group ">
+                        <input name="search[q]" value="{%if search.q is defined %}{{ search.q }}{% endif %}" type="text" placeholder="Szukaj..." class="form-control">
+
                     </div>
-                </header>
-                
-          {% if technologies.getTotalItemCount %}
-              
-              <div class="main-box-body clearfix">
-                  <div class="table-responsive"> 
-                      <table class="table">
-                          <thead>
-                          <th class="text-center">Id</th>
-                          <th class="text-center">Nazwa</th>
-                          <th class="text-center">Utworzony</th>
-                          <th class="text-center"></th>
-                          <th class="text-center"></th>
-                          </thead>
+                    <div class="form-group ">
+                        <button type="submit" class="btn btn-success">Szukaj <i class="fa fa-search search-icon"></i></button>
+                    </div>
+                </form>
+            </header>
 
-                          <tbody>
-                              {% for technology in technologies %}
-                                  <tr>
-                                      <td class="text-center">{{ technology.id }}</td>
-                                      <td class="text-center">{{ technology.name }}</td>
-                                      <td class="text-center">
-                                          {{ technology.timeAdd | date('Y:m:d H:i') }}
-                                      </td>                          
-                                      <td class="text-center">
-                                          <a href="{{ path('procesy_edytuj', {'id': technology.id}) }}" class="table-link" title="Edytuj">
-                                              <span class="fa-stack">
-                                                  <i class="fa fa-square fa-stack-2x"></i>
-                                                  <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                              </span>
-                                          </a>
+            {% if technologies.getTotalItemCount %}
 
-                                          <a href="{{ path('procesy_usun', {'id': technology.id}) }}" class="table-link danger" title="Usuń">
-                                              <span class="fa-stack">
-                                                  <i class="fa fa-square fa-stack-2x"></i>
-                                                  <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                              </span> 
-                                          </a>
-                                      </td>                            
-                                  </tr>
-                              {% endfor %}                        
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          </div>
+                <div class="main-box-body clearfix">
+                    <div class="table-responsive"> 
+                        <table class="table">
+                            <thead>
+                            <th class="text-center">Id</th>
+                            <th class="text-center">Nazwa</th>
+                            <th class="text-center">Utworzony</th>
+                            <th class="text-center"></th>
+                            <th class="text-center"></th>
+                            </thead>
+
+                            <tbody>
+                                {% for technology in technologies %}
+                                    <tr>
+                                        <td class="text-center">{{ technology.id }}</td>
+                                        <td class="text-center">{{ technology.name }}</td>
+                                        <td class="text-center">
+                                            {{ technology.timeAdd | date('Y:m:d H:i') }}
+                                        </td>                          
+                                        <td class="text-center">
+                                            <a href="{{ path('procesy_edytuj', {'id': technology.id}) }}" class="table-link" title="Edytuj">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+
+                                            <a href="{{ path('procesy_usun', {'id': technology.id}) }}" class="table-link danger trg-delete" title="Usuń">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                                </span> 
+                                            </a>
+                                        </td>                            
+                                    </tr>
+                                {% endfor %}                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

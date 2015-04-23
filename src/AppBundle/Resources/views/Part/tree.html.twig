@@ -14,16 +14,12 @@
             <div class="form-group">
                 <label>Technologia</label>
                 <select  class="form-control trg-part-search" name="technology_id">
+                    <option value="">wszystkie</option>
                     {% for technology in technologies %}
                         <option value="{{ technology.id }}">{{ technology.name }}</option>                        
                     {% endfor %}                    
-                </select>
-                
-                
+                </select>                
             </div>
-            
-        
-               
         </form>
         
      <div class="table-responsive">
@@ -40,7 +36,7 @@
                 <th></th> 
                 <th></th> 
                 <th></th> 
-                <th class="th-part-worker">Pracownik</th>          
+                <th class="th-part-worker">Materiały</th>          
                 <th class="th-part-drow">Rysunek</th>          
                 <th class="th-part-ready">Technologie</th>          
                 <th class="th-part-delete"></th>          
@@ -92,17 +88,24 @@
                         var trgDelete = $("<a href='' class='btn btn-danger'>Usuń <i class='fa fa-trash'></i></a>");
                         trgDelete.on("click", function (e) {
                             e.preventDefault();
+                            if(!confirm("Jesteś pewien, że chcesz usunąć ten element?")){
+                                return false;
+                            };
                             $.post(patternUrlDelete.replace("part_id", data.node.key)).success(function (response) {
-                                if (response.status && response.status === 'OK') {
+                              if (response.status && response.status === 'OK') {
                                     data.tree.reload(response.data);
-                                }
+                              }
                                 maszyny.Modal.show(response.message);
                             });
                         });                        
                         
                         if (data.node.parent.key !== "root_1") {                            
-                            // Twórca
-                            $tdList.eq(3).html(data.node.data.user_name);
+                            // Czy są dodane materiały
+                            
+                            var classSpan = !!data.node.data.fabrics ? "label-success" : "label-warning";
+                            var classIcon = !!data.node.data.fabrics ? "fa-thumbs-o-up" : "fa-thumbs-o-down";     
+                            var titleSpan = !!data.node.data.fabrics ? "Tak" : "Nie";     
+                            $tdList.eq(3).html("<span style='display:block; margin-bottom: 5px;' class='label " + classSpan  + "'>"  + titleSpan + " <i class='fa " + classIcon + "'></i></span>");
                             
                             // Czy jest wydruk
                             if(data.node.data.is_drawing){

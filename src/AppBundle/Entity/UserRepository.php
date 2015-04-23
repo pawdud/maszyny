@@ -16,6 +16,11 @@ class UserRepository extends BaseRepository
             $this->qb->setParameter('id', $value);
             return true;
         }
+        if($name == 'q'){
+            $this->qb->andWhere("{$a1}.name LIKE :q OR {$a1}.surname LIKE :q OR {$a1}.email LIKE :q");
+            $this->qb->setParameter('q', "%{$value}%");
+            return true;
+        }
         if($name == 'email'){
             $this->qb->andWhere("{$a1}.email = :email");
             $this->qb->setParameter('email', $value);

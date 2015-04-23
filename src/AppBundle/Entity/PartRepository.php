@@ -82,6 +82,9 @@ class PartRepository extends BaseRepository
             foreach ($result as $row)
             {
                 $row['technologies'] = $this->getTechnologies($row['id']);
+                $row['fabrics']      = $this->getFabrics($row['id']);
+                
+                
 
                 $children = $this->tree($projectId, $row['id'], $mode, $partsIdsTree);
                 if (is_array($children) && !empty($children))
@@ -121,11 +124,13 @@ class PartRepository extends BaseRepository
             foreach($row['technologies'] as & $v){
                 $v['is_completed'] = (bool) $v['is_completed'];
             }
-            
-            
             $return['technologies'] = $row['technologies'];
         }
-
+        
+        if (!empty($row['fabrics']))
+        {            
+            $return['fabrics'] = $row['fabrics'];
+        }
 
         return $return;
     }
@@ -158,6 +163,38 @@ class PartRepository extends BaseRepository
 
         return $return;
     }
+    
+    /**
+     * 
+     * @param integer $id id części
+     */
+    private function getFabrics($id)
+    {
+        $sql = " SELECT 
+                   fa.*,
+                   f2p.quantity
+                FROM fabric fa
+                JOIN fabric2part f2p ON f2p.fabric_id = fa.id
+                WHERE
+                    f2p.part_id = :id
+        ";
+
+        $stmt = $this->getEntityManager()
+                ->getConnection()
+                ->prepare($sql);
+
+
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $return = $stmt->fetchAll();
+        
+//        Debug::dump($return);
+
+        return $return;
+    }
+    
+    
+    
 
     protected function setSelectMany(array $crit = array())
     {

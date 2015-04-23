@@ -1,0 +1,17 @@
+{% raw %}
+<script>
+    (function($, w){
+        
+        
+        $(window.document).delegate(".trg-delete", "click", function(e){
+            if(!confirm("Jesteś pewien, że chcesz usunąć ten element?")){
+                 e.preventDefault();
+            }
+            
+        });
+        
+      
+    })(jQuery, window);
+
+</script>    
+{% endraw %}

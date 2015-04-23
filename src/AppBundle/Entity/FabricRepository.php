@@ -2,9 +2,6 @@
 
 namespace AppBundle\Entity;
 
-
-
-
 class FabricRepository extends BaseRepository
 {
 
@@ -29,12 +26,21 @@ class FabricRepository extends BaseRepository
             $this->qb->setParameter('q', "%{$value}%");
             return true;
         }
+
+        if ($name == 'category')
+        {
+            $this->qb->andWhere("{$a1}.category = :category");
+            $this->qb->setParameter('category', $value);
+            return true;
+        }
     }
 
-    protected function setSelectMany(array $crit = array()){      
+    protected function setSelectMany(array $crit = array())
+    {
         $a1 = self::getAlias();
         $a2 = FabricCategoryRepository::getAlias();
         $this->qb->select($a1, $a2)
-        ->innerJoin("{$a1}.category", $a2);
+                ->innerJoin("{$a1}.category", $a2);
     }
+
 }

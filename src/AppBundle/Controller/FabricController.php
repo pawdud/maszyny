@@ -23,9 +23,24 @@ class FabricController extends BaseController
      */
     public function indexAction(Request $request)
     {
+
+        $search = $request->query->get('search', array());
+
         $crit = array();
+        if (!empty($search['q']))
+        {
+            $crit['q'] = $search['q'];
+        }
+        if (!empty($search['category']))
+        {
+            $crit['category'] = $this->repoFabricCategory()->one(array('id' => $search['category']));
+        }
+
         $qb = $this->repoFabric()->many($crit, false, false, true);
         $this->setViewData('fabrics', $this->paginate($qb, 15));
+        $this->setViewData('categories', $this->repoFabricCategory()->many());
+        $this->setViewData('search', $search);
+
         return $this->render('AppBundle:Fabric:index.html.twig');
     }
 
@@ -92,7 +107,7 @@ class FabricController extends BaseController
 
         $fabrics = $this->repoFabric()->many(
                 array('q' => $term), 0, 10
-        );       
+        );
 
         if (is_array($fabrics) && !empty($fabrics))
         {
@@ -105,7 +120,7 @@ class FabricController extends BaseController
                     'data' => array(
                         'fabric_id' => $fabric->getId(),
                         'fabric_name' => $fabric->getName(),
-                        'unit_unit'    => $fabric->getUnit()->getUnit()
+                        'unit_unit' => $fabric->getUnit()->getUnit()
                     )
                 );
             }
