@@ -8,11 +8,10 @@ use Doctrine\Common\Util\Debug;
 
 class DefaultController extends BaseController
 {
-    /**
-     * @Route("/", name="homepage")
-     */
+
     public function indexAction()
     {
         return $this->render('AppBundle:Default:index.html.twig');
     }
+
 }

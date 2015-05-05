@@ -36,11 +36,12 @@
                 <th></th> 
                 <th></th> 
                 <th></th> 
-                <th class="th-part-worker">Materiały</th>          
-                <th class="th-part-drow">Rysunek</th>          
-                <th class="th-part-ready">Technologie</th>          
-                <th class="th-part-delete"></th>          
-                <th class="th-part-details"></th>          
+                <th style="width: 5%;" class="th-part-worker">Materiały</th>          
+                <th style="width: 5%;" class="th-part-drow">Rysunek</th>          
+                <th style="width: 10%;" class="th-part-ready">Technologie</th>      
+                 {% if is_granted('ROLE_ADMIN') %}
+                <th style="width: 5%;" class="th-part-details"></th>     
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -52,8 +53,10 @@
                 <td></td> 
                 <td></td> 
                 <td></td> 
-                <td></td> 
-                <td></td> 
+                
+                {% if is_granted('ROLE_ADMIN') %}
+                <td></td>                  
+                {% endif %}
             </tr>
         </tbody>
       </table>
@@ -63,8 +66,17 @@
 
 
     {% raw %}
+        
+        <style>
+            span.fancytree-expander {
+                display: none !important;
+            }
+        </style>
+        
         <script>
             $(function ($) {
+                
+                var isAdmin = {% endraw %}{% if is_granted('ROLE_ADMIN') %}true{% else %}false{% endif %}{% raw %};                
                 var sourceUrl = {% endraw %}"{{ sourceUrl }}"{% raw %};
                 var patternUrlDrzewko = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
                 var patternUrlDelete = {% endraw %}"{{ path('czesc_ax_usun', {'id': 'part_id'}) }}"{% raw %};
@@ -79,13 +91,18 @@
                     checkbox: false,
                     click: function (e, data) {
                     },
+                    
+                    collapse: function(e, data) {
+                        return false;
+                    },
+                    
                     renderColumns: function (event, data) {
                         var node = data.node,
                                 $tdList = $(node.tr).find(">td");
                         // (index #0 is rendered by fancytree by adding the checkbox)
                         $tdList.eq(1).text(node.getIndexHier()).addClass("alignRight");
                         // (index #2 is rendered by fancytree)                                         
-                        var trgDelete = $("<a href='' class='btn btn-danger'>Usuń <i class='fa fa-trash'></i></a>");
+                        var trgDelete = $("<a href='' class='table-link danger trg-delete' title='Usuń'><span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa fa-trash-o fa-stack-1x fa-inverse'></i></span> </a>");
                         trgDelete.on("click", function (e) {
                             e.preventDefault();
                             if(!confirm("Jesteś pewien, że chcesz usunąć ten element?")){
@@ -104,14 +121,14 @@
                             
                             var classSpan = !!data.node.data.fabrics ? "label-success" : "label-warning";
                             var classIcon = !!data.node.data.fabrics ? "fa-thumbs-o-up" : "fa-thumbs-o-down";     
-                            var titleSpan = !!data.node.data.fabrics ? "Tak" : "Nie";     
+                            var titleSpan = !!data.node.data.fabrics ? "Tak" : "Brak";     
                             $tdList.eq(3).html("<span style='display:block; margin-bottom: 5px;' class='label " + classSpan  + "'>"  + titleSpan + " <i class='fa " + classIcon + "'></i></span>");
                             
                             // Czy jest wydruk
                             if(data.node.data.is_drawing){
-                                 $tdList.eq(4).html("<span class='label label-success'>Rysunek ok <i class='fa fa-picture-o'></i></span>");
+                                 $tdList.eq(4).html("<span class='label label-success'>Ok <i class='fa fa-picture-o'></i></span>");
                             }else{
-                                $tdList.eq(4).html("<span class='label label-warning'>Brak rysunku</span>");
+                                $tdList.eq(4).html("<span class='label label-warning'>Brak <i class='fa fa-thumbs-o-down'></i></span>");
                             };      
                             
                             
@@ -136,8 +153,10 @@
                             //    $tdList.eq(5).html("<span class='label label-warning'>Nie gotowa <i class='fa fa-thumbs-o-down'></i></span>");
                             //};     
                        
-                            $tdList.eq(6).append(trgDelete);
-                            $tdList.eq(7).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły <i class='fa fa-cogs'></i></a>");
+                            if(isAdmin){
+                                $tdList.eq(6).append(trgDelete);
+                            };
+                           // $tdList.eq(6).html("<a href='" + node.data.link_details + "' class='btn btn-info'>Szczegóły <i class='fa fa-cogs'></i></a>");
                         }
 
                     },
@@ -145,37 +164,17 @@
                         indentation: 10, // indent 20px per node level
                         nodeColumnIdx: 2, // render the node title into the 2nd column
                         checkboxColumnIdx: 0  // render the checkboxes into the 1st column
-                    },
+                    }
+                    /*
                     dnd: {
                         autoExpandMS: 400,
                         focusOnClick: true,
                         preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
                         preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
                         dragStart: function (node, data) {
-
-
-
-                            /** This function MUST be defined to enable dragging for the tree.
-                             *  Return false to cancel dragging of node.
-                             */
                             return true;
                         },
-                        dragEnter: function (node, data) {
-                            /** data.otherNode may be null for non-fancytree droppables.
-                             *  Return false to disallow dropping on node. In this case
-                             *  dragOver and dragLeave are not called.
-                             *  Return 'over', 'before, or 'after' to force a hitMode.
-                             *  Return ['before', 'after'] to restrict available hitModes.
-                             *  Any other return value will calc the hitMode from the cursor position.
-                             */
-                            // Prevent dropping a parent below another parent (only sort
-                            // nodes under the same parent)
-                            /*           if(node.parent !== data.otherNode.parent){
-                             return false;
-                             }
-                             // Don't allow dropping *over* a node (would create a child)
-                             return ["before", "after"];
-                             */
+                        dragEnter: function (node, data) {                          
                             return true;
                         },
                         dragDrop: function (node, data) {
@@ -204,7 +203,7 @@
                             });
 
                         }
-                    }
+                    }*/
                 });
                 
                 

@@ -30,7 +30,7 @@
 
 
             {% if projects.getTotalItemCount %}
-                <div class="main-box-body clearfix">
+                <div class="main-box-body clearfix margin-top20">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -45,34 +45,38 @@
                                 {% for project in projects %}
                                     <tr>
                                         <td class="text-center">{{ project.id }}</td>
-                                        <td class="text-center">{{ project.name }}</td>                           
+                                        <td class="text-center">
+                                            <a href="{{ path('czesci_drzewo', {'id': project.id}) }}"  title="Zobacz strukturę">{{ project.name }}</a></td>                           
                                         <td class="text-center">
                                             {{ project.timeAdd | date('Y:m:d H:i') }}
                                         </td> 
                                         <td class="text-center">
                                             <i class="fa fa-user fa-lg"></i> {{ project.user.name }}
-
-                                        </td>                            
-                                        <td style="width: 15%;">
-                                            <a href="{{ path('czesci_drzewo', {'id': project.id}) }}" class="table-link" title="Zobacz strukturę">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
+                                        </td> 
+                                        
+                                        
+                                       
+                                        <td style="width: 15%;">                                            
+                                                
+                                            {% if is_granted('ROLE_ADMIN') %}
                                             <a href="{{ path('projekt_edytuj', {'id': project.id}) }}" class="table-link" title="Edytuj">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
+                                            {% endif %}
+                                            
+                                            {% if is_granted('ROLE_ADMIN') %}
                                             <a href="{{ path('projekt_usun', {'id': project.id}) }}" class="table-link danger trg-delete" title="Usuń">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
-                                        </td>                      
+                                            {% endif %}
+                                        </td>  
+                                        
                                     </tr>
                                 {% endfor %}                        
                             </tbody>

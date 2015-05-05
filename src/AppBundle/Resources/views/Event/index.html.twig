@@ -2,9 +2,25 @@
 
 {% block content_inner %}
 
-{% for user in users %}
-{% set userid = user.getId %}
-<a href="{{ path('listByDay', {'user_id': userid}) }}">{{user.getemail}}</a><br />
-{% endfor %}
+
+    <div class="panel panel-default">  
+        <div class="panel-heading"> Lista pracowników </div>
+        <div class="panel-body">
+            <div class="main-box-body clearfix calendary-workers">
+                <ul class="widget-todo calendary-workers">
+                    {% for user in users %}
+                        <li class="clearfix">
+                            <div class="name"> 
+                                {% set userid = user.getId %}
+                                <a href="{{ path('listByDay', {'user_id': userid}) }}">{{user.getemail}}</a><br />
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
 
 {% endblock %}

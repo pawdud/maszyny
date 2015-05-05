@@ -1,0 +1,147 @@
+{# empty Twig template #}
+
+<html>
+    <head>
+        <script src="{{ asset('js/angular/angular.min.js') }}"></script>
+
+        <script>
+
+            // Wyszukiwarka destynacji        
+            var destinations = [
+                {name: "Włochy", checked: true, children: [
+                        {name: "Lazio", checked: false},
+                        {name: "Rzym", checked: false}
+                    ]},
+                {name: "Polska", checked: true, children: [
+                        {name: "Warszawa", checked: false},
+                        {name: "Kraków", checked: false},
+                        {name: "Katowice", checked: false}
+                    ]}
+            ];
+
+            var mdsSearch = angular.module("mdsSearch", []);
+
+
+            mdsSearch.controller("DstCtrl", function ($scope, $filter) {
+                $scope.destinations = destinations;
+
+                $scope.countNotDone = function () {                    
+                    return $filter("tree")($scope.destinations).length;
+                };
+                
+                $scope.toggleChildren = function(item){                    
+                    angular.forEach(item.children, function(value, key){
+                        value.checked = item.checked;
+                    });                    
+                }
+                
+            });
+
+            mdsSearch.filter("tree", function () {
+                return function (data) {
+                    var filtered = [];
+                    if (angular.isArray(data)) {
+                        angular.forEach(data, function (value, key) {
+                            if (value.checked === true) {
+                                filtered.push(value);
+                            }
+                            if (angular.isArray(value.children)) {
+                                angular.forEach(value.children, function (value, key) {
+                                    if (value.checked === true) {
+                                        filtered.push(value);
+                                    }
+                                });
+                            }
+                        });
+                    };
+                    return filtered;
+
+                }
+
+
+            });
+
+
+            // Todo app
+            var model = {
+                user: "Paweł",
+                items: [
+                    {action: "Kupić manetkę", done: false},
+                    {action: "Nauczyć się bootstrapa", done: true},
+                    {action: "Zrobić prawojazdy", done: false},
+                    {action: "Zaufać Bogy", done: true}
+                ]
+            };
+
+
+            var todoApp = angular.module("todoApp", []);
+
+            todoApp.controller("ToDoCtrl", function ($scope, $filter) {
+                $scope.todo = model;
+
+
+                $scope.unselect = function (item) {
+                    item.done = false;
+                }
+
+
+                $scope.countNotDone = function () {
+                    return $filter("filter")($scope.todo.items, {done: false}).length;
+                }
+
+
+                console.log("$scope.todo", $scope.todo);
+            });
+
+
+            var rootApp = angular.module('rootApp', ["mdsSearch", "todoApp"]);
+
+
+        </script>
+    </head>
+    {% raw %}
+        <body ng-app="rootApp">   
+
+
+            <div>
+                <div ng-controller="DstCtrl">
+                    <h3>Pozostało do zrobienia: {{ countNotDone()}}</h3>
+                    <ul>
+                        <li ng-repeat="dst in destinations">
+                            {{ dst.name}}    
+                            <input type="checkbox" ng-click="toggleChildren(dst)" ng-model="dst.checked" ng-checked="dst.checked">
+                            <ul ng-if="dst.children.length > 0">
+                                <li ng-repeat="child in dst.children">
+                                    <input type="checkbox" ng-model="child.checked" ng-checked="child.checked">
+                                    {{ child.name}}
+                                </li>
+                            </ul>                        
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <div ng-controller="ToDoCtrl">
+                    <h3>Pozostało do zrobienia: {{ countNotDone()}}</h3>
+
+
+                    <span ng-repeat="item in todo.items | filter:{done: true}" ng-click="unselect(item)">
+                        {{ item.action}}
+                    </span>
+
+                    <ul>
+                        <li ng-repeat="item in todo.items">               
+                            {{ item.action}}               
+                            <input type="checkbox" ng-model="item.done" ng-checked="item.done" >
+
+                        </li>
+
+                    </ul>
+                </div>        
+            </div> 
+
+        </body>
+    {% endraw %}
+
+</html>

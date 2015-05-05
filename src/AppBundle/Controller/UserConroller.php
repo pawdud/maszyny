@@ -23,6 +23,8 @@ class UserConroller extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Brak upawnień');
+        
         $search = $request->query->get('search', array());
 
         $crit = array();
@@ -44,6 +46,8 @@ class UserConroller extends BaseController
      */
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Brak uprawnień');
+        
         $viewData = array();
         $user = new User();
         $form = $this->createForm(new UserAddType(), $user);
@@ -73,6 +77,8 @@ class UserConroller extends BaseController
      */
     public function editAction(Request $request, $user)
     {
+        $this->denyAccessUnlessGranted('edit', $user, 'Brak uprawnień');
+
         $form = $this->createForm(new UserEditType(), $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
@@ -98,6 +104,9 @@ class UserConroller extends BaseController
      */
     public function passwordAction(Request $request, $user)
     {
+        $this->denyAccessUnlessGranted('edit', $user, 'Brak uprawnień');
+
+
         $form = $this->createForm(new UserPasswordType(), $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
@@ -121,6 +130,7 @@ class UserConroller extends BaseController
      */
     public function deleteAction(Request $request, $user)
     {
+        $this->denyAccessUnlessGranted('delete', $user, 'Brak uprawnień');
         $this->ormRemoveAndFlush($user);
         return $this->redirect($this->generateUrl('uzytkownicy'), 'Usunięto użytkownika:' . $user->getEmail());
     }
@@ -139,14 +149,7 @@ class UserConroller extends BaseController
     {
         $encoder = $this->get('security.encoder_factory')->getEncoder(new \AppBundle\Entity\User());
         $salt = sha1(uniqid());
-        Debug::dump($encoder);
         $hashedPassword = $encoder->encodePassword($password, $salt);
-        Debug::dump($password);
-        Debug::dump($hashedPassword);
-        Debug::dump($salt);
-
-
-
         return array(
             0 => $hashedPassword,
             1 => $salt,

@@ -33,7 +33,7 @@
 
                 <div class="main-box-body clearfix">
                     <div class="table-responsive">      
-                        <table class="table">
+                        <table class="table table-workers">
                             <thead>
                             <th class="text-center">Id</th>
                             <th class="text-center">Login</th>
@@ -64,7 +64,7 @@
                                             <a href="{{ path('uzytkownik_haslo', {'id': user.id}) }}" class="table-link" title="Zmień hasło">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    <i class="fa fa-unlock fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                             <a href="{{ path('uzytkownik_usun', {'id': user.id}) }}" class="table-link danger trg-delete" title="Usuń">

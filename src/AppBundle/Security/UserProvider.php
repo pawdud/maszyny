@@ -39,7 +39,7 @@ class UserProvider implements UserProviderInterface
             
 //            var_dump($eUser->getSalt()); exit;
             
-            return new User($eUser->getEmail(), $eUser->getPassword(), $eUser->getSalt(), array($eUser->getRole()));            
+            return new User($eUser->getEmail(), $eUser->getPassword(), $eUser->getSalt(), $eUser->getId(), array($eUser->getRole()));            
         }
 
 

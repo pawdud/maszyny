@@ -24,23 +24,18 @@ class User implements GroupSequenceProviderInterface
     /**
      * Pracownik
      */
-    const ROLE_EMPLOYEE = 'EMPLOYEE';
+    const ROLE_EMPLOYEE = 'ROLE_EMPLOYEE';
     
-    /**
-     * Manager
-     */
-    const ROLE_MANAGER = 'MANAGER';
-    
+      
     /**
      * Administrator
      */
-    const ROLE_ADMIN = 'ADMIN';       
+    const ROLE_ADMIN = 'ROLE_ADMIN';       
     
     
     public static function getRoles(){
         return array(
-            self::ROLE_EMPLOYEE => 'Pracownik',
-            self::ROLE_MANAGER => 'Manager',
+            self::ROLE_EMPLOYEE => 'Pracownik',            
             self::ROLE_ADMIN => 'Administrator',
         );
     }

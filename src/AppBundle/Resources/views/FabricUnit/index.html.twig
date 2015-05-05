@@ -6,15 +6,22 @@
     <div class="panel panel-default">
         <div class="panel-heading">
         {% if fabricUnits.getTotalItemCount %}
-            Jednostki materiałów <i class="fa fa-th-large"></i>
+            Jednostki materiałów <i class="fa fa-book"></i>
         {% else %}    
             Brak jednostek materiałów
         {% endif %}
         </div>               
 
-            <div class="panel-body">           
+            <div class="panel-body">  
+                
+             <header class="main-box-header clearfix">
+                <a href="{{ path('material_jednostka_dodaj') }}" class="btn btn-primary pull-left"> 
+                    <i class="fa fa-plus-circle fa-lg"></i> Dodaj jednostkę
+                </a>
+
+            </header>   
             {% if fabricUnits.getTotalItemCount %}
-            <div class="main-box-body clearfix">
+            <div class="main-box-body clearfix margin-top20">
               <div class="table-responsive">  
                 <table class="table">
                     <thead>

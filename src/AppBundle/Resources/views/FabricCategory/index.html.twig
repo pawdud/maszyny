@@ -6,15 +6,23 @@
     <div class="panel panel-default">
         <div class="panel-heading">
         {% if fabricCategories.getTotalItemCount %}
-            Kategoria materiałów <i class="fa fa-th-large"></i>
+            Kategoria materiałów  <i class="fa fa-folder"></i>
         {% else %}    
             Brak kategorii materiałów
         {% endif %}
         </div>               
 
-            <div class="panel-body">           
+            <div class="panel-body">    
+                
+                         <header class="main-box-header clearfix">
+                <a href="{{ path('material_kategoria_dodaj') }}" class="btn btn-primary pull-left"> 
+                    <i class="fa fa-plus-circle fa-lg"></i> Dodaj kategorię
+                </a>
+
+            </header>      
+                
             {% if fabricCategories.getTotalItemCount %}
-            <div class="main-box-body clearfix">
+            <div class="main-box-body clearfix margin-top20">
               <div class="table-responsive">  
                 <table class="table">
                     <thead>

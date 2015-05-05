@@ -71,13 +71,13 @@
     <div id="theme-wrapper">
         <header class="navbar" id="header-navbar">
             <div class="container">
-                <a href="index.html" id="logo" class="navbar-brand">
-                    TTM PANEL
+                <a href="{{ path('projekty') }}" id="logo" class="navbar-brand">
+                    Panel {% if is_granted('ROLE_ADMIN') %}admina{% else %} pracownika {% endif %}
                 </a>
 
                 <div class="clearfix">
                     <button class="navbar-toggle" data-target=".navbar-ex1-collapse" data-toggle="collapse" type="button">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only"></span>
                         <span class="fa fa-bars"></span>
                     </button>
 
@@ -88,7 +88,7 @@
                                     <i class="fa fa-bars"></i>
                                 </a>
                             </li>
-                            <li class="dropdown hidden-xs">
+                            {#<li class="dropdown hidden-xs">
                                 <a class="btn dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-bell"></i>
                                     <span class="count">8</span>
@@ -172,13 +172,13 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li>#}
                         </ul>
                     </div>
 
                     <div class="nav-no-collapse pull-right" id="header-nav">
                         <ul class="nav navbar-nav pull-right">
-                            <li class="mobile-search">
+                            {#<li class="mobile-search">
                                 <a class="btn">
                                     <i class="fa fa-search"></i>
                                 </a>
@@ -191,17 +191,15 @@
                                     </form>
                                 </div>
 
-                            </li>
+                            </li>#}
                             <li class="dropdown profile-dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="{{ asset('img/hubert.jpg') }}" alt=""/>
-                                    <span class="hidden-xs">Kierownik Tomasz Tobiasz</span> <b class="caret"></b>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">                                 
+                                    <span class="hidden-xs">Użytkownik: <strong>{{ app.user.username }}</strong></span> <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a href="user-profile.html"><i class="fa fa-user"></i>Profil</a></li>
-                                    <li><a href="#"><i class="fa fa-cog"></i>Praca</a></li>
-                                    <li><a href="#"><i class="fa fa-envelope-o"></i>Wiadomości</a></li>
-                                    <li><a href="{{ path('wyloguj') }}"><i class="fa fa-power-off"></i>Wyloguj</a></li>
+                                    <li><a href="{{ path('uzytkownik_edytuj', {'id': app.user.id}) }}"><i class="fa fa-pencil"></i> Edytuj</a></li>
+                                    <li><a href="{{ path('uzytkownik_haslo', {'id': app.user.id}) }}"><i class="fa fa-unlock"></i> Zmień hasło</a></li>
+                                    <li><a href="{{ path('wyloguj') }}"><i class="fa fa-power-off"></i> Wyloguj</a></li>
                                 </ul>
                             </li>                                
                         </ul>
@@ -219,131 +217,48 @@
                             </div>
                             <div class="collapse navbar-collapse navbar-ex1-collapse" id="sidebar-nav">	
                                 <ul class="nav nav-pills nav-stacked">
-                                    <li class="active">
-                                        <a href="{{ path('homepage') }}">
-                                            <i class="fa fa-dashboard"></i>
-                                            <span>Strona główna</span>
-                                        </a>
-                                    </li>
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
+                                        <a href="{{ path('projekty') }}">
                                             <i class="fa fa-cog"></i>
                                             <span>Projekty</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('projekty') }}">
-                                                    Lista
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('projekt_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>
-
-                                        </ul>
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
+                                        <a href="{{ path('procesy') }}">
                                             <i class="fa fa-wrench"></i>
                                             <span>Technologie</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('procesy') }}">
-                                                    Lista 
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('procesy_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>                                                
-                                        </ul>
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
+                                        <a href="{{ path('materialy') }}">
                                             <i class="fa fa-th-large"></i>
                                             <span>Materiały</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('materialy') }}">
-                                                    Lista
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('material_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>                                               
-                                        </ul>
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
-                                            <i class="fa fa-th-large"></i>
+                                        <a href="{{ path('materialy_kategorie') }}">
+                                            <i class="fa fa-folder"></i>
                                             <span>Kategorie Materiałów</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('materialy_kategorie') }}">
-                                                    Lista
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('material_kategoria_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
-                                            <i class="fa fa-th-large"></i>
+                                        <a href="{{ path('materialy_jednostki') }}">
+                                            <i class="fa fa-book"></i>
                                             <span>Jednostki materiałów</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('materialy_jednostki') }}">
-                                                    Lista
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('material_jednostka_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </li>
+                                    
+                                    {% if is_granted('ROLE_ADMIN') %}
                                     <li>
-                                        <a href="#" class="dropdown-toggle">
+                                        <a href="{{ path('uzytkownicy') }}">
                                             <i class="fa fa-users"></i>
                                             <span>Pracownicy</span>
-                                            <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
-                                        <ul class="submenu">
-                                            <li>
-                                                <a href="{{ path('uzytkownicy') }}">
-                                                    Lista
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ path('uzytkownik_dodaj') }}">
-                                                    Dodaj
-                                                </a>
-                                            </li>
-
-                                        </ul>
                                     </li>
-                                    <li>
+                                    {% endif %}
+                                   {#<li>
                                         <a href="#" class="dropdown-toggle">
-                                            <i class="fa fa-users"></i>
+                                            <i class="fa fa-calendar"></i>
                                             <span>Kalendarz</span>
                                             <i class="fa fa-angle-right drop-icon"></i>
                                         </a>
@@ -353,10 +268,8 @@
                                                     Lista
                                                 </a>
                                             </li>
-
-
                                         </ul>
-                                    </li>
+                                    </li>#}
                                 </ul>
                             </div>
                         </div>

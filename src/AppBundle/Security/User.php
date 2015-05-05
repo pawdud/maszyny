@@ -8,17 +8,20 @@ use Symfony\Component\Security\Core\User\EquatableInterface;
 class User implements UserInterface, EquatableInterface
 {
 
+    private $id;
     private $username;
     private $password;
     private $salt;
     private $roles;
 
-    public function __construct($username, $password, $salt, array $roles)
+    public function __construct($username, $password, $salt, $id, array $roles)
     {
         $this->username = $username;
         $this->password = $password;
         $this->salt = $salt;
+        $this->id = $id;
         $this->roles = $roles;
+       
     }
 
     public function getRoles()
@@ -45,6 +48,12 @@ class User implements UserInterface, EquatableInterface
     {
         
     }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
+    
 
     public function isEqualTo(UserInterface $user)
     {

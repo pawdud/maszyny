@@ -1,6 +1,10 @@
 {% extends 'AppBundle::layout.html.twig' %}
 
 {% block content_inner %}  
+    
+<a class="btn btn-info" style="margin-bottom: 10px;" href="{{ path('czesci_drzewo', {'id': part.project.id }) }}">Zobacz Strukturę <i class="fa fa-sort-amount-desc"></i></a>
+
+    
     <div class="panel panel-default">
         <div class="panel-body">
             {% set route = app.request.attributes.get('_route') %}  

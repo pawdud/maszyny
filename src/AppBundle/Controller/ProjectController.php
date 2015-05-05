@@ -14,27 +14,26 @@ class ProjectController extends BaseController
 {
 
     /**
+     * 
+     * @Route("/", name="homepage")
      * @Route("/projekty", name="projekty")
      */
     public function indexAction(Request $request)
     {
-        
         $search = $request->query->get('search', array());
-        
+
         $crit = array();
-        
-        if(!empty($search['q'])){
+
+        if (!empty($search['q']))
+        {
             $crit['q'] = $search['q'];
         }
-        
-//        Debug::dump($crit); exit;
-      
-       
-        
-        
+
         $qb = $this->repoProject()->many($crit, false, false, true);
         $this->setViewData('projects', $this->paginate($qb, 15));
         $this->setViewData('search', $search);
+        $this->setHeader('Projekty');
+
         return $this->render('AppBundle:Project:index.html.twig');
     }
 
@@ -43,6 +42,8 @@ class ProjectController extends BaseController
      */
     public function addAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $viewData = array();
         $project = new Project();
         $form = $this->createForm(new ProjectType(), $project);
@@ -66,12 +67,14 @@ class ProjectController extends BaseController
      */
     public function editAction(Request $request, $project)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(new ProjectType(), $project);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid())
         {
             $this->ormPersistAndFlush($project);
-          
+
             return $this->redirect($this->generateUrl('projekty'), 'Zakualizowano projekt');
         }
 
@@ -79,14 +82,16 @@ class ProjectController extends BaseController
         $this->setViewData('form', $form->createView());
         return $this->render('AppBundle:Project:edit.html.twig');
     }
-    
+
     /**
      * @Route("/projekt/usun/{id}", name="projekt_usun")
      * @ParamConverter("project", class="AppBundle:Project")
      */
     public function deleteAction(Request $request, $project)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $this->ormRemoveAndFlush($project);
         return $this->redirect($this->generateUrl('projekty'), 'Usunięto projekt');
-    }    
+    }
+
 }
