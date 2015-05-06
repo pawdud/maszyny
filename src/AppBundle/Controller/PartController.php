@@ -288,6 +288,10 @@ class PartController extends BaseController
      */
     public function axTreeSourceAction(Request $request, $id, Project $project)
     {
+                
+        $idPartSelected = $request->query->get('idPart', false);
+        
+        
         
         $technologyId = $request->query->get('technology_id', false);
         $partsIdsTree = array();
@@ -296,6 +300,9 @@ class PartController extends BaseController
             $partsData   = $this->repoProject()->getPartsData($id);
             $partsIdsTree   = array_values($this->repoProject()->getPartsTree($partsIds, $partsData));
         }
+        
+        
+        
         
         
        

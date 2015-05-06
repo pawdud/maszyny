@@ -84,17 +84,23 @@
 
                 $("#cnt-part-tree").fancytree({
                     extensions: ["table", "dnd"],
+                    
+                    checkbox: false,
+                    
                     source: {
                         url: sourceUrl,
                         cache: false
                     },
-                    checkbox: false,
-                    click: function (e, data) {
-                    },
+                    
+                    click: function (e, data) {                        
+                        if(data.node.data.link_details){
+                            location.href = data.node.data.link_details;
+                        };
+                    }, 
                     
                     collapse: function(e, data) {
                         return false;
-                    },
+                    },       
                     
                     renderColumns: function (event, data) {
                         var node = data.node,
