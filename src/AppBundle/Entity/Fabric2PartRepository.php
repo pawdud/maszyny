@@ -17,8 +17,8 @@ use AppBundle\Entity\BaseRepository;
 class Fabric2PartRepository extends BaseRepository
 {
 
-    protected static $alias = 'technology';
-    protected static $entity = 'AppBundle:Technology';
+    protected static $alias = 'fabric2part';
+    protected static $entity = 'AppBundle:Fabric2Part';
 
     public function customWhere($name, $value)
     {
