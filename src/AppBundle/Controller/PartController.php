@@ -130,6 +130,9 @@ class PartController extends BaseController
         
         
         $this->setViewData('part', $part);
+        
+        $this->setHeader($part->getName() . ' - technologie');
+        
         return $this->render('AppBundle:Part:edit_technology.html.twig');
     }       
     
@@ -140,6 +143,7 @@ class PartController extends BaseController
     public function editMaterialAction(Request $request, $part)
     {  
         $this->setViewData('part', $part);
+        $this->setHeader($part->getName() . ' - materiały');        
         return $this->render('AppBundle:Part:edit_fabric.html.twig');
     }   
     
@@ -292,23 +296,16 @@ class PartController extends BaseController
         $idPartSelected = $request->query->get('idPart', false);
         
         
-        
         $technologyId = $request->query->get('technology_id', false);
         $partsIdsTree = array();
         if($technologyId){
             $partsIds       = $this->repoProject()->getPartsIdByTechnology($id, $technologyId);
             $partsData   = $this->repoProject()->getPartsData($id);
             $partsIdsTree   = array_values($this->repoProject()->getPartsTree($partsIds, $partsData));
-        }
+        }       
         
         
-        
-        
-        
-       
-        
-        
-        $source = $this->getPartsJsTreeSource($project, $partsIdsTree);
+        $source = $this->getPartsJsTreeSource($project, $partsIdsTree, $idPartSelected);
         return new JsonResponse($source);
     }
 
@@ -353,7 +350,7 @@ class PartController extends BaseController
      * @param Project $project
      * @return array
      */
-    private function getPartsJsTreeSource(Project $project, array $partsIdsTree = array())
+    private function getPartsJsTreeSource(Project $project, array $partsIdsTree = array(), $idPartSelected=false)
     {
         $source = array(
             array(
@@ -361,7 +358,7 @@ class PartController extends BaseController
                 'title' => $project->getName(),
                 'folder' => true,
                 'expanded' => true,
-                'children' => $this->repoPart()->tree($project->getId(), 0, PartRepository::PARSE_MODE_TREE_FOR_JAVASCRIPT, $partsIdsTree))
+                'children' => $this->repoPart()->tree($project->getId(), 0, PartRepository::PARSE_MODE_TREE_FOR_JAVASCRIPT, $partsIdsTree, $idPartSelected))
         );
         
         

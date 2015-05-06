@@ -13,3 +13,9 @@ input.small {
 .unit::after {
     content: ']';
 }
+
+
+span.fancytree-selected span.fancytree-title {
+    background-color: #eee;
+    border-color: #01b9fe;
+}

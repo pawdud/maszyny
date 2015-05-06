@@ -38,7 +38,7 @@ class PartRepository extends BaseRepository
     }
     
 
-    public function tree($projectId, $parentId = 0, $mode = self::PARSE_MODE_TREE_FOR_JAVASCRIPT, array $partsIdsTree = array())
+    public function tree($projectId, $parentId = 0, $mode = self::PARSE_MODE_TREE_FOR_JAVASCRIPT, array $partsIdsTree = array(), $idPartSelected=false)
     {
         
          //Debug::dump($partsIdsTree); exit;
@@ -81,12 +81,18 @@ class PartRepository extends BaseRepository
         {
             foreach ($result as $row)
             {
+                if($row['id'] === $idPartSelected){
+                   $row['selected'] = true; 
+                }else{
+                   $row['selected'] = false;
+                }
+                
                 $row['technologies'] = $this->getTechnologies($row['id']);
                 $row['fabrics']      = $this->getFabrics($row['id']);
                 
                 
 
-                $children = $this->tree($projectId, $row['id'], $mode, $partsIdsTree);
+                $children = $this->tree($projectId, $row['id'], $mode, $partsIdsTree, $idPartSelected);
                 if (is_array($children) && !empty($children))
                 {
                     $row['children'] = $children;
@@ -109,9 +115,12 @@ class PartRepository extends BaseRepository
             'is_drawing' => (bool) $row['is_drawing'],
             'is_completed' => (bool) $row['is_completed'],
             'user_name' => $row['user_name'],
+            'selected' => $row['selected'],
             'expanded' => true,
             'folder' => isset($row['children']),
             'link_details' => Config::instance()->url('czesc_edytuj', array('id' => $row['id'])),
+            'link_details_fabric' => Config::instance()->url('czesc_edytuj_materialy', array('id' => $row['id'])),
+            'link_details_technology' => Config::instance()->url('czesc_edytuj_technologie', array('id' => $row['id']))            
         );
 
         if (!empty($row['children']))

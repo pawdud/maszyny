@@ -5,8 +5,8 @@
 {% raw %} 
     <script>
         $(function ($) {
-            var sourceUrl           = {% endraw %}"{{ path('czesc_drzewko_struktura',{'id': part.project.id }) }}"{% raw %};
-            var patternUrlDrzewko   = {% endraw %}"{{ path('czesci_drzewko', {'parent_id': 'parent_id', 'child_id': 'child_id'}) }}"{% raw %};
+            var sourceUrl           = {% endraw %}"{{ path('czesc_drzewko_struktura',{'id': part.project.id }) }}?idPart={{ part.id }}"{% raw %};
+            var linkTreeName            =  {% endraw %}"{{ linkTreeName }}"{% raw %};
 
             $("#cnt-part-tree").fancytree({               
                 source: {
@@ -18,8 +18,7 @@
                 click: function(e, data){
                     e.preventDefault();
                     if(data.node.data.link_details){
-                        window.location.href = data.node.data.link_details;
-                        
+                        location.href = data.node.data[linkTreeName];          
                     }
                     return false;                    
                 }

@@ -24,7 +24,16 @@
             </div>
 
             <div class="col-md-4">
-                {{ include('AppBundle:Part:inc_tree.html.twig', {'part':part}) }}
+                
+                {% if route == 'czesc_edytuj_technologie' %}
+                   {% set linkTreeName = 'link_details_technology' %}                    
+                {% elseif route == 'czesc_edytuj_materialy' %}                    
+                    {% set linkTreeName = 'link_details_fabric' %}
+                {% else %}
+                     {% set linkTreeName = 'link_details' %}
+                {% endif %}
+                
+                {{ include('AppBundle:Part:inc_tree.html.twig', {'part':part, 'linkTreeName': linkTreeName}) }}
             </div> 
             <div class="col-md-8">            
             {% block subcontent %}{% endblock %}
