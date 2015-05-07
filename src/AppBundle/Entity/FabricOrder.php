@@ -46,7 +46,7 @@ class FabricOrder {
      * @ORM\OneToOne(targetEntity="Fabric2Part")
      * @ORM\JoinColumn(name="fabric2part_id", referencedColumnName="id")
      * */
-    private $fabric2part_id;
+    private $fabric2part;
 
     /**
      *
@@ -121,8 +121,8 @@ class FabricOrder {
      * @param \AppBundle\Entity\Fabric2Part $idPart
      * @return Order
      */
-    public function setFabric2PartId(\AppBundle\Entity\Fabric2Part $fabric2partId = null) {
-        $this->fabric2part_id = $fabricId;
+    public function setFabric2Part(\AppBundle\Entity\Fabric2Part $fabric2part = null) {
+        $this->fabric2part = $fabric2part;
 
         return $this;
     }
@@ -132,8 +132,8 @@ class FabricOrder {
      *
      * @return \AppBundle\Entity\Fabric2Part 
      */
-    public function getFabric2PartId() {
-        return $this->fabric2part_id;
+    public function getFabric2Part() {
+        return $this->fabric2part;
     }
 
     /**
