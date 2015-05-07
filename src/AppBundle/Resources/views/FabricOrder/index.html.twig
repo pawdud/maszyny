@@ -1,0 +1,68 @@
+{% extends 'AppBundle::layout.html.twig' %}
+
+{% block content_inner %}
+
+
+    <div class="panel panel-default">  
+        <div class="panel-heading"> zapotrzebowanie </div>
+        <div class="panel-body">
+            <div class="main-box-body clearfix calendary-workers">
+                <ul class="widget-todo calendary-workers">
+                    {% for order in orders %}
+                     <div class="main-box-body clearfix margin-top20">
+                    <div class="table-responsive">  
+                        <table class="table">
+                            <thead>
+{#                            <th class="text-center">Id</th>#}
+{#                            <th class="text-center">Kod</th>#}
+                            <th class="text-center">Nazwa Materiału</th>
+                            <th class="text-center">Ilość</th>
+                            <th class="text-center">Status</th>
+{#                            <th class="text-center">Utworzony</th>#}
+                            <th class="text-center"></th>                       
+                            </thead>
+
+                            <tbody>
+                                {% for order in orders %}
+                                    <tr>
+                                        <td class="text-center">{{order.Fabric2PartId.getFabric.getName}}</td>
+                                        <td class="text-center">{{order.getQuantity}}</td>
+                                        <td class="text-center">{{order.getStatus}}</td>
+{#                                        <td class="text-center">{{ fabric{{order.getStatus}}.quantity }} <span class="unit">{{ fabric.unit.unit }}</span></td>#}
+{#                                        <td class="text-center">{{ fabri{{order.getStatus}}c.category.name }}</td>#}
+                                        {#<td class="text-center">
+                                            {{ fabric.timeAdd | date('Y:m:d H:i') }}
+                                            <div>
+                                                ({{ fabric.user.name }} {{ fabric.user.surname }})
+                                            </div>
+                                        </td> #}                          
+                                        {#<td style="width: 15%;">
+                                            <a href="{{ path('material_edytuj', {'id': fabric.id}) }}" class="table-link" title="Edytuj">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a href="{{ path('material_usun', {'id': fabric.id}) }}" class="table-link danger trg-delete" title="Usuń">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                                </span>  
+                                            </a>
+                                        </td>#}                            
+                                    </tr>
+                                {% endfor %}                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+  
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

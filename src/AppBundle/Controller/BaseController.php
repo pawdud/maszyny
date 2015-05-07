@@ -139,6 +139,15 @@ class BaseController extends Controller
     protected function repoFabric(){
         return $this->em->getRepository('AppBundle:Fabric');
     }
+   
+    /**
+     * Zwraca repozytorium zapotrzebowania
+     * 
+     * @return \AppBundle\Entity\FabricOrderRepository
+     */    
+    protected function repoFabricOrder(){
+        return $this->em->getRepository('AppBundle:FabricOrder');
+    }
     
     /**
      * Zwraca repozytorium kategorii materiałów
