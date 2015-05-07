@@ -2,7 +2,7 @@
 {% extends 'AppBundle:Part:edit_layout.html.twig' %}
 {% block subcontent %}  
 <div class="form-group">    
-    <a class="btn btn-success" id="trg-technology-add" href="{{ path('czesc_technologia_dodaj', {'id': part.id}) }}">Dodaj techologię</a>    
+    <a class="btn btn-success" id="trg-technology-add" href="{{ path('czesc_technologia_dodaj', {'id': part.id}) }}">Dodaj techologie</a>    
     
     {% if part.technologies2part | length %}
     <table class="table table-bordered" style="margin-top: 20px;">

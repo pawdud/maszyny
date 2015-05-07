@@ -109,8 +109,16 @@ class PartRepository extends BaseRepository
 
     private function parseRowForJavascript($row)
     {
+        
+        if($row['quantity'] > 1){
+            $strQuantity = ' ( ' . $row['quantity'] . ' szt. )';
+        }else{
+            $strQuantity = '';
+        }
+        
+        
         $return = array(
-            'title' => $row['name'],
+            'title' => $row['name'] . $strQuantity,
             'key' => $row['id'],
             'is_drawing' => (bool) $row['is_drawing'],
             'is_completed' => (bool) $row['is_completed'],

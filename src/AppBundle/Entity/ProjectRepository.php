@@ -113,8 +113,8 @@ class ProjectRepository extends BaseRepository
                     pa.project_id = :project_id
                 AND
                     tech.id = :technology_id
-                GROUP BY 
-                    tech.id
+                /*GROUP BY 
+                    tech.id*/
                 ";
 
 

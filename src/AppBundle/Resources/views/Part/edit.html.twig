@@ -1,6 +1,5 @@
 {% extends 'AppBundle:Part:edit_layout.html.twig' %}
 
-{% block subcontent %}  
-    <a class="btn btn-info" style="margin-bottom: 10px;" href="{{ path('czesci_drzewo', {'id': part.project.id }) }}">Zobacz Strukturę <i class="fa fa-sort-amount-desc"></i></a>
+{% block subcontent %}     
    {{ include('AppBundle:Part:inc_form.html.twig', {'form':form}) }} 
 {% endblock %}

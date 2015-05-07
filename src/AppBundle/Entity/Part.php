@@ -78,6 +78,13 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
      */
     private $isCompleted;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer", nullable=true)
+     */
+    private $quantity;
+
     public function __construct()
     {
         $this->technologies2part = new ArrayCollection();
@@ -246,6 +253,17 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
         return $this;
     }
 
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+        return $this;
+    }
+
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->setGroupSequenceProvider(true);
@@ -253,6 +271,18 @@ class Part extends BaseEntity implements GroupSequenceProviderInterface
         $metadata->addPropertyConstraint('name', new Assert\NotBlank(array(
             'groups' => array('add', 'update'),
             'message' => 'Pole wymagane'
+        )));
+
+        $metadata->addPropertyConstraint('quantity', new Assert\NotBlank(array(
+            'groups' => array('add', 'update'),
+            'message' => 'Pole wymagane'
+        )));
+
+
+        $metadata->addPropertyConstraint('quantity', new Assert\Regex(array(
+            'groups' => array('add', 'update'),
+            'pattern' => '/\d+/',
+            'message' => 'To nie jest wartość liczbowa'
         )));
     }
 

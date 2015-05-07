@@ -1,7 +1,21 @@
-{{ form_start(form, { 'action': app.request.requestUri, 'attr': {'novalidate': 'novalidate' } } ) }}  
-    {{ form_row(form.technology) }}              
-    {{ form_row(form.isCompleted) }}              
+<form method="post" action="{{ app.request.requestUri }}">    
+    {% for technology in technologies %}    
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="technologies[{{ technology.id }}]" value="{{ technology.id }}"> 
+                    {{ technology.name }}
+                </label>
+            </div>
+        </div>    
+
+
+
+    {% endfor %}         
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Zapisz <i class="fa fa-floppy-o"></i></button>
+        <button class="btn btn-info" type="submit">
+            Zapisz
+            <i class="fa fa-floppy-o"></i>
+        </button>
     </div>
-{{ form_end(form) }}    
+</form>
