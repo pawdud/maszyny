@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 08 Maj 2015, 01:15
+-- Czas wygenerowania: 08 Maj 2015, 22:36
 -- Wersja serwera: 5.5.35-0ubuntu0.12.04.2
 -- Wersja PHP: 5.5.11-3+deb.sury.org~precise+1
 
@@ -79,7 +79,7 @@ INSERT INTO `fabric` (`id`, `fabric_category_id`, `user_id`, `code`, `quantity`,
 (2, 1, 3, 'GWO30', 2.00, 3, 'Gwozdie 30', NULL, '2015-03-21 08:46:03'),
 (3, 1, 3, 'GWO20', 3.21, 3, 'Gwozdzie', '2015-04-14 22:41:56', '2015-04-14 22:41:25'),
 (4, 3, 3, 'DYB20', 2000.00, 5, 'Dyble', NULL, '2015-04-14 22:46:15'),
-(5, 1, 3, 'BLACH_FAL', 10.00, 3, 'Blacha falista', NULL, '2015-04-23 00:01:28');
+(5, 1, 3, 'BLACH_FAL', 5.00, 3, 'Blacha falista', '2015-05-08 22:32:16', '2015-04-23 00:01:28');
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
   PRIMARY KEY (`id`),
   KEY `part_id` (`part_id`),
   KEY `fabric_id` (`fabric_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=16 ;
 
 --
 -- Zrzut danych tabeli `fabric2part`
@@ -112,7 +112,9 @@ INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `quantity`, `time_updat
 (9, 3, 5, 15.0000, NULL, '0000-00-00 00:00:00'),
 (10, 3, 4, 7.0000, NULL, '0000-00-00 00:00:00'),
 (11, 6, 3, 20.0000, NULL, '0000-00-00 00:00:00'),
-(13, 7, 1, 8.0000, NULL, '0000-00-00 00:00:00');
+(13, 7, 1, 10.0000, NULL, '0000-00-00 00:00:00'),
+(14, 7, 5, 5.0000, NULL, '0000-00-00 00:00:00'),
+(15, 6, 5, 6.0000, NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -124,23 +126,21 @@ CREATE TABLE IF NOT EXISTS `fabricorder` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `fabric2part_id` int(10) unsigned NOT NULL COMMENT 'id_part z tabeli fabric2part',
   `quantity` decimal(10,2) NOT NULL,
-  `status` int(10) NOT NULL COMMENT '0 - oczekujace 5 - zatwierdzone 9 - anulowane',
+  `status_id` int(10) unsigned NOT NULL COMMENT '0 - oczekujace 5 - zatwierdzone 9 - anulowane',
   PRIMARY KEY (`id`),
-  KEY `fabric2part_id` (`fabric2part_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='zapotrzebowanie na materiały do projektu' AUTO_INCREMENT=10 ;
+  KEY `fabric2part_id` (`fabric2part_id`),
+  KEY `status_id` (`status_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='zapotrzebowanie na materiały do projektu' AUTO_INCREMENT=14 ;
 
 --
 -- Zrzut danych tabeli `fabricorder`
 --
 
-INSERT INTO `fabricorder` (`id`, `fabric2part_id`, `quantity`, `status`) VALUES
-(2, 5, 15.00, 5),
-(3, 9, 20.00, 5),
-(4, 9, 18.00, 5),
-(5, 9, 15.00, 0),
-(6, 10, 7.00, 5),
-(7, 11, 20.00, 0),
-(9, 13, 8.00, 5);
+INSERT INTO `fabricorder` (`id`, `fabric2part_id`, `quantity`, `status_id`) VALUES
+(10, 6, 15.00, 5),
+(11, 7, 5.00, 0),
+(12, 14, 5.00, 5),
+(13, 15, 6.00, 0);
 
 -- --------------------------------------------------------
 
@@ -252,6 +252,28 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `is_drawing`, `time_updated`, `t
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `statusy`
+--
+
+CREATE TABLE IF NOT EXISTS `statusy` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` char(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+
+--
+-- Zrzut danych tabeli `statusy`
+--
+
+INSERT INTO `statusy` (`id`, `name`) VALUES
+(0, 'oczekujące'),
+(5, 'zaakceptowane'),
+(9, 'anulowane');
+
+-- --------------------------------------------------------
+
+--
 -- Struktura tabeli dla tabeli `technology`
 --
 
@@ -358,6 +380,7 @@ ALTER TABLE `fabric2part`
 -- Ograniczenia dla tabeli `fabricorder`
 --
 ALTER TABLE `fabricorder`
+  ADD CONSTRAINT `fabricorder_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `statusy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fabricorder_ibfk_1` FOREIGN KEY (`fabric2part_id`) REFERENCES `fabric2part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
