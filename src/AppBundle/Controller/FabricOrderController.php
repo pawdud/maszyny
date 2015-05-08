@@ -61,7 +61,8 @@ class FabricOrderController extends BaseController {
             $nowy_stan = $fabric->getQuantity() - $fabricOrder->getQuantity();
             
             $fabric->setQuantity($nowy_stan);
-            $fabricOrder->setStatus(5);
+            $status5 = $this->repoStatusy()->find(5);
+            $fabricOrder->setStatus($status5);
 
             $this->em->flush();
 

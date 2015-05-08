@@ -7,6 +7,7 @@ use AppBundle\Entity\Part;
 use AppBundle\Entity\PartRepository;
 use AppBundle\Entity\FabricOrder;
 use AppBundle\Entity\FabricOrderRepository;
+use AppBundle\Entity\Statusy;
 use AppBundle\Form\Type\PartType;
 use AppBundle\Entity\Fabric2Part;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -221,7 +222,8 @@ class PartController extends BaseController {
 
                 $fabricOrder = new FabricOrder();
                 $fabricOrder->setQuantity($params['quantity']);
-                $fabricOrder->setStatus(0);
+                $status0 = $this->repoStatusy()->find(0);
+                $fabricOrder->setStatus($status0);
                 $fabricOrder->setFabric2Part($fabric2Part);
                 $this->em->persist($fabricOrder);
             } else {

@@ -186,6 +186,15 @@ class BaseController extends Controller
     }
     
     /**
+     * Zwrazca repozytorium statusy
+     * 
+     * @return \AppBunlde\Entity\Statusy
+     */    
+    protected function repoStatusy(){
+        return $this->em->getRepository('AppBundle:Statusy');
+    }
+    
+    /**
      * Zwrazca repozytorium technology2part
      * 
      * @return \AppBunlde\Entity\Technology2Part

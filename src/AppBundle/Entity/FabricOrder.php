@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\FabricOrderRepository;
+use AppBundle\Entity\Statusy;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Util\Debug;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -56,12 +57,10 @@ class FabricOrder {
      */
     private $quantity;
 
-    /**
-     *
-     * @var type int
-     * 
-     * @ORM\Column(name="status", type="integer", length=10, nullable=false)
-     */
+   /**
+     * @ORM\ManyToOne(targetEntity="Statusy", cascade={"persist"})
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     **/
     private $status;
 
     /**
@@ -94,47 +93,8 @@ class FabricOrder {
         return $this->quantity;
     }
 
-    /**
-     * Set status
-     *
-     * @param integer $status
-     * @return Order
-     */
-    public function setStatus($status) {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return integer 
-     */
-    public function getStatus() {
-        return $this->status;
-    }
-
-    /**
-     * Set id_part
-     *
-     * @param \AppBundle\Entity\Fabric2Part $idPart
-     * @return Order
-     */
-    public function setFabric2Part(\AppBundle\Entity\Fabric2Part $fabric2part = null) {
-        $this->fabric2part = $fabric2part;
-
-        return $this;
-    }
-
-    /**
-     * Get id_part
-     *
-     * @return \AppBundle\Entity\Fabric2Part 
-     */
-    public function getFabric2Part() {
-        return $this->fabric2part;
-    }
+   
+   
 
     /**
      * Sprawdza czy ilość jest poprawna     
@@ -158,4 +118,50 @@ class FabricOrder {
         }
     }
 
+
+    /**
+     * Set fabric2part
+     *
+     * @param \AppBundle\Entity\Fabric2Part $fabric2part
+     * @return FabricOrder
+     */
+    public function setFabric2part(\AppBundle\Entity\Fabric2Part $fabric2part = null)
+    {
+        $this->fabric2part = $fabric2part;
+
+        return $this;
+    }
+
+    /**
+     * Get fabric2part
+     *
+     * @return \AppBundle\Entity\Fabric2Part 
+     */
+    public function getFabric2part()
+    {
+        return $this->fabric2part;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \AppBundle\Entity\Statusy $status
+     * @return FabricOrder
+     */
+    public function setStatus(\AppBundle\Entity\Statusy $status = null)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \AppBundle\Entity\Statusy 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 }
