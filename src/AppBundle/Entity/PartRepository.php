@@ -219,7 +219,7 @@ class PartRepository extends BaseRepository
         $a2 = Fabric2PartRepository::getAlias();
         $this->qb->select($a1, $a2)
                 ->from(self::$entity, $a1)
-                ->leftJoin('{$a1}.fabrics2part', $a2);
+                ->leftJoin("{$a1}.fabrics2part", $a2);
     }
 
 }

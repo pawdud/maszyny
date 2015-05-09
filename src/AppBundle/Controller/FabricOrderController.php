@@ -22,7 +22,7 @@ use Doctrine\Common\Util\Debug;
  * @license MIT
  * 
  */
-class OrderController extends BaseController {
+class FabricOrderController extends BaseController {
 
     /**
      * @Route("/zapotrzebowanie", name="zapotrzebowanie")
@@ -38,6 +38,36 @@ class OrderController extends BaseController {
         $this->setViewData('orders', $this->paginate($qb, 15));
         $this->setViewData('search', $search);
         return $this->render('AppBundle:FabricOrder:index.html.twig');
+    }
+
+    /**
+     * @Route("/zapotrzebowanie/zmien-status/{id}", name="zmien_status")
+     * @ParamConverter("fabricOrder", class="AppBundle:FabricOrder", options={"mapping": {"id": "id"}})
+     * 
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function changeStatusAction(Request $request, $id) {
+
+        $fabricOrder = $this->repoFabricOrder()->findOneBy(array(
+            "id" => $id
+        ));
+
+        $fabric2part = $fabricOrder->getFabric2Part();
+        $fabric = $fabric2part->getFabric();
+
+        if ($fabric->getQuantity() < $fabricOrder->getQuantity()) {
+            return $this->redirect($this->generateUrl('zapotrzebowanie'), 'Za mały stan magazynowy ');
+        } else {
+            $nowy_stan = $fabric->getQuantity() - $fabricOrder->getQuantity();
+            
+            $fabric->setQuantity($nowy_stan);
+            $status5 = $this->repoStatusy()->find(5);
+            $fabricOrder->setStatus($status5);
+
+            $this->em->flush();
+
+            return $this->redirect($this->generateUrl('zapotrzebowanie'), 'Zmieniono status');
+        }
     }
 
 }
