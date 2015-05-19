@@ -59,7 +59,7 @@ class FabricOrderController extends BaseController {
             return $this->redirect($this->generateUrl('zapotrzebowanie'), 'Za mały stan magazynowy ');
         } else {
             $nowy_stan = $fabric->getQuantity() - $fabricOrder->getQuantity();
-            
+
             $fabric->setQuantity($nowy_stan);
             $status5 = $this->repoStatusy()->find(5);
             $fabricOrder->setStatus($status5);

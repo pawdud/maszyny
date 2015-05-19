@@ -13,18 +13,20 @@ class FabricOrderRepository extends BaseRepository
 
     protected static $alias = 'fabricorder';
     protected static $entity = 'AppBundle:FabricOrder';
-
-    protected function setSelectMany(array $crit = array())
+     
+        protected function setSelectMany(array $crit = array())
     {
         $a1 = self::getAlias();
         $a2 = Fabric2PartRepository::getAlias();
         $a3 = PartRepository::getAlias();
         $a4 = ProjectRepository::getAlias();
+        $a5 = StatusyRepository::getAlias();
         
-        $this->qb->select($a1, $a2, $a3, $a4)
+        $this->qb->select($a1, $a2, $a3, $a4, $a5)
         ->innerJoin("{$a1}.fabric2part", $a2)
         ->innerJoin("{$a2}.part", $a3)
-        ->innerJoin("{$a3}.project", $a4);
+        ->innerJoin("{$a3}.project", $a4)
+        ->innerJoin("{$a1}.status", $a5);
     }    
 
     public function customWhere($name, $value)

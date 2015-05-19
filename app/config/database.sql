@@ -1,14 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
+-- version 4.0.9deb1.precise~ppa.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Czas wygenerowania: 09 May 2015, 08:53
--- Wersja serwera: 5.5.38
--- Wersja PHP: 5.4.38-1+deb.sury.org~precise+2
+-- Czas wygenerowania: 19 Maj 2015, 23:24
+-- Wersja serwera: 5.5.35-0ubuntu0.12.04.2
+-- Wersja PHP: 5.5.11-3+deb.sury.org~precise+1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Baza danych: `maszyny`
@@ -17,7 +23,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `event`
+-- Struktura tabeli dla tabeli `event`
 --
 
 CREATE TABLE IF NOT EXISTS `event` (
@@ -47,7 +53,7 @@ INSERT INTO `event` (`id`, `time_start`, `time_end`, `user_id`, `notice`, `techn
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric`
+-- Struktura tabeli dla tabeli `fabric`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric` (
@@ -62,23 +68,25 @@ CREATE TABLE IF NOT EXISTS `fabric` (
   `time_add` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Materiały' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Materiały' AUTO_INCREMENT=8 ;
 
 --
 -- Zrzut danych tabeli `fabric`
 --
 
 INSERT INTO `fabric` (`id`, `fabric_category_id`, `user_id`, `code`, `quantity`, `fabric_unit_id`, `name`, `time_updated`, `time_add`) VALUES
-(1, 1, 3, 'GWO', 2.00, 4, 'Gwozdzie', '2015-03-21 08:49:30', '2015-03-21 08:43:20'),
+(1, 3, 3, 'GWO', 11.00, 5, 'Gwozdzie', '2015-03-21 08:49:30', '2015-03-21 08:43:20'),
 (2, 1, 3, 'GWO30', 2.00, 3, 'Gwozdie 30', NULL, '2015-03-21 08:46:03'),
 (3, 1, 3, 'GWO20', 3.21, 3, 'Gwozdzie', '2015-04-14 22:41:56', '2015-04-14 22:41:25'),
-(4, 3, 3, 'DYB20', 2000.00, 5, 'Dyble', NULL, '2015-04-14 22:46:15'),
-(5, 1, 3, 'BLACH_FAL', 5.00, 3, 'Blacha falista', '2015-05-08 22:32:16', '2015-04-23 00:01:28');
+(4, 3, 3, 'DYB20', 1950.00, 5, 'Dyble', '2015-05-19 23:10:14', '2015-04-14 22:46:15'),
+(5, 1, 3, 'BLACH_FAL', 5.00, 3, 'Blacha falista', '2015-05-08 22:32:16', '2015-04-23 00:01:28'),
+(6, 3, 3, 'pret60', 24.00, 5, 'pręt 60', '2015-05-09 22:04:50', '2015-05-09 22:04:00'),
+(7, 3, 3, 'rng_50', 332.00, 5, 'ring 50 mm', '2015-05-19 22:46:47', '2015-05-11 22:40:34');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric2part`
+-- Struktura tabeli dla tabeli `fabric2part`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric2part` (
@@ -91,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `fabric2part` (
   PRIMARY KEY (`id`),
   KEY `part_id` (`part_id`),
   KEY `fabric_id` (`fabric_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Powiązanie materiałów z częściami' AUTO_INCREMENT=22 ;
 
 --
 -- Zrzut danych tabeli `fabric2part`
@@ -106,14 +114,17 @@ INSERT INTO `fabric2part` (`id`, `part_id`, `fabric_id`, `quantity`, `time_updat
 (9, 3, 5, 15.0000, NULL, '0000-00-00 00:00:00'),
 (10, 3, 4, 7.0000, NULL, '0000-00-00 00:00:00'),
 (11, 6, 3, 20.0000, NULL, '0000-00-00 00:00:00'),
-(13, 7, 1, 10.0000, NULL, '0000-00-00 00:00:00'),
+(13, 7, 1, 2.0000, NULL, '0000-00-00 00:00:00'),
 (14, 7, 5, 5.0000, NULL, '0000-00-00 00:00:00'),
-(15, 6, 5, 6.0000, NULL, '0000-00-00 00:00:00');
+(15, 6, 5, 6.0000, NULL, '0000-00-00 00:00:00'),
+(16, 7, 6, 8.0000, NULL, '0000-00-00 00:00:00'),
+(17, 6, 6, 56.0000, NULL, '0000-00-00 00:00:00'),
+(18, 8, 5, 10.0000, NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabricorder`
+-- Struktura tabeli dla tabeli `fabricorder`
 --
 
 CREATE TABLE IF NOT EXISTS `fabricorder` (
@@ -122,9 +133,9 @@ CREATE TABLE IF NOT EXISTS `fabricorder` (
   `quantity` decimal(10,2) NOT NULL,
   `status_id` int(10) unsigned NOT NULL COMMENT '0 - oczekujace 5 - zatwierdzone 9 - anulowane',
   PRIMARY KEY (`id`),
-  KEY `fabric2part_id` (`fabric2part_id`),
-  KEY `status_id` (`status_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='zapotrzebowanie na materiały do projektu' AUTO_INCREMENT=14 ;
+  KEY `status_id` (`status_id`),
+  KEY `fabric2part_id` (`fabric2part_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='zapotrzebowanie na materiały do projektu' AUTO_INCREMENT=30 ;
 
 --
 -- Zrzut danych tabeli `fabricorder`
@@ -134,12 +145,24 @@ INSERT INTO `fabricorder` (`id`, `fabric2part_id`, `quantity`, `status_id`) VALU
 (10, 6, 15.00, 5),
 (11, 7, 5.00, 0),
 (12, 14, 5.00, 5),
-(13, 15, 6.00, 0);
+(13, 15, 6.00, 0),
+(14, 16, 15.00, 5),
+(15, 17, 56.00, 5),
+(16, 13, 11.00, 0),
+(17, 13, 22.00, 0),
+(18, 13, 40.00, 0),
+(19, 13, 7.00, 0),
+(20, 13, -3.00, 5),
+(21, 13, -6.00, 5),
+(22, 13, 1.00, 0),
+(23, 16, 63.00, 0),
+(24, 16, -70.00, 0),
+(25, 18, 15.00, 0);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric_category`
+-- Struktura tabeli dla tabeli `fabric_category`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric_category` (
@@ -162,7 +185,7 @@ INSERT INTO `fabric_category` (`id`, `name`, `time_updated`, `time_add`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `fabric_unit`
+-- Struktura tabeli dla tabeli `fabric_unit`
 --
 
 CREATE TABLE IF NOT EXISTS `fabric_unit` (
@@ -187,7 +210,7 @@ INSERT INTO `fabric_unit` (`id`, `name`, `unit`, `scale`, `time_updated`, `time_
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `part`
+-- Struktura tabeli dla tabeli `part`
 --
 
 CREATE TABLE IF NOT EXISTS `part` (
@@ -205,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `part` (
   KEY `project_id` (`project_id`),
   KEY `user_id` (`user_id`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Cześci tworzące projekt' AUTO_INCREMENT=10 ;
 
 --
 -- Zrzut danych tabeli `part`
@@ -216,12 +239,14 @@ INSERT INTO `part` (`id`, `parent_id`, `project_id`, `user_id`, `name`, `is_draw
 (3, 2, 8, 3, 'Noga', 1, 1, NULL, '2015-03-26 00:01:00', '2015-03-25 21:35:52'),
 (5, 0, 9, 3, 'Silnik', 1, 0, NULL, NULL, '2015-04-22 23:57:01'),
 (6, 5, 9, 3, 'Cylinder', 1, 0, NULL, NULL, '2015-04-22 23:58:32'),
-(7, 0, 10, 3, 'nowa część', 0, 0, NULL, NULL, '2015-05-08 01:12:42');
+(7, 0, 10, 3, 'nowa część', 0, 0, NULL, NULL, '2015-05-08 01:12:42'),
+(8, 0, 8, 3, 'tarcza szlif', 0, 0, 1, NULL, '2015-05-19 22:39:52'),
+(9, 2, 8, 3, 'stół z miarą', 0, 0, 1, NULL, '2015-05-19 22:43:33');
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `project`
+-- Struktura tabeli dla tabeli `project`
 --
 
 CREATE TABLE IF NOT EXISTS `project` (
@@ -247,7 +272,7 @@ INSERT INTO `project` (`id`, `user_id`, `name`, `is_drawing`, `time_updated`, `t
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `statusy`
+-- Struktura tabeli dla tabeli `statusy`
 --
 
 CREATE TABLE IF NOT EXISTS `statusy` (
@@ -269,7 +294,7 @@ INSERT INTO `statusy` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `technology`
+-- Struktura tabeli dla tabeli `technology`
 --
 
 CREATE TABLE IF NOT EXISTS `technology` (
@@ -292,7 +317,7 @@ INSERT INTO `technology` (`id`, `name`, `time_updated`, `time_add`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `technology2part`
+-- Struktura tabeli dla tabeli `technology2part`
 --
 
 CREATE TABLE IF NOT EXISTS `technology2part` (
@@ -319,7 +344,7 @@ INSERT INTO `technology2part` (`id`, `part_id`, `technology_id`, `is_completed`)
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla  `user`
+-- Struktura tabeli dla tabeli `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -375,8 +400,8 @@ ALTER TABLE `fabric2part`
 -- Ograniczenia dla tabeli `fabricorder`
 --
 ALTER TABLE `fabricorder`
-  ADD CONSTRAINT `fabricorder_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `statusy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fabricorder_ibfk_1` FOREIGN KEY (`fabric2part_id`) REFERENCES `fabric2part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fabricorder_ibfk_1` FOREIGN KEY (`fabric2part_id`) REFERENCES `fabric2part` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fabricorder_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `statusy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ograniczenia dla tabeli `part`
@@ -384,3 +409,7 @@ ALTER TABLE `fabricorder`
 ALTER TABLE `part`
   ADD CONSTRAINT `part_ibfk_4` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   ADD CONSTRAINT `part_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

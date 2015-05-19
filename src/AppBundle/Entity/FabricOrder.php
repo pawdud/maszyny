@@ -45,10 +45,10 @@ class FabricOrder {
      *
      * @var int
      * 
-     * 
-     * @ORM\OneToOne(targetEntity="Fabric2Part")
+     * @ORM\ManyToOne(targetEntity="Fabric2Part", inversedBy="fabricOrders")
      * @ORM\JoinColumn(name="fabric2part_id", referencedColumnName="id")
-     * */
+     *
+     */
     private $fabric2part;
 
     /**
@@ -122,29 +122,6 @@ class FabricOrder {
 
 
     /**
-     * Set fabric2part
-     *
-     * @param \AppBundle\Entity\Fabric2Part $fabric2part
-     * @return FabricOrder
-     */
-    public function setFabric2part(\AppBundle\Entity\Fabric2Part $fabric2part = null)
-    {
-        $this->fabric2part = $fabric2part;
-
-        return $this;
-    }
-
-    /**
-     * Get fabric2part
-     *
-     * @return \AppBundle\Entity\Fabric2Part 
-     */
-    public function getFabric2part()
-    {
-        return $this->fabric2part;
-    }
-
-    /**
      * Set status
      *
      * @param \AppBundle\Entity\Statusy $status
@@ -165,5 +142,28 @@ class FabricOrder {
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set fabric2part
+     *
+     * @param \AppBundle\Entity\Fabric2Part $fabric2part
+     * @return FabricOrder
+     */
+    public function setFabric2part(\AppBundle\Entity\Fabric2Part $fabric2part = null)
+    {
+        $this->fabric2part = $fabric2part;
+
+        return $this;
+    }
+
+    /**
+     * Get fabric2part
+     *
+     * @return \AppBundle\Entity\Fabric2Part 
+     */
+    public function getFabric2part()
+    {
+        return $this->fabric2part;
     }
 }
