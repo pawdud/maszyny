@@ -17,6 +17,7 @@
                             <th class="text-center">Nazwa projektu</th>
                             <th class="text-center">Nazwa części</th>
                             <th class="text-center">Nazwa Materiału</th>
+{#                            <th class="text-center">KOD</th>#}
                             <th class="text-center">Ilość</th>
                             <th class="text-center">Status</th>
 {#                            <th class="text-center">Utworzony</th>#}
@@ -28,7 +29,7 @@
                                     <tr>
                                         <td class="text-center">{{order.Fabric2Part.getPart.getProject.getName}}</td>
                                         <td class="text-center">{{order.Fabric2Part.getPart.getName}}</td>
-                                        <td class="text-center">{{order.Fabric2Part.getFabric.getName}}</td>
+                                        <td class="text-center">{{order.Fabric2Part.getFabric.getName}} | {{order.Fabric2Part.getFabric.getCode}}</td>
                                         <td class="text-center">{{order.getQuantity}}</td>
                                         <td class="text-center">{{order.getStatus.getName}}</td>
 {#                                        <td class="text-center">{{ fabric{{order.getStatus}}.quantity }} <span class="unit">{{ fabric.unit.unit }}</span></td>#}
@@ -48,12 +49,12 @@
                                                 </span>
                                             </a>
                                             {% endif %}
-                                            <a href="{{ path('material_usun', {'id': order.id}) }}" class="table-link danger trg-delete" title="Usuń">
+                                          {#  <a href="{{ path('material_usun', {'id': order.id}) }}" class="table-link danger trg-delete" title="Usuń">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
                                                 </span>  
-                                            </a>
+                                            </a>#}
                                         </td>                            
                                     </tr>
                                 {% endfor %}                        

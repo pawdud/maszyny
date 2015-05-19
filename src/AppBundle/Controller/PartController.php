@@ -125,9 +125,9 @@ class PartController extends BaseController {
 
 
         $this->setViewData('part', $part);
-        
+
         $this->setHeader($part->getName() . ' - technologie');
-        
+
         return $this->render('AppBundle:Part:edit_technology.html.twig');
     }
 
@@ -137,7 +137,7 @@ class PartController extends BaseController {
      */
     public function editMaterialAction(Request $request, $part) {
         $this->setViewData('part', $part);
-        $this->setHeader($part->getName() . ' - materiały');        
+        $this->setHeader($part->getName() . ' - materiały');
         return $this->render('AppBundle:Part:edit_fabric.html.twig');
     }
 
@@ -208,7 +208,7 @@ class PartController extends BaseController {
                 'fabric' => $fabric,
                 'part' => $part
             ));
-            
+
             /**
              * znajduje powiązane zapotrzebowanie, jesli istnieje
              */
@@ -232,6 +232,20 @@ class PartController extends BaseController {
                 $this->em->persist($fabricOrder);
             } else {
                 $flash = 'Zaktualizowano materiał';
+
+                $fabric = $fabric2Part->getFabric();
+
+                // przywraca stan magazynowy materiału jeśli zapotrzebowanie było zaakceptowane                
+                if ($fabricOrder->getStatus()->getId() != 0) {
+                    $new_fabric_quantity = $fabricOrder->getQuantity() + $fabric->getQuantity();
+                    $fabric->setQuantity($new_fabric_quantity);
+                }
+                // usatawia nową ilość zapotrzebowania jeśli nie było zaakceptowane
+                $new_quantity_fabricOrder = $params['quantity'] - $fabric2Part->getQuantity();
+                $fabricOrder->setQuantity($new_quantity_fabricOrder);
+                $status0 = $this->repoStatusy()->find(0);
+                $fabricOrder->setStatus($status0);
+                $fabricOrder->setFabric2Part($fabric2Part);
             }
 
             $fabricOrder->setQuantity($params['quantity']);
@@ -242,8 +256,6 @@ class PartController extends BaseController {
             $this->setFlashMsg($flash);
             $response['status'] = 'OK';
         }
-
-
 
 
         return new JsonResponse($response);
@@ -257,7 +269,16 @@ class PartController extends BaseController {
      * @ParamConverter("fabricOrder", class="AppBundle:FabricOrder", options={"repository_method" = "findOneByfabric2part", "mapping": {"fabric2part": "id"}})
      */
     public function fabricDeleteAction(Request $request, Part $part, Fabric2Part $fabric2part, FabricOrder $fabricOrder) {
-        
+
+        if ($fabricOrder->getStatus()->getId() != 0) {
+            // quantity z zapotrzebowania zaakceptowanego
+            $quantity_fabricOrder = $fabricOrder->getQuantity();
+            $fabric = $fabric2part->getFabric();
+            $old_quantity_fabric = $fabric->getQuantity();
+
+            $fabric->setQuantity($old_quantity_fabric + $quantity_fabricOrder);
+            $this->em->flush($fabric);
+        }
         $msg = $this->ormRemoveAndFlush($fabricOrder) ? 'Usunięto materiał' : 'Nie udało się usunąć materiału';
         $msg = $this->ormRemoveAndFlush($fabric2part) ? 'Usunięto materiał' : 'Nie udało się usunąć materiału';
         return $this->redirect($this->generateUrl('czesc_edytuj_materialy', array('id' => $part->getId())), $msg);
@@ -297,17 +318,17 @@ class PartController extends BaseController {
     public function axTreeSourceAction(Request $request, $id, Project $project) {
 
         $idPartSelected = $request->query->get('idPart', false);
-        
-        
+
+
         $technologyId = $request->query->get('technology_id', false);
         $partsIdsTree = array();
-        if($technologyId){
-            $partsIds       = $this->repoProject()->getPartsIdByTechnology($id, $technologyId);
-            $partsData   = $this->repoProject()->getPartsData($id);
-            $partsIdsTree   = array_values($this->repoProject()->getPartsTree($partsIds, $partsData));
-        }       
-        
-        
+        if ($technologyId) {
+            $partsIds = $this->repoProject()->getPartsIdByTechnology($id, $technologyId);
+            $partsData = $this->repoProject()->getPartsData($id);
+            $partsIdsTree = array_values($this->repoProject()->getPartsTree($partsIds, $partsData));
+        }
+
+
         $source = $this->getPartsJsTreeSource($project, $partsIdsTree, $idPartSelected);
 
         return new JsonResponse($source);
@@ -349,9 +370,7 @@ class PartController extends BaseController {
      * @param Project $project
      * @return array
      */
-
-    private function getPartsJsTreeSource(Project $project, array $partsIdsTree = array(), $idPartSelected=false)
-    {
+    private function getPartsJsTreeSource(Project $project, array $partsIdsTree = array(), $idPartSelected = false) {
         $source = array(
             array(
                 'key' => 0,
